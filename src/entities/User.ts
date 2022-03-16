@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 
-@Entity("users")
+@Entity("user")
 class User {
 
     @PrimaryColumn()
@@ -16,7 +16,7 @@ class User {
     @Column()
     password: string;
     
-    @CreateDateColumn()
+    @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
 
     constructor(){

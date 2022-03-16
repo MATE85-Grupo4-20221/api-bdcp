@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 
 const userRouter = Router();
 const userController = new UserController();
@@ -62,7 +63,7 @@ const userController = new UserController();
 *       400:
 *         description: No users found!
 */
-userRouter.get('/', userController.getUsers);
+userRouter.get('/', ensureAuthenticated, userController.getUsers);
 
 /**
 * @swagger
@@ -87,7 +88,7 @@ userRouter.get('/', userController.getUsers);
 *       400:
 *           description: User does not exists!
 */
-userRouter.get('/:id', userController.getUserById);
+userRouter.get('/:id', ensureAuthenticated, userController.getUserById);
 
 /**
 * @swagger
@@ -124,7 +125,7 @@ userRouter.get('/:id', userController.getUserById);
 *       400:
 *         description: An error has been ocurred.
 */
-userRouter.post('/', userController.create);
+userRouter.post('/', ensureAuthenticated, userController.create);
 
 /**
 * @swagger
@@ -161,7 +162,7 @@ userRouter.post('/', userController.create);
 *       404:
 *         description: The user was not found
 */
-userRouter.put('/:id', userController.update);
+userRouter.put('/:id', ensureAuthenticated, userController.update);
 
 /**
  * @swagger
@@ -183,6 +184,6 @@ userRouter.put('/:id', userController.update);
  *       404:
  *         description: The user was not found
  */
-userRouter.delete('/:id', userController.delete);
+userRouter.delete('/:id', ensureAuthenticated, userController.delete);
 
 export { userRouter };
