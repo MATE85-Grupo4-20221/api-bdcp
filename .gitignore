@@ -1,0 +1,8 @@
+#folders
+/node_modules
+/build
+/coverage
+/dist
+
+#files
+package-lock.json
