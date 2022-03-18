@@ -1,9 +1,16 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
-import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
 
 const userRouter = Router();
 const userController = new UserController();
+
+/**
+* @swagger
+* tags:
+*   name: User
+*   description: The User managing API
+*/
 
 /**
 * @swagger
@@ -36,13 +43,8 @@ const userController = new UserController();
 *         name: Javus da Silva Pythonlino
 *         email: user@email.com
 *         password: user010203!!!
-*/
-
-/**
-* @swagger
-* tags:
-*   name: User
-*   description: The User managing API
+*         createdAt: 2022-03-18 17:12:52
+*         updatedAt: 2022-03-18 17:12:52
 */
 
 /**
