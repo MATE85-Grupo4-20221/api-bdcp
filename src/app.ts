@@ -6,18 +6,18 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
 
 import { router } from './routes';
-import createConnection from './database';
-import { SwaggerOptions } from "./utils/SwaggerOptions";
-import {AppError} from './errors/AppError';
+import { AppError } from './errors/AppError';
 
-createConnection();
+import { createConnection } from "typeorm";
+import { SwaggerOptions } from "./configs/swagger.config";
 
+const connection = createConnection();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(router);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(SwaggerOptions)));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(SwaggerOptions)));
 app.use((err: Error, request: Request, response: Response, _next: NextFunction) => {
     if(err instanceof AppError){
         return response.status(err.statusCode).json({message: err.message});

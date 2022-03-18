@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --exit-child src/server.ts",
-    "run:migration": "ts-node-dev node_modules/typeorm/cli.js migration:run"
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
   },
   "repository": {
     "type": "git",
@@ -19,11 +19,11 @@
   },
   "homepage": "https://github.com/MATE85-Grupo4-20221/api-bdcp#readme",
   "dependencies": {
-    "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.1.0",
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.21",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
