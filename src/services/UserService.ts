@@ -1,5 +1,5 @@
-import { getCustomRepository, Repository } from "typeorm";
 import * as crypto from 'crypto';
+import { getCustomRepository, Repository } from "typeorm";
 
 import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
