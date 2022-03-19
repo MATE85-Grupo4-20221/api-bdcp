@@ -1,13 +1,14 @@
 import * as dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 
 dotenv.config();
 
 function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
-    const authToken = request.headers.authorization;
+    const splitToken = request.headers.authorization?.split('Bearer ');
+    const authToken = splitToken?.[1];
 
-    if (!authToken) {
+    if (!splitToken || splitToken.length < 2 || !authToken) {
         return response.status(401).json({
             auth: false,
             message: "No token provided.",
@@ -15,7 +16,9 @@ function ensureAuthenticated(request: Request, response: Response, next: NextFun
     }
 
     try {
-        verify(authToken, String(process.env.JWT_SECRET));
+        const authenticatedUser = verify(authToken, String(process.env.JWT_SECRET)) as JwtPayload;
+        request.headers.authenticatedUserId = authenticatedUser.id;
+
         return next();
     }
     catch (err) {
