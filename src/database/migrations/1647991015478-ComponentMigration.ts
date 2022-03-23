@@ -37,19 +37,19 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '50',
                     },
                     {
-                        name: 'kind',
-                        type: 'varchar',
-                        isNullable: true,
-                        length: '50',
-                    },
-                    {
-                        name: 'module',
+                        name: 'type',
                         type: 'varchar',
                         isNullable: true,
                         length: '50',
                     },
                     {
                         name: 'program',
+                        type: 'varchar',
+                        isNullable: true,
+                        length: '200',
+                    },
+                    {
+                        name: 'prerequeriments',
                         type: 'varchar',
                         isNullable: true,
                         length: '200',
@@ -83,16 +83,6 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         type: 'varchar',
                         isNullable: true,
                         length: '2000',
-                    },
-                    {
-                        name: 'teaching_workload',
-                        type: 'int',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'student_workload',
-                        type: 'int',
-                        isNullable: true,
                     },
                     {
                         name: 'created_at',
