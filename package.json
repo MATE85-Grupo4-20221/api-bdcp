@@ -6,6 +6,7 @@
   "scripts": {
     "lint:check": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
     "dev": "ts-node-dev --exit-child src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
   },
