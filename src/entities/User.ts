@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { Content } from './Content';
+
+import { Component } from './Component';
 
 @Entity('user')
 class User {
@@ -16,22 +17,22 @@ class User {
 
     @Column()
         password: string;
-    
+
     @CreateDateColumn({name: 'created_at'})
         createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at'})
         updatedAt: Date;
 
-    @OneToMany(() => Content, (content) => content.user)
-        contents: Content[];
+    @OneToMany(() => Component, (component) => component.user)
+        components: Component[];
 
     constructor(){
         if(!this.id){
             this.id = uuid();
         }
     }
-    
+
 }
 
 export { User };

@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { ContentController } from '../controllers/ContentController';
+import { ComponentController } from '../controllers/ComponentController';
 import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
 
-const contentRouter = Router();
-const contentController = new ContentController();
+const componentRouter = Router();
+const componentController = new ComponentController();
 
 /**
 * @swagger
 * tags:
-*   name: Content
-*   description: The Content managing API
+*   name: Component
+*   description: The Component managing API
 */
 
 /**
@@ -38,6 +38,9 @@ const contentController = new ContentController();
 *         createdAt:
 *           type: date
 *           description: The date that user has been created
+*         updatedAt:
+*           type: date
+*           description: The date that user has been updated
 *       example:
 *         id: 50496915-d356-43a0-84a4-43f83bad2225
 *         name: Javus da Silva Pythonlino
@@ -46,7 +49,7 @@ const contentController = new ContentController();
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
 *
-*     Content:
+*     Component:
 *       type: object
 *       required:
 *         - id
@@ -56,7 +59,7 @@ const contentController = new ContentController();
 *       properties:
 *         id:
 *           type: number
-*           description: The auto-incremented id of the content
+*           description: The uuid id of the component
 *         code:
 *           type: string
 *           description: Component's code
@@ -66,16 +69,19 @@ const contentController = new ContentController();
 *         department:
 *           type: string
 *           description: Component's department
-*         teachingHours:
+*         teachingWorkload:
 *           type: number
 *           description: Amount of hours invented in the component
-*         studentHours:
+*         studentWorkload:
 *           type: number
 *           description: Amount of in-class hours invested in the component
+*         kind:
+*           type: string
+*           description: Kind of component (optional or required)
 *         module:
 *           type: string
 *           description: Type of module
-*         actingSemester:
+*         semester:
 *           type: string
 *           description: First acting semester of component
 *         syllabus:
@@ -110,119 +116,95 @@ const contentController = new ContentController();
 *         userId: 50496915-d356-43a0-84a4-43f83bad2225
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
-*
 */
 
-// *    ContentUpsert:
-// *       type: object
-// *       required:
-// *         - id
-// *         - userId
-// *         - createdAt
-// *         - updatedAt
-// *       properties:
-// *         code:
-// *           type: string
-// *           description: Component's code
-// *         name:
-// *           type: string
-// *           description: Component's name
-// *         department:
-// *           type: string
-// *           description: Component's department
-// *         teachingHours:
-// *           type: number
-// *           description: Amount of hours invented in the component
-// *         studentHours:
-// *           type: number
-// *           description: Amount of in-class hours invested in the component
-// *         module:
-// *           type: string
-// *           description: Type of module
-// *         actingSemester:
-// *           type: string
-// *           description: First acting semester of component
-// *         syllabus:
-// *           type: string
-// *           description: Component's syllabus
-// *         program:
-// *           type: string
-// *           description: Component's program
-// *         objective:
-// *           type: string
-// *           description: Component's objective
-// *         metolodogy:
-// *           type: string
-// *           description: Metodology applied by the professor
-// *         bibliography:
-// *           type: string
-// *           description: Book references
-// *         createdAt:
-// *           type: date
-// *           description: Date of content's creation
-// *         updatedAt:
-// *           type: date
-// *           description: Date of content's last update
-// *       example:
-// *         name: Geometria Analitica
-// *         code: MATA01
-// */
+/**
+ *    ContentUpsert:
+ *       type: object
+ *       required:
+ *         - id
+ *         - userId
+ *         - createdAt
+ *         - updatedAt
+ *       properties:
+ *         code:
+ *           type: string
+ *           description: Component's code
+ *         name:
+ *           type: string
+ *           description: Component's name
+ *         department:
+ *           type: string
+ *           description: Component's department
+ *          teachingWorkload:
+ *           type: number
+ *           description: Amount of hours invented in the component
+ *         studentWorkload:
+ *           type: number
+ *           description: Amount of in-class hours invested in the component
+ *         kind:
+ *           type: string
+ *           description: Kind of component (optional or required)
+ *          module:
+ *           type: string
+ *           description: Type of module
+ *         semester:
+ *           type: string
+ *           description: First acting semester of component
+ *         syllabus:
+ *           type: string
+ *           description: Component's syllabus
+ *         program:
+ *           type: string
+ *           description: Component's program
+ *         objective:
+ *           type: string
+ *           description: Component's objective
+ *         metolodogy:
+ *           type: string
+ *           description: Metodology applied by the professor
+ *         bibliography:
+ *           type: string
+ *           description: Book references
+ *         createdAt:
+ *           type: date
+ *           description: Date of content's creation
+ *         updatedAt:
+ *           type: date
+ *           description: Date of content's last update
+ *       example:
+ *         name: Geometria Analitica
+ *         code: MATA01
+*/
 
 /**
 * @swagger
-* /api/contents:
+* /api/components:
 *   get:
-*     summary: Returns the list of all the component conente
-*     tags: [Content]
+*     summary: Returns the list of all the component
+*     tags: [Component]
 *     responses:
 *       200:
-*         description: The list of the component conente
+*         description: The list of all the component
 *         content:
 *           application/json:
 *             schema:
 *               type: array
 *               items:
-*                 $ref: '#/components/schemas/Content'
+*                 $ref: '#/components/schemas/Component'
 *       400:
-*         description: Bad Request!
+*         description: Bad Request
 *       500:
 *         description: Internal Server Error
 */
-contentRouter.get('/', ensureAuthenticated, contentController.getContents);
+componentRouter.get('/', ensureAuthenticated, componentController.getComponents);
 
 /**
 * @swagger
-* /api/contents/{id}:
-*   get:
-*     summary: Return the content description by id
-*     tags: [Content]
-*     parameters:
-*       - in: path
-*         name: id
-*         schema:
-*           type: number
-*         required: true
-*         description: The content id
-*     responses:
-*       200:
-*         description: The content description by id
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/Content'
-*       400:
-*           description: Bad Request!
-*       500:
-*         description: Internal Server Error
-*/
-contentRouter.get('/:id', ensureAuthenticated, contentController.getContentById);
-
-/**
-* @swagger
-* /api/contents:
+* /api/components:
 *   post:
-*     summary: Create a component content
-*     tags: [Content]
+*     summary: Create a component
+*     tags: [Component]
 *     parameters:
 *       - in: body
 *         name: code
@@ -243,13 +225,13 @@ contentRouter.get('/:id', ensureAuthenticated, contentController.getContentById)
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingHours
+*         name: teachingWorkload
 *         schema:
 *           type: number
 *         required: false
 *         description: Amount of hours invented in the component
 *       - in: body
-*         name: studentHours
+*         name: studentWorkload
 *         schema:
 *           type: number
 *         required: false
@@ -318,21 +300,21 @@ contentRouter.get('/:id', ensureAuthenticated, contentController.getContentById)
 *       400:
 *         description: An error has been ocurred.
 */
-contentRouter.post('/', ensureAuthenticated, contentController.create);
+componentRouter.post('/', ensureAuthenticated, componentController.create);
 
 /**
 * @swagger
-* /api/contents/{id}:
+* /api/components/{id}:
 *   put:
-*     summary: Update a component content
-*     tags: [Content]
+*     summary: Update a component 
+*     tags: [Component]
 *     parameters:
 *       - in: params
 *         name: id
 *         schema:
-*           type: number
+*           type: string
 *         required: true
-*         description: The component content id
+*         description: The component id
 *       - in: body
 *         name: code
 *         schema:
@@ -352,13 +334,13 @@ contentRouter.post('/', ensureAuthenticated, contentController.create);
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingHours
+*         name: teachingWorkload
 *         schema:
 *           type: number
 *         required: false
 *         description: Amount of hours invented in the component
 *       - in: body
-*         name: studentHours
+*         name: studentWorkload
 *         schema:
 *           type: number
 *         required: false
@@ -370,7 +352,7 @@ contentRouter.post('/', ensureAuthenticated, contentController.create);
 *         required: false
 *         description: Type of module
 *       - in: body
-*         name: actingSemester
+*         name: semester
 *         schema:
 *           type: string
 *         required: false
@@ -410,51 +392,59 @@ contentRouter.post('/', ensureAuthenticated, contentController.create);
 *         schema:
 *           type: date
 *         required: false
-*         description: Date of content's creation
+*         description: Date of component's creation
 *       - in: body
 *         name: updatedAt
 *         schema:
 *           type: date
 *         required: false
-*         description: Date of content's last update
+*         description: Date of component's last update
 *     requestBody:
 *       required: true
 *       content:
 *         application/json:
 *           schema:
-*             $ref: '#/components/schemas/ContentUpsert'
+*             $ref: '#/components/schemas/ComponentUpsert'
 *     responses:
 *       200:
-*         description: The component content has been updated
+*         description: The component component has been updated
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Content'
+*               $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
 *       404:
-*         description: The content was not found
+*         description: The component was not found
+*       500:
+*         description: Internal Server Error
 */
-contentRouter.put('/:id', ensureAuthenticated, contentController.update);
+componentRouter.put('/:id', ensureAuthenticated, componentController.update);
 
 /**
  * @swagger
- * /api/contents/{id}:
+ * /api/components/{id}:
  *   delete:
- *     summary: Delete a component content by id
- *     tags: [Content]
+ *     summary: Delete a component by id
+ *     tags: [Component]
  *     parameters:
- *       - in: path
+ *       - in: params
  *         name: id
  *         schema:
  *           type: number
  *         required: true
- *         description: The content id
+ *         description: The component id
  * 
  *     responses:
  *       200:
- *         description: The content was deleted
+ *         description: The component was deleted
+ *       400:
+ *         description: Bad Request
  *       404:
- *         description: The content was not found
+ *         description: The component was not found
+ *       500:
+ *         description: Internal Server Error
  */
-contentRouter.delete('/:id', ensureAuthenticated, contentController.delete);
+componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 
-export { contentRouter };
+export { componentRouter };

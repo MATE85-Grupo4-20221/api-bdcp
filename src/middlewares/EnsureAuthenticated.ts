@@ -10,7 +10,6 @@ function ensureAuthenticated(request: Request, response: Response, next: NextFun
 
     if (!splitToken || splitToken.length < 2 || !authToken) {
         return response.status(401).json({
-            auth: false,
             message: 'No token provided.',
         });
     }
@@ -22,8 +21,7 @@ function ensureAuthenticated(request: Request, response: Response, next: NextFun
         return next();
     }
     catch (err) {
-        return response.status(401).json({ 
-            auth: false,
+        return response.status(401).json({
             message: 'Token expired.',
         });
     }

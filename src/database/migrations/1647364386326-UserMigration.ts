@@ -11,19 +11,23 @@ export class UserMigration1647364386326 implements MigrationInterface {
                         name: 'id',
                         type: 'varchar',
                         isPrimary: true,
+                        length: '36',
                     },
                     {
                         name: 'email',
                         type: 'varchar',
                         isUnique: true,
+                        length: '50',
                     },
                     {
                         name: 'password',
                         type: 'varchar',
+                        length: '255',
                     },
                     {
                         name: 'name',
                         type: 'varchar',
+                        length: '50',
                     },
                     {
                         name: 'created_at',
