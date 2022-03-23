@@ -38,13 +38,13 @@ const authController = new AuthController();
 *     summary: Return an auth token after user has been logged
 *     tags: [Auth]
 *     parameters:
-*       - in: path
+*       - in: body
 *         name: email
 *         schema:
 *           type: string
 *         required: true
 *         description: The user email
-*       - in: path
+*       - in: body
 *         name: password
 *         schema:
 *           type: string
@@ -52,13 +52,17 @@ const authController = new AuthController();
 *         description: The user password
 *     responses:
 *       201:
-*         description: Auth token was created and returned.
+*         description: Auth token was created and returned
 *         content:
 *           application/json:
 *             schema:
 *               $ref: '#/components/schemas/Auth'
 *       400:
-*         description: Error during authentication.
+*         description: Bad Request
+*       404:
+*         description: Error during the authentication
+*       500:
+*         description: Internal Server Error
 */
 authRouter.post('/login', authController.login);
 
@@ -69,7 +73,7 @@ authRouter.post('/login', authController.login);
 *     summary: Return an email with new password
 *     tags: [Auth]
 *     parameters:
-*       - in: path
+*       - in: body
 *         name: email
 *         schema:
 *           type: string
@@ -77,9 +81,13 @@ authRouter.post('/login', authController.login);
 *         description: The user email
 *     responses:
 *       200:
-*         description: Success.
+*         description: Success
 *       400:
-*         description: An error has been occurred.
+*         description: Bad Request
+*       404:
+*         description: User not found
+*       500:
+*         description: Internal Server Error
 */
 authRouter.post('/reset-password', authController.resetPassword);
 

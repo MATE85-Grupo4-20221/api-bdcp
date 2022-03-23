@@ -25,7 +25,7 @@ const userController = new UserController();
 *       properties:
 *         id:
 *           type: string
-*           description: The auto-generated id of the user
+*           description: The uuid of the user
 *         name:
 *           type: string
 *           description: The user name
@@ -38,6 +38,9 @@ const userController = new UserController();
 *         createdAt:
 *           type: date
 *           description: The date that user has been created
+*         updatedAt:
+*           type: date
+*           description: The date that user has been updated
 *       example:
 *         id: 50496915-d356-43a0-84a4-43f83bad2225
 *         name: Javus da Silva Pythonlino
@@ -50,68 +53,23 @@ const userController = new UserController();
 /**
 * @swagger
 * /api/users:
-*   get:
-*     summary: Returns the list of all the users
-*     tags: [User]
-*     responses:
-*       200:
-*         description: The list of the users
-*         content:
-*           application/json:
-*             schema:
-*               type: array
-*               items:
-*                 $ref: '#/components/schemas/User'
-*       400:
-*         description: No users found!
-*/
-userRouter.get('/', ensureAuthenticated, userController.getUsers);
-
-/**
-* @swagger
-* /api/users/{id}:
-*   get:
-*     summary: Return the user description by id
-*     tags: [User]
-*     parameters:
-*       - in: path
-*         name: id
-*         schema:
-*           type: string
-*         required: true
-*         description: The user id
-*     responses:
-*       200:
-*         description: The user description by id
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/User'
-*       400:
-*           description: User does not exists!
-*/
-userRouter.get('/:id', ensureAuthenticated, userController.getUserById);
-
-/**
-* @swagger
-* /api/users:
 *   post:
 *     summary: Create a user
 *     tags: [User]
 *     parameters:
-*       - in: path
+*       - in: body
 *         name: email
 *         schema:
 *           type: string
 *         required: true
 *         description: The user email
-*       - in: path
+*       - in: body
 *         name: password
 *         schema:
 *           type: string
 *         required: true
 *         description: The user password
-*       - in: path
+*       - in: body
 *         name: name
 *         schema:
 *           type: string
@@ -119,13 +77,15 @@ userRouter.get('/:id', ensureAuthenticated, userController.getUserById);
 *         description: The user name
 *     responses:
 *       201:
-*         description: The user has been created
+*         description: The user has been created.
 *         content:
 *           application/json:
 *             schema:
 *               $ref: '#/components/schemas/User'
 *       400:
-*         description: An error has been ocurred.
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
 */
 userRouter.post('/', ensureAuthenticated, userController.create);
 
@@ -142,13 +102,13 @@ userRouter.post('/', ensureAuthenticated, userController.create);
 *           type: string
 *         required: true
 *         description: The user id
-*       - in: path
+*       - in: body
 *         name: email
 *         schema:
 *           type: string
 *         required: true
 *         description: The user email
-*       - in: path
+*       - in: body
 *         name: password
 *         schema:
 *           type: string
@@ -156,36 +116,18 @@ userRouter.post('/', ensureAuthenticated, userController.create);
 *         description: The user password
 *     responses:
 *       200:
-*         description: The user has been updated
+*         description: The user has been updated.
 *         content:
 *           application/json:
 *             schema:
 *               $ref: '#/components/schemas/User'
+*       400:
+*         description: Bad Request
 *       404:
 *         description: The user was not found
+*       500:
+*         description: Internal Server Error
 */
-userRouter.put('/:id', ensureAuthenticated, userController.update);
-
-/**
- * @swagger
- * /api/users/{id}:
- *   delete:
- *     summary: Delete a user by id
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The user id
- * 
- *     responses:
- *       200:
- *         description: The user was deleted
- *       404:
- *         description: The user was not found
- */
-userRouter.delete('/:id', ensureAuthenticated, userController.delete);
+userRouter.put('/', ensureAuthenticated, userController.update);
 
 export { userRouter };

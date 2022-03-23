@@ -16,9 +16,7 @@ class UserService {
     async getUsers() {
         const users = await this.userRepository.find();
 
-        if (users.length === 0) {
-            throw new AppError(`Users not found.`, 404);
-        }
+        if (users.length === 0) return [];
 
         return users;
     }
@@ -28,9 +26,7 @@ class UserService {
             where: {id},
         });
 
-        if (!user) {
-            throw new AppError(`User not found.`, 404);
-        }
+        if (!user) return null;
         
         return user;
     }
