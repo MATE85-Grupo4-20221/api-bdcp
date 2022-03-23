@@ -73,7 +73,7 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '2000',
                     },
                     {
-                        name: 'metodology',
+                        name: 'methodology',
                         type: 'varchar',
                         isNullable: true,
                         length: '2000',

@@ -38,7 +38,7 @@ class Component {
         objective: string;
 
     @Column()
-        metolodogy: string;
+        methodology: string;
 
     @Column()
         bibliography: string;
