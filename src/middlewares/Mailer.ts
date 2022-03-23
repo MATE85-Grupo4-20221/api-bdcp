@@ -25,7 +25,7 @@ class MailerService{
             to,
             subject,
             text,
-            from: "BDCP <noreply@bdcp.com>"
+            from: 'BDCP <noreply@bdcp.com>'
         });
 
         console.log('Message sent: %s', message.messageId);

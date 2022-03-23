@@ -1,9 +1,9 @@
 import * as crypto from 'crypto';
-import { getCustomRepository, Repository } from "typeorm";
+import { getCustomRepository, Repository } from 'typeorm';
 
-import { User } from "../entities/User";
-import { UserRepository } from "../repositories/UserRepository";
-import { AppError } from "../errors/AppError";
+import { User } from '../entities/User';
+import { UserRepository } from '../repositories/UserRepository';
+import { AppError } from '../errors/AppError';
 
 class UserService {
 
@@ -12,12 +12,12 @@ class UserService {
     constructor() {
         this.userRepository = getCustomRepository(UserRepository);
     }
-    
+
     async getUsers() {
         const users = await this.userRepository.find();
 
         if (users.length === 0) {
-            throw new AppError(`Users not found.`, 404);
+            throw new AppError('Users not found.', 404);
         }
 
         return users;
@@ -29,9 +29,9 @@ class UserService {
         });
 
         if (!user) {
-            throw new AppError(`User not found.`, 404);
+            throw new AppError('User not found.', 404);
         }
-        
+
         return user;
     }
 
@@ -41,21 +41,21 @@ class UserService {
         });
 
         if (userExists) {
-            throw new AppError(`This email is already using.`, 400);
+            throw new AppError('This email is already using.', 400);
         }
 
         try {
             const user = this.userRepository.create({
                 name,
                 email,
-                password: crypto.createHmac("sha256", password).digest("hex"),
+                password: crypto.createHmac('sha256', password).digest('hex'),
             });
-            
+
             return await this.userRepository.save(user);
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
-        }        
+            throw new AppError('An error has been occurred.', 400);
+        }
     }
 
     async update(id: string, email: string, password: string){
@@ -64,20 +64,20 @@ class UserService {
         });
 
         if(!userExists){
-            throw new AppError(`User not found.`, 404);
+            throw new AppError('User not found.', 404);
         }
 
         try {
-            const passwordHashed = crypto.createHmac("sha256", password).digest("hex");
+            const passwordHashed = crypto.createHmac('sha256', password).digest('hex');
 
-            await this.userRepository.createQueryBuilder().update(User).set({ email, password: passwordHashed }).where("id = :id", {id}).execute();
+            await this.userRepository.createQueryBuilder().update(User).set({ email, password: passwordHashed }).where('id = :id', {id}).execute();
 
             return await this.userRepository.findOne({
                 where: {id}
             });
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
+            throw new AppError('An error has been occurred.', 400);
         }
     }
 
@@ -87,12 +87,12 @@ class UserService {
         });
 
         if(!userExists){
-            throw new AppError(`User not found.`, 404);
+            throw new AppError('User not found.', 404);
         }
 
-        await this.userRepository.createQueryBuilder().delete().from(User).where("id = :id", {id}).execute();
+        await this.userRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute();
     }
 
 }
 
-export { UserService }
+export { UserService };

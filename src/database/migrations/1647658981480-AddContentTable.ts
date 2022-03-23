@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class AddContentTable1647658981480 implements MigrationInterface {
-    name = 'AddContentTable1647658981480'
+    name = 'AddContentTable1647658981480';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -37,7 +37,7 @@ export class AddContentTable1647658981480 implements MigrationInterface {
             `ALTER TABLE \`content\` 
             DROP FOREIGN KEY \`FK_23b0aa9f011580a4737f3a96d6d\``
         );
-        await queryRunner.query(`DROP TABLE \`content\``);
+        await queryRunner.query('DROP TABLE `content`');
     }
 
 }

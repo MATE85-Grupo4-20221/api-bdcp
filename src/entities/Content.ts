@@ -1,7 +1,7 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import { User } from "./User";
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import { User } from './User';
 
-@Entity("content")
+@Entity('content')
 export class Content {
 
     @PrimaryGeneratedColumn()
@@ -11,86 +11,86 @@ export class Content {
         length: 45,
         nullable: true
     })
-    code: string;
+        code: string;
     
     @Column({
         length: 45,
         nullable: true
     })
-    name: string;
+        name: string;
     
     @Column({ nullable: true })
-    department: number;
+        department: number;
     
     @Column({
-        type: "int",
-        name: "teaching_hours",
+        type: 'int',
+        name: 'teaching_hours',
         nullable: true
     })
-    teachingHours: number;
+        teachingHours: number;
     
     @Column({
-        type: "int",
-        name: "student_hours",
+        type: 'int',
+        name: 'student_hours',
         nullable: true,
     })
-    studentHours: number;
+        studentHours: number;
     
     @Column({
         length: 45,
         nullable: true
     })
-    module: string;
+        module: string;
     
     @Column({
-        name: "semester",
+        name: 'semester',
         nullable: true
     })
-    actingSemester: string;
+        actingSemester: string;
 
     @Column({
         length: 2000,
         nullable: true
     })
-    syllabus: string;
+        syllabus: string;
 
     @Column({
         length: 2000,
         nullable: true
     })
-    program: string;
+        program: string;
 
     @Column({
         length: 2000,
         nullable: true
     })
-    objective: string;
+        objective: string;
 
     @Column({
         length: 2000,
         nullable: true
     })
-    metolodogy: string;
+        metolodogy: string;
 
     @Column({
         length: 2000,
         nullable: true
     })
-    bibliography: string;  
+        bibliography: string;  
 
     @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+        createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+        updatedAt: Date;
 
-    @Column({name: "user_id"})
-    userId: string;
+    @Column({name: 'user_id'})
+        userId: string;
 
     @ManyToOne(
         () => User, (user) => user.contents, 
         {nullable: false}
     )
-    @JoinColumn({ name: "user_id" })
-    user: User;
+    @JoinColumn({ name: 'user_id' })
+        user: User;
 }

@@ -1,9 +1,8 @@
-import * as crypto from 'crypto';
-import { getCustomRepository, Repository } from "typeorm";
+import { getCustomRepository, Repository } from 'typeorm';
 
-import { Content } from "../entities/Content";
-import { ContentRepository } from "../repositories/ContentRepository";
-import { AppError } from "../errors/AppError";
+import { Content } from '../entities/Content';
+import { ContentRepository } from '../repositories/ContentRepository';
+import { AppError } from '../errors/AppError';
 
 export class ContentService {
 
@@ -12,7 +11,7 @@ export class ContentService {
     constructor() {
         this.contentRepository = getCustomRepository(ContentRepository);
     }
-    
+
     async getContents() {
         const contents = await this.contentRepository.find();
 
@@ -27,7 +26,7 @@ export class ContentService {
         });
 
         if (!content) return null;
-        
+
         return content;
     }
 
@@ -38,12 +37,12 @@ export class ContentService {
         try {
             const contentDto = {...requestDto, userId: userId};
             const content = this.contentRepository.create(contentDto);
-            
+
             return await this.contentRepository.save(content);
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
-        }        
+            throw new AppError('An error has been occurred.', 400);
+        }
     }
 
     async update(
@@ -55,13 +54,13 @@ export class ContentService {
         });
 
         if(!contentExists){
-            throw new AppError(`Content not found.`, 404);
+            throw new AppError('Content not found.', 404);
         }
 
         try {
             await this.contentRepository.createQueryBuilder().update(Content)
                 .set( contentDto )
-                .where("id = :id", {id})
+                .where('id = :id', {id})
                 .execute();
 
             return await this.contentRepository.findOne({
@@ -69,7 +68,7 @@ export class ContentService {
             });
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
+            throw new AppError('An error has been occurred.', 400);
         }
     }
 
@@ -79,13 +78,13 @@ export class ContentService {
         });
 
         if(!contentExists){
-            throw new AppError(`Content not found.`, 404);
+            throw new AppError('Content not found.', 404);
         }
 
         await this.contentRepository.createQueryBuilder()
             .delete()
             .from(Content)
-            .where("id = :id", {id})
+            .where('id = :id', {id})
             .execute();
     }
 

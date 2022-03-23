@@ -1,30 +1,30 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { Content } from "./Content";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { Content } from './Content';
 
-@Entity("user")
+@Entity('user')
 class User {
 
     @PrimaryColumn()
     readonly id: string;
 
     @Column()
-    name: string;
+        name: string;
 
     @Column()
-    email: string;
+        email: string;
 
     @Column()
-    password: string;
+        password: string;
     
     @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+        createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+        updatedAt: Date;
 
     @OneToMany(() => Content, (content) => content.user)
-    contents: Content[]
+        contents: Content[];
 
     constructor(){
         if(!this.id){
@@ -34,4 +34,4 @@ class User {
     
 }
 
-export { User }
+export { User };
