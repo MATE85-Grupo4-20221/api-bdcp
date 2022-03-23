@@ -4,5 +4,4 @@
 /coverage
 /dist
 
-#files
-package-lock.json
+.env
