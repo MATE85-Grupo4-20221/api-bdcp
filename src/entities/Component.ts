@@ -1,65 +1,65 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn} from "typeorm";
-import { v4 as uuid } from "uuid";
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn} from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
-import { User } from "./User";
+import { User } from './User';
 
-@Entity("component")
+@Entity('component')
 class Component {
 
     @PrimaryColumn()
     readonly id: string;
 
     @Column()
-    code: string;
+        code: string;
     
     @Column()
-    name: string;
+        name: string;
     
     @Column()
-    department: number;
+        department: number;
     
-    @Column({name: "teaching_workload"})
-    teachingWorkload: number;
+    @Column({name: 'teaching_workload'})
+        teachingWorkload: number;
     
-    @Column({name: "student_workload"})
-    studentWorkload: number;
+    @Column({name: 'student_workload'})
+        studentWorkload: number;
 
     @Column()
-    kind: string;
-    
-    @Column()
-    module: string;
+        kind: string;
     
     @Column()
-    semester: string;
+        module: string;
+    
+    @Column()
+        semester: string;
 
     @Column()
-    syllabus: string;
+        syllabus: string;
 
     @Column()
-    program: string;
+        program: string;
 
     @Column()
-    objective: string;
+        objective: string;
 
     @Column()
-    metolodogy: string;
+        metolodogy: string;
 
     @Column()
-    bibliography: string;  
+        bibliography: string;  
 
     @CreateDateColumn({name: 'created_at'})
-    createdAt: Date;
+        createdAt: Date;
 
     @UpdateDateColumn({name: 'updated_at'})
-    updatedAt: Date;
+        updatedAt: Date;
 
-    @Column({name: "user_id"})
-    userId: string;
+    @Column({name: 'user_id'})
+        userId: string;
 
     @ManyToOne(() => User, (user) => user.components)
-    @JoinColumn({ name: "user_id" })
-    user: User;
+    @JoinColumn({ name: 'user_id' })
+        user: User;
 
     constructor(){
         if(!this.id){
@@ -69,4 +69,4 @@ class Component {
 
 }
 
-export { Component }
+export { Component };

@@ -10,4 +10,4 @@ router.use('/api/auth', authRouter);
 router.use('/api/users', userRouter);
 router.use('/api/components', componentRouter);
 
-export { router }
+export { router };

@@ -1,5 +1,5 @@
-import "reflect-metadata";
-import "express-async-errors";
+import 'reflect-metadata';
+import 'express-async-errors';
 import cors from 'cors';
 import express, { Request, Response, NextFunction }  from 'express';
 import swaggerUi from 'swagger-ui-express';
@@ -7,11 +7,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 
 import { router } from './routes';
 import { AppError } from './errors/AppError';
+import { SwaggerOptions } from './configs/swagger.config';
 
-import { createConnection } from "typeorm";
-import { SwaggerOptions } from "./configs/swagger.config";
-
-const connection = createConnection();
 const app = express();
 
 app.use(cors());
@@ -23,11 +20,11 @@ app.use((err: Error, request: Request, response: Response, _next: NextFunction) 
         return response.status(err.statusCode).json({message: err.message});
     }
     return response.status(500).json({
-        status: "Error", 
+        status: 'Error',
         message:`Internal Server Error ${err.message}`
     });
 });
-app.get('*', function(req, res){
+app.get('*', (req, res) => {
     res.status(404).send('What??? error 404 - page not found bro');
 });
 

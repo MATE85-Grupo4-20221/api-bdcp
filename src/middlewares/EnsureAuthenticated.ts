@@ -1,6 +1,6 @@
-import * as dotenv from "dotenv";
-import { Request, Response, NextFunction } from "express";
-import { JwtPayload, verify } from "jsonwebtoken";
+import * as dotenv from 'dotenv';
+import { Request, Response, NextFunction } from 'express';
+import { JwtPayload, verify } from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -10,7 +10,7 @@ function ensureAuthenticated(request: Request, response: Response, next: NextFun
 
     if (!splitToken || splitToken.length < 2 || !authToken) {
         return response.status(401).json({
-            message: "No token provided.",
+            message: 'No token provided.',
         });
     }
 
@@ -21,11 +21,11 @@ function ensureAuthenticated(request: Request, response: Response, next: NextFun
         return next();
     }
     catch (err) {
-        return response.status(401).json({ 
-            message: "Token expired.",
+        return response.status(401).json({
+            message: 'Token expired.',
         });
     }
 
 }
 
-export { ensureAuthenticated }
+export { ensureAuthenticated };

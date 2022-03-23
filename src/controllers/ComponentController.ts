@@ -57,4 +57,4 @@ class ComponentController {
 
 }
 
-export { ComponentController }
+export { ComponentController };

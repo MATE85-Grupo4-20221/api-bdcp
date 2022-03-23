@@ -1,8 +1,8 @@
-import { getCustomRepository, Like, Repository } from "typeorm";
+import { getCustomRepository, Like, Repository } from 'typeorm';
 
-import { Component } from "../entities/Component";
-import { ComponentRepository } from "../repositories/ComponentRepository";
-import { AppError } from "../errors/AppError";
+import { Component } from '../entities/Component';
+import { ComponentRepository } from '../repositories/ComponentRepository';
+import { AppError } from '../errors/AppError';
 
 export class ComponentService {
 
@@ -54,7 +54,7 @@ export class ComponentService {
             return await this.componentRepository.save(component);
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
+            throw new AppError('An error has been occurred.', 400);
         }        
     }
 
@@ -67,13 +67,13 @@ export class ComponentService {
         });
 
         if(!componentExists){
-            throw new AppError(`Component not found.`, 404);
+            throw new AppError('Component not found.', 404);
         }
 
         try {
             await this.componentRepository.createQueryBuilder().update(Component)
                 .set(componentDto)
-                .where("id = :id", {id})
+                .where('id = :id', {id})
                 .execute();
 
             return await this.componentRepository.findOne({
@@ -81,7 +81,7 @@ export class ComponentService {
             });
         }
         catch (err) {
-            throw new AppError(`An error has been occurred.`, 400);
+            throw new AppError('An error has been occurred.', 400);
         }
     }
 
@@ -91,13 +91,13 @@ export class ComponentService {
         });
 
         if(!componentExists){
-            throw new AppError(`Component not found.`, 404);
+            throw new AppError('Component not found.', 404);
         }
 
         await this.componentRepository.createQueryBuilder()
             .delete()
             .from(Component)
-            .where("id = :id", {id})
+            .where('id = :id', {id})
             .execute();
     }
 

@@ -22,4 +22,4 @@ class AuthController {
     }
 }
 
-export { AuthController }
+export { AuthController };
