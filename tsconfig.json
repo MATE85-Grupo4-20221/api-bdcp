@@ -1,15 +1,16 @@
 {
     "compilerOptions": {
-        "target": "es2017",
+        "target": "esnext",
         "module": "commonjs",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "strictPropertyInitialization": false,
         "skipLibCheck": true,
-        "typeRoots": ["./src/@types", "node_modules/@types"],
-
-        //linhas requeridas pelo TypeORM
+        "sourceMap": true,
+        "outDir": "dist",
+        "strictNullChecks": true,
+        // linhas requeridas pelo TypeORM
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
     }
