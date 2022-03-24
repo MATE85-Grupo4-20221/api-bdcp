@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv';
 import * as crypto from 'crypto';
 import { sign } from 'jsonwebtoken';
 import { Repository, getCustomRepository } from 'typeorm';
@@ -7,8 +6,6 @@ import { User } from '../entities/User';
 import { UserRepository } from '../repositories/UserRepository';
 import { AppError } from './../errors/AppError';
 import Mailer from '../middlewares/Mailer';
-
-dotenv.config();
 
 class AuthService {
     private userRepository : Repository<User>;

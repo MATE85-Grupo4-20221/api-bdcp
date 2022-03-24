@@ -15,8 +15,7 @@ module.exports = {
         entitiesDir: 'src/entities',
         migrationsDir: 'src/database/migrations',
     },
-    synchronize: false,
-    logging: (process.env.NODE_ENV === 'dev') ? true : false,
-    dropSchema: (process.env.NODE_ENV === 'test') ? true : false,
-    migrationsRun: (process.env.NODE_ENV === 'dev') ? true : false,
+    logging: process.env.NODE_ENV === 'dev',
+    dropSchema: process.env.NODE_ENV === 'test',
+    migrationsRun: true,
 };
