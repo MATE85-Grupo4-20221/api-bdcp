@@ -94,7 +94,7 @@ export class WorkloadMigration1648044994155 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('component_workload');
+        await queryRunner.dropTable('workload');
     }
 
 }

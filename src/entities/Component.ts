@@ -1,5 +1,6 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, UpdateDateColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn} from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Log } from './Log';
 
 import { User } from './User';
 import { Workload } from './Workload';
@@ -65,6 +66,9 @@ class Component {
     @OneToOne(() => Workload, (workload) => workload.component)
     @JoinColumn({name: 'workload_id'})
         workload: Workload;
+
+    @OneToMany(() => Log, (logs) => logs.component)
+        logs: Log[];
 
     constructor(){
         if(!this.id){
