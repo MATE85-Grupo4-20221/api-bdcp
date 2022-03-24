@@ -14,9 +14,20 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '36',
                     },
                     {
-                        name: 'user_id',
+                        name: 'created_by',
                         type: 'varchar',
                         length: '36',
+                    },
+                    {
+                        name: 'workload_id',
+                        type: 'varchar',
+                        length: '36',
+                    },
+                    {
+                        name: 'status',
+                        type: 'varchar',
+                        isNullable: true,
+                        length: '50',
                     },
                     {
                         name: 'code',
@@ -28,13 +39,13 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         name: 'name',
                         type: 'varchar',
                         isNullable: true,
-                        length: '50',
+                        length: '100',
                     },
                     {
                         name: 'department',
                         type: 'varchar',
                         isNullable: true,
-                        length: '50',
+                        length: '100',
                     },
                     {
                         name: 'type',
@@ -49,19 +60,19 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '200',
                     },
                     {
-                        name: 'prerequeriments',
-                        type: 'varchar',
-                        isNullable: true,
-                        length: '200',
-                    },
-                    {
                         name: 'semester',
                         type: 'varchar',
                         isNullable: true,
                         length: '50',
                     },
                     {
-                        name: 'syllabus',
+                        name: 'prerequeriments',
+                        type: 'varchar',
+                        isNullable: true,
+                        length: '200',
+                    },
+                    {
+                        name: 'methodology',
                         type: 'varchar',
                         isNullable: true,
                         length: '2000',
@@ -73,7 +84,7 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '2000',
                     },
                     {
-                        name: 'methodology',
+                        name: 'syllabus',
                         type: 'varchar',
                         isNullable: true,
                         length: '2000',
@@ -100,7 +111,15 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         name: 'fk_user',
                         referencedTableName: 'user',
                         referencedColumnNames: ['id'],
-                        columnNames: ['user_id'],
+                        columnNames: ['created_by'],
+                        onDelete: 'CASCADE',
+                        onUpdate: 'CASCADE',
+                    },
+                    {
+                        name: 'fk_workload',
+                        referencedTableName: 'workload',
+                        referencedColumnNames: ['id'],
+                        columnNames: ['workload_id'],
                         onDelete: 'CASCADE',
                         onUpdate: 'CASCADE',
                     }

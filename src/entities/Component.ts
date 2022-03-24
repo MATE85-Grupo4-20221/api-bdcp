@@ -2,13 +2,22 @@ import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, Prima
 import { v4 as uuid } from 'uuid';
 
 import { User } from './User';
-import { ComponentWorkload } from './ComponentWorkload';
+import { Workload } from './Workload';
 
 @Entity('component')
 class Component {
 
     @PrimaryColumn()
     readonly id: string;
+
+    @Column({name: 'user_id'})
+        userId: string;
+
+    @Column({name: 'workload_id'})
+        workloadId: string;
+
+    @Column()
+        status: string;
 
     @Column()
         code: string;
@@ -23,22 +32,22 @@ class Component {
         type: string;
 
     @Column()
-        prerequeriments: string;
+        program: string;
 
     @Column()
         semester: string;
 
     @Column()
-        syllabus: string;
+        prerequeriments: string;
 
     @Column()
-        program: string;
+        methodology: string;
 
     @Column()
         objective: string;
 
     @Column()
-        methodology: string;
+        syllabus: string;
 
     @Column()
         bibliography: string;
@@ -49,15 +58,13 @@ class Component {
     @UpdateDateColumn({name: 'updated_at'})
         updatedAt: Date;
 
-    @Column({name: 'user_id'})
-        userId: string;
-
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'user_id' })
         user: User;
 
-    @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
-        workload: ComponentWorkload;
+    @OneToOne(() => Workload, (workload) => workload.component)
+    @JoinColumn({name: 'workload_id'})
+        workload: Workload;
 
     constructor(){
         if(!this.id){
