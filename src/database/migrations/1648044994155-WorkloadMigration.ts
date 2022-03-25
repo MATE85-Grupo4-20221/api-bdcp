@@ -5,7 +5,7 @@ export class WorkloadMigration1648044994155 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'workload',
+                name: 'component_workloads',
                 columns: [
                     {
                         name: 'id',
@@ -94,7 +94,7 @@ export class WorkloadMigration1648044994155 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('workload');
+        await queryRunner.dropTable('component_workloads');
     }
 
 }

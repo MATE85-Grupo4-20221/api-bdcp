@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Component } from './Component';
 
-@Entity('user')
+@Entity('users')
 class User {
 
     @PrimaryColumn()

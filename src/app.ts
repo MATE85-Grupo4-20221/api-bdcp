@@ -8,9 +8,7 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import { router } from './routes';
 import { AppError } from './errors/AppError';
 import { SwaggerOptions } from './configs/swagger.config';
-import { createConnection } from 'typeorm';
 
-createConnection();
 const app = express();
 
 app.use(cors());

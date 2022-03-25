@@ -5,7 +5,7 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'component',
+                name: 'components',
                 columns: [
                     {
                         name: 'id',

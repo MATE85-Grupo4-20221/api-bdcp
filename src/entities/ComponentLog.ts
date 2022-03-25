@@ -1,13 +1,12 @@
-import { Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Column, Entity, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Component } from './Component';
 import { User } from './User';
 
-@Entity('log')
-class Log {
+@Entity('component_logs')
+class ComponentLog {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
     @Column({name: 'component_id'})
@@ -37,12 +36,6 @@ class Log {
     @ManyToOne(() => User)
         user: User;
 
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
-    }
-
 }
 
-export { Log };
+export { ComponentLog };

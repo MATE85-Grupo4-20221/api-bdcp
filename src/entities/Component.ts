@@ -1,14 +1,13 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn} from 'typeorm';
-import { v4 as uuid } from 'uuid';
-import { Log } from './Log';
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 
 import { User } from './User';
-import { Workload } from './Workload';
+import { ComponentWorkload } from './ComponentWorkload';
+import { ComponentLog } from './ComponentLog';
 
-@Entity('component')
+@Entity('components')
 class Component {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
     @Column({name: 'user_id'})
@@ -63,18 +62,12 @@ class Component {
     @JoinColumn({ name: 'user_id' })
         user: User;
 
-    @OneToOne(() => Workload, (workload) => workload.component)
+    @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({name: 'workload_id'})
-        workload: Workload;
+        workload: ComponentWorkload;
 
-    @OneToMany(() => Log, (logs) => logs.component)
-        logs: Log[];
-
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
-    }
+    @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
+        logs: ComponentLog[];
 
 }
 

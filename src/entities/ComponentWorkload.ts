@@ -1,12 +1,11 @@
-import {Column, Entity, OneToOne, PrimaryColumn} from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Component } from './Component';
 
-@Entity('workload')
-class Workload {
+@Entity('component_workloads')
+class ComponentWorkload {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
     @Column({name: 'teacher_theory'})
@@ -57,12 +56,6 @@ class Workload {
     @OneToOne(() => Component, (component) => component.workload)
         component: Component;
 
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
-    }
-
 }
 
-export { Workload };
+export { ComponentWorkload };
