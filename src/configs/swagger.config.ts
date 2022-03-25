@@ -8,7 +8,7 @@ const SwaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:3333',
+                url: `http://localhost:${process.env.PORT}`,
             },
         ],
     },
