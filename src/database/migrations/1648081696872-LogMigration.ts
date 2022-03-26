@@ -54,16 +54,16 @@ export class LogMigration1648081696872 implements MigrationInterface {
                 ],
                 foreignKeys:[
                     {
-                        name: 'fk_component',
-                        referencedTableName: 'component',
+                        name: 'FK_140407b98b950fb9e9618ffaee0',
+                        referencedTableName: 'components',
                         referencedColumnNames: ['id'],
                         columnNames: ['component_id'],
                         onDelete: 'CASCADE',
                         onUpdate: 'CASCADE',
                     },
                     {
-                        name: 'fk_user',
-                        referencedTableName: 'user',
+                        name: 'FK_7794ebe3a888bccd448dffad054',
+                        referencedTableName: 'users',
                         referencedColumnNames: ['id'],
                         columnNames: ['updated_by'],
                         onDelete: 'CASCADE',

@@ -19,11 +19,6 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                         length: '36',
                     },
                     {
-                        name: 'workload_id',
-                        type: 'varchar',
-                        length: '36',
-                    },
-                    {
                         name: 'status',
                         type: 'varchar',
                         isNullable: true,
@@ -109,27 +104,19 @@ export class ComponentMigration1647991015478 implements MigrationInterface {
                 foreignKeys:[
                     {
                         name: 'fk_user',
-                        referencedTableName: 'user',
+                        referencedTableName: 'users',
                         referencedColumnNames: ['id'],
                         columnNames: ['created_by'],
                         onDelete: 'CASCADE',
                         onUpdate: 'CASCADE',
                     },
-                    {
-                        name: 'fk_workload',
-                        referencedTableName: 'workload',
-                        referencedColumnNames: ['id'],
-                        columnNames: ['workload_id'],
-                        onDelete: 'CASCADE',
-                        onUpdate: 'CASCADE',
-                    }
                 ]
             })
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('component');
+        await queryRunner.dropTable('components');
     }
 
 }

@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner, Table} from 'typeorm';
+import {MigrationInterface, QueryRunner, Table, TableColumn, TableForeignKey} from 'typeorm';
 
 export class WorkloadMigration1648044994155 implements MigrationInterface {
 
@@ -91,10 +91,35 @@ export class WorkloadMigration1648044994155 implements MigrationInterface {
                 ]
             })
         );
+
+        await queryRunner.addColumn(
+            'components', 
+            new TableColumn({
+                name: 'workload_id',
+                type: 'varchar',
+                length: '36',
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            'components',
+            new TableForeignKey({
+                name: 'fk_workload',
+                referencedTableName: 'component_workloads',
+                referencedColumnNames: ['id'],
+                columnNames: ['workload_id'],
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
+            })
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable('component_workloads');
+
+        await queryRunner.dropColumn('components',  'workload_id');
+
+        await queryRunner.dropForeignKey('components', 'fk_workload');
     }
 
 }

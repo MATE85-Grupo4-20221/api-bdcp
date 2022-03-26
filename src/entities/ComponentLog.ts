@@ -1,4 +1,4 @@
-import { Column, Entity, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 import { Component } from './Component';
 import { User } from './User';
@@ -16,24 +16,26 @@ class ComponentLog {
         updatedBy: string;
 
     @Column({name: 'minute_number'})
-        minuteNumber: string;
+        minuteNumber?: string;
 
     @Column({name: 'minute_date'})
-        minuteDate: Date;
+        minuteDate?: Date;
 
     @Column()
-        description: string;
+        description?: string;
 
     @Column()
-        type: string;
+        type?: string;
 
     @CreateDateColumn({name: 'created_at'})
         createdAt: Date;
 
     @ManyToOne(() => Component, (component) => component.logs)
+    @JoinColumn({ name: 'component_id' })
         component: Component;
 
     @ManyToOne(() => User)
+    @JoinColumn({ name: 'updated_by' })
         user: User;
 
 }
