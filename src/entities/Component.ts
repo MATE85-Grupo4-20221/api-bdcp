@@ -3,6 +3,7 @@ import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneT
 import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
+import { ComponentLogType } from '../interfaces/ComponentLogType';
 
 @Entity('components')
 class Component {
@@ -10,7 +11,7 @@ class Component {
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
-    @Column({name: 'user_id'})
+    @Column({name: 'created_by'})
         userId: string;
 
     @Column({name: 'workload_id'})
@@ -59,7 +60,7 @@ class Component {
         updatedAt: Date;
 
     @ManyToOne(() => User, (user) => user.components)
-    @JoinColumn({ name: 'user_id' })
+    @JoinColumn({ name: 'created_by' })
         user: User;
 
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
@@ -68,6 +69,24 @@ class Component {
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];
+
+    generateLog(
+        userId: string,
+        type: ComponentLogType,
+        description?: string,
+        minuteNumber?: string,
+        minuteDate?: Date
+    ): ComponentLog {
+        const log = new ComponentLog();
+        log.componentId = this.id;
+        log.updatedBy = userId;
+        log.type = type;
+        log.minuteNumber = minuteNumber;
+        log.minuteDate = minuteDate;
+        log.description = description;
+
+        return log;
+    }
 
 }
 

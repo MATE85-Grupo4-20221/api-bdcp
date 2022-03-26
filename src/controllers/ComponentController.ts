@@ -38,10 +38,11 @@ class ComponentController {
     }
 
     async update(request: Request, response: Response) {
+        const authenticatedUserId = request.headers.authenticatedUserId as string;
         const {id} = request.params;
 
         const componentService = new ComponentService();
-        const content = await componentService.update(id, request.body);
+        const content = await componentService.update(id, request.body, authenticatedUserId);
             
         return response.status(200).json(content);
     }
