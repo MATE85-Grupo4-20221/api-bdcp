@@ -42,6 +42,6 @@ const statusRouter = Router();
 *       500:
 *         description: Internal Server Error
 */
-statusRouter.get('/status', (_req, res) => res.send({ ok: true }));
+statusRouter.get('', (_req, res) => res.send({ ok: true }));
 
 export { statusRouter };
