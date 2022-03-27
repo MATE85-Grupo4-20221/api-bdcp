@@ -20,7 +20,7 @@ class UserController {
     }
 
     async create(request: Request, response: Response) {
-        const {name, email, password} = request.body;
+        const { name, email, password } = request.body;
 
         const userService = new UserService();
         const user = await userService.create(name, email, password);
@@ -29,8 +29,8 @@ class UserController {
     }
 
     async update(request: Request, response: Response) {
-        const {id} = request.params;
-        const {email, password} = request.body;
+        const { id } = request.params;
+        const { email, password } = request.body;
 
         const userService = new UserService();
         const user = await userService.update(id, email, password);
@@ -39,12 +39,12 @@ class UserController {
     }
 
     async delete(request: Request, response: Response) {
-        const {id} = request.params;
+        const { id } = request.params;
 
         const userService = new UserService();
         await userService.delete(id);
 
-        return response.status(200).json({message: 'User has been deleted!'});
+        return response.status(200).json({ message: 'User has been deleted!' });
     }
 
 }

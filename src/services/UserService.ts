@@ -23,7 +23,7 @@ class UserService {
 
     async getUserByID(id: string){
         const user = await this.userRepository.findOne({
-            where: {id},
+            where: { id },
         });
 
         if (!user) return null;
@@ -33,7 +33,7 @@ class UserService {
 
     async create(name: string, email: string, password: string){
         const userExists = await this.userRepository.findOne({
-            where: {email},
+            where: { email },
         });
 
         if (userExists) {
@@ -56,7 +56,7 @@ class UserService {
 
     async update(id: string, email: string, password: string){
         const userExists = await this.userRepository.findOne({
-            where: {id}
+            where: { id }
         });
 
         if(!userExists){
@@ -66,10 +66,10 @@ class UserService {
         try {
             const passwordHashed = crypto.createHmac('sha256', password).digest('hex');
 
-            await this.userRepository.createQueryBuilder().update(User).set({ email, password: passwordHashed }).where('id = :id', {id}).execute();
+            await this.userRepository.createQueryBuilder().update(User).set({ email, password: passwordHashed }).where('id = :id', { id }).execute();
 
             return await this.userRepository.findOne({
-                where: {id}
+                where: { id }
             });
         }
         catch (err) {
@@ -79,14 +79,14 @@ class UserService {
 
     async delete(id: string){
         const userExists = await this.userRepository.findOne({
-            where: {id}
+            where: { id }
         });
 
         if(!userExists){
             throw new AppError('User not found.', 404);
         }
 
-        await this.userRepository.createQueryBuilder().delete().from(User).where('id = :id', {id}).execute();
+        await this.userRepository.createQueryBuilder().delete().from(User).where('id = :id', { id }).execute();
     }
 
 }
