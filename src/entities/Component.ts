@@ -1,4 +1,4 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { User } from './User';
@@ -18,10 +18,10 @@ class Component {
     @Column()
         department: number;
     
-    @Column({name: 'teaching_workload'})
+    @Column({ name: 'teaching_workload' })
         teachingWorkload: number;
     
-    @Column({name: 'student_workload'})
+    @Column({ name: 'student_workload' })
         studentWorkload: number;
 
     @Column()
@@ -48,13 +48,13 @@ class Component {
     @Column()
         bibliography: string;  
 
-    @CreateDateColumn({name: 'created_at'})
+    @CreateDateColumn({ name: 'created_at' })
         createdAt: Date;
 
-    @UpdateDateColumn({name: 'updated_at'})
+    @UpdateDateColumn({ name: 'updated_at' })
         updatedAt: Date;
 
-    @Column({name: 'user_id'})
+    @Column({ name: 'user_id' })
         userId: string;
 
     @ManyToOne(() => User, (user) => user.components)
