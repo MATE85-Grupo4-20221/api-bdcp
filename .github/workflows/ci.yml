@@ -24,14 +24,13 @@ jobs:
         shell: bash
         run: |
           env=${{ github.ref_name }}
+          echo $env
+
           if [[ $env = "main" ]]
           then
             echo "api-bdcp"
-          elif [[ $env = "dev" ]]
-          then
-            echo "dev-api-bdcp"
           else
-            echo "branch name is: $env"
+            echo "dev-api-bdcp"
           fi
           echo "##[set-output name=env;]$(echo $env)"
         id: app_name
