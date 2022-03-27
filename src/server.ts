@@ -2,10 +2,11 @@ import { createConnection, getConnectionOptions } from 'typeorm';
 import { app } from './app';
 
 const PORT = process.env.PORT || 3333;
+const env = process.env.NODE_ENV || 'local';
 
 getConnectionOptions()
     .then(async options => {
-        const extra = process.env.NODE_ENV === 'production' ? { ssl: { rejectUnauthorized: false } } : undefined;
+        const extra = env !== 'local' ? { ssl: { rejectUnauthorized: false } } : undefined;
         return createConnection({ ...options, extra });
     })
     .then(connection => {
