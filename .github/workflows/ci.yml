@@ -35,6 +35,10 @@ jobs:
           fi
           echo "##[set-output name=env;]$(echo $env)"
         id: app_name
+      - name: test env
+        run: |
+            echo ${{ github.ref_name }}
+            echo ${{ steps.app_name.outputs.env }}
       - uses: actions/checkout@v2
       - name: Login to Heroku Container Registry
         env:
