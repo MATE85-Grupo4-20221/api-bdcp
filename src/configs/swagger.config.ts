@@ -16,7 +16,7 @@ const SwaggerOptions = {
             },
         ],
     },
-    apis: ['./src/routers/*.ts']
+    apis: ['./src/routers/*.{js,ts}']
 };
 
 export { SwaggerOptions };
