@@ -20,10 +20,10 @@ jobs:
     if: ${{ github.ref_name == 'main' || github.ref_name == 'dev' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Map branch to ELB Environment
+      - name: Map branch to Heroku
         shell: bash
         run: |
-          env=$( github.ref_name })
+          env=$({ github.ref_name })
           if [[ $env = "main" ]]
           then
             echo "api-bdcp"
