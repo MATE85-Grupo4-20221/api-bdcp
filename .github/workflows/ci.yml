@@ -23,7 +23,7 @@ jobs:
       - name: Map branch to Heroku
         shell: bash
         run: |
-          env=$({ github.ref_name })
+          env=${{ github.ref_name }}
           if [[ $env = "main" ]]
           then
             echo "api-bdcp"
