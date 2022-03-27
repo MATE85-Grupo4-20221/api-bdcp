@@ -27,7 +27,7 @@ jobs:
           if [[ $env = "main" ]]
           then
             echo "api-bdcp"
-          elif [[ $env = "develop" ]]
+          elif [[ $env = "dev" ]]
           then
             echo "dev-api-bdcp"
           else
