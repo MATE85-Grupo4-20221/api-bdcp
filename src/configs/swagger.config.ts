@@ -1,3 +1,7 @@
+const url = process.env.NODE_ENV === 'production'
+    ? 'https://api-bdcp.herokuapp.com/'
+    : `http://localhost:${process.env.PORT}`;
+
 const SwaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -8,7 +12,7 @@ const SwaggerOptions = {
         },
         servers: [
             {
-                url: `http://localhost:${process.env.PORT}`,
+                url,
             },
         ],
     },
