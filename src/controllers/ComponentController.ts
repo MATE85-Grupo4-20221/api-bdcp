@@ -85,12 +85,12 @@ class ComponentController {
                     return {
                         code: $lesson.find('td:nth-child(2)').text(),
                         name: $lesson.find('td:nth-child(3)').text().trim(),
-                        kind: $lesson.find('td:nth-child(4)').text().trim(),
+                        type: $lesson.find('td:nth-child(4)').text().trim(),
                         url: 'https://alunoweb.ufba.br' + $lesson.find('td:nth-child(3) a').attr('href')
                     };
                 }).toArray();
 
-        const extractFullClass = ($: CheerioAPI, content: { code: any; name: any; kind: any; }) =>
+        const extractFullClass = ($: CheerioAPI, content: { code: any; name: any; type: any; }) =>
             $('table').eq(1)
                 .map((_: any, lesson: any) => {
                     const $lesson = $(lesson);
@@ -98,7 +98,7 @@ class ComponentController {
                     return {
                         code: content.code,
                         name: content.name,
-                        kind:content.kind,
+                        type:content.type,
                         program: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
                     }; 
                 }).toArray();
