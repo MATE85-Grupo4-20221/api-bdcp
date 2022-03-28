@@ -89,7 +89,7 @@ class Component {
     generateLog(
         userId: string,
         type: ComponentLogType,
-        description?: string,
+        description: string,
         agreementNumber?: string,
         agreementDate?: Date
     ): ComponentLog {

@@ -2,6 +2,7 @@ import { Column, Entity, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn, Jo
 
 import { Component } from './Component';
 import { User } from './User';
+import { ComponentLogType } from '../interfaces/ComponentLogType';
 
 @Entity('component_logs')
 class ComponentLog {
@@ -18,14 +19,14 @@ class ComponentLog {
     @Column({ name: 'agreement_number', nullable: true })
         agreementNumber?: string;
 
-    @Column({ name: 'agreement_date',type: 'timestamptz',  nullable: true })
+    @Column({ name: 'agreement_date', type: 'timestamptz',  nullable: true })
         agreementDate?: Date;
 
     @Column()
-        description?: string;
+        description: string;
 
-    @Column()
-        type?: string;
+    @Column({ enum: ComponentLogType })
+        type: ComponentLogType;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
