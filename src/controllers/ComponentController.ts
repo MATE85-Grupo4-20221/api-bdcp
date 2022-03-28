@@ -99,7 +99,7 @@ class ComponentController {
                         code: content.code, 
                         name: content.name,
                         kind:content.kind,
-                        syllabus: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
+                        program: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
                     }; 
                 }).toArray();
         
