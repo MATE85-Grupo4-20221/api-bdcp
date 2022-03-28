@@ -22,8 +22,8 @@ class ComponentLog {
     @Column({ name: 'agreement_date', type: 'timestamptz',  nullable: true })
         agreementDate?: Date;
 
-    @Column()
-        description: string;
+    @Column({ nullable: true })
+        description?: string;
 
     @Column({ enum: ComponentLogType })
         type: ComponentLogType;

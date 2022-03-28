@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class changes1648450376866 implements MigrationInterface {
-    name = 'changes1648450376866'
+export class changes1648451921366 implements MigrationInterface {
+    name = 'changes1648451921366'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "component_logs" DROP CONSTRAINT "FK_140407b98b950fb9e9618ffaee0"`);
@@ -14,6 +14,7 @@ export class changes1648450376866 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "component_logs" ADD "component_id" uuid NOT NULL`);
         await queryRunner.query(`ALTER TABLE "component_logs" DROP COLUMN "updated_by"`);
         await queryRunner.query(`ALTER TABLE "component_logs" ADD "updated_by" uuid`);
+        await queryRunner.query(`ALTER TABLE "component_logs" ALTER COLUMN "description" DROP NOT NULL`);
         await queryRunner.query(`ALTER TABLE "component_logs" ADD CONSTRAINT "FK_814bba35e0bbfa447f97dc5ac17" FOREIGN KEY ("component_id") REFERENCES "components"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "component_logs" ADD CONSTRAINT "FK_29ff82d098439f52a59acebaac5" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "components" ADD CONSTRAINT "FK_c3aee5bfd6d9c32e77fbdc17a46" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -23,6 +24,7 @@ export class changes1648450376866 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "components" DROP CONSTRAINT "FK_c3aee5bfd6d9c32e77fbdc17a46"`);
         await queryRunner.query(`ALTER TABLE "component_logs" DROP CONSTRAINT "FK_29ff82d098439f52a59acebaac5"`);
         await queryRunner.query(`ALTER TABLE "component_logs" DROP CONSTRAINT "FK_814bba35e0bbfa447f97dc5ac17"`);
+        await queryRunner.query(`ALTER TABLE "component_logs" ALTER COLUMN "description" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "component_logs" DROP COLUMN "updated_by"`);
         await queryRunner.query(`ALTER TABLE "component_logs" ADD "updated_by" character varying`);
         await queryRunner.query(`ALTER TABLE "component_logs" DROP COLUMN "component_id"`);
