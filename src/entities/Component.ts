@@ -13,6 +13,7 @@ import {
 import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
+import { ComponentLogType } from '../interfaces/ComponentLogType';
 
 enum ComponentStatus {
     published = 'published',
@@ -26,7 +27,7 @@ class Component {
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
-    @Column({ name: 'user_id' })
+    @Column({ name: 'created_by' })
         userId: string;
 
     @Column({ name: 'workload_id' })
@@ -75,7 +76,7 @@ class Component {
         updatedAt: Date;
 
     @ManyToOne(() => User, (user) => user.components)
-    @JoinColumn({ name: 'user_id' })
+    @JoinColumn({ name: 'created_by' })
         user: User;
 
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
@@ -84,6 +85,24 @@ class Component {
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];
+
+    generateLog(
+        userId: string,
+        type: ComponentLogType,
+        description?: string,
+        agreementNumber?: string,
+        agreementDate?: Date
+    ): ComponentLog {
+        const log = new ComponentLog();
+        log.componentId = this.id;
+        log.updatedBy = userId;
+        log.type = type;
+        log.agreementNumber = agreementNumber;
+        log.agreementDate = agreementDate;
+        log.description = description;
+
+        return log;
+    }
 
 }
 

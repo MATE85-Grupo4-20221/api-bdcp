@@ -449,6 +449,20 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *           type: date
 *         required: false
 *         description: Date of component's last update
+*       - in: body
+*         name: approval
+*         schema:
+*           type: object
+*           properties:
+*             agreementNumber:
+*               type: string
+*               required: false
+*               description: The number of the minute in which the component syllabus was approved
+*             agreementDate:
+*               type: date
+*               required: false
+*               description: The date in which the component syllabus was approved
+*
 *     requestBody:
 *       required: true
 *       content:
