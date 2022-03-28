@@ -6,16 +6,16 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     entities: [
-        'src/entities/*.ts',
+        'src/entities/*.{ts,js}',
     ],
     migrations: [
-        'src/database/migrations/*.ts',
+        'src/database/migrations/*.{ts,js}',
     ],
     cli: {
         entitiesDir: 'src/entities',
         migrationsDir: 'src/database/migrations',
     },
-    logging: process.env.NODE_ENV === 'dev',
+    logging: true,
     dropSchema: process.env.NODE_ENV === 'test',
     migrationsRun: true,
 };
