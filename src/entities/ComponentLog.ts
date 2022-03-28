@@ -9,16 +9,16 @@ class ComponentLog {
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
-    @Column({name: 'component_id'})
+    @Column({ name: 'component_id' })
         componentId: string;
 
-    @Column({name: 'updated_by'})
+    @Column({ name: 'updated_by' })
         updatedBy: string;
 
-    @Column({name: 'minute_number'})
+    @Column({ name: 'minute_number' })
         minuteNumber: string;
 
-    @Column({name: 'minute_date'})
+    @Column({ name: 'minute_date' })
         minuteDate: Date;
 
     @Column()
@@ -27,7 +27,7 @@ class ComponentLog {
     @Column()
         type: string;
 
-    @CreateDateColumn({name: 'created_at'})
+    @CreateDateColumn({ name: 'created_at' })
         createdAt: Date;
 
     @ManyToOne(() => Component, (component) => component.logs)
