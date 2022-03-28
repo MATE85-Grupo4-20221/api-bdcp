@@ -15,6 +15,7 @@ import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
+import { ComponentType } from '../interfaces/ComponentType';
 
 @Entity('components')
 class Component {
@@ -25,11 +26,11 @@ class Component {
     @Column({ name: 'created_by' })
         userId: string;
 
-    @Column({ name: 'workload_id' })
-        workloadId: string;
-
     @Column({ enum: ComponentStatus })
         status: ComponentStatus;
+
+    @Column({ enum: ComponentType })
+        type: ComponentType;
 
     @Column()
         code: string;
@@ -39,9 +40,6 @@ class Component {
 
     @Column()
         department: string;
-
-    @Column()
-        type: string;
 
     @Column()
         program: string;
@@ -75,7 +73,6 @@ class Component {
         user: User;
 
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
-    @JoinColumn({ name: 'workload_id' })
         workload: ComponentWorkload;
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
