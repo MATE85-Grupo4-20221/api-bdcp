@@ -87,7 +87,7 @@ const componentController = new ComponentController();
 *         objective:
 *           type: string
 *           description: Component's objective
-*         metolodogy:
+*         methodology:
 *           type: string
 *           description: Metodology applied by the professor
 *         bibliography:
@@ -203,6 +203,46 @@ const componentController = new ComponentController();
 *         moduleInternshipWorkload: 0
 *         modulePracticeInternshipWorkload: 0
 *
+*     ComponentLog:
+*       type: object
+*       required:
+*         - componentId
+*         - updatedBy
+*         - agreementNumber
+*         - agreementDate
+*         - description
+*         - type
+*       properties:
+*         id:
+*           type: string
+*           description: The uuid id of the component workload
+*         componentId:
+*           type: string
+*           description: Component's id
+*         updatedBy:
+*           type: string
+*           description: User's id
+*         agreementNumber:
+*           type: string
+*           description: Número da ATA
+*         agreementDate:
+*           type: string
+*           description: Data de assinatura da ATA
+*         description:
+*           type: string
+*           description: Descrição da Operação
+*         type:
+*           type: enum
+*           description: Tipo da Operação
+*       example:
+*         id: 12345678-d356-43a0-84a4-43f83bad2225
+*         componentId: 87654321-d356-43a0-84a4-43f83bad2225
+*         updatedBy: 99999999-d356-43a0-84a4-43f83bad2225
+*         agreementNumber: 7564
+*         agreementDate: 2022/03/28
+*         description: Nova instância de componente foi criada.
+*         type: CREATION
+*
 *     ComponentUpsert:
 *       type: object
 *       required:
@@ -275,6 +315,34 @@ componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
+* /api/components/{id}:
+*   get:
+*     summary: Returns the component by id
+*     tags: [Component]
+*     parameters:
+*       - in: params
+*         name: id
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*         description: The component by id
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               items:
+*                 $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+componentRouter.get('/:id', componentController.getComponentById);
+
+/**
+* @swagger
 * /api/components:
 *   post:
 *     summary: Create a component
@@ -340,18 +408,6 @@ componentRouter.get('/', componentController.getComponents);
 *           type: string
 *         required: false
 *         description: Book references
-*       - in: body
-*         name: createdAt
-*         schema:
-*           type: date
-*         required: false
-*         description: Date of content's creation
-*       - in: body
-*         name: updatedAt
-*         schema:
-*           type: date
-*         required: false
-*         description: Date of content's last update
 *     responses:
 *       201:
 *         description: The content has been created

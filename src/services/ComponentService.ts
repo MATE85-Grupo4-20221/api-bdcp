@@ -1,4 +1,4 @@
-import { getCustomRepository, Like, Repository } from 'typeorm';
+import { getCustomRepository, Repository, ILike } from 'typeorm';
 
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
@@ -17,33 +17,35 @@ export class ComponentService {
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
     }
 
-    async getComponents() {
-        const components = await this.componentRepository.find();
+    async getComponents(q: any) {
+        let components;
+
+        if(q) {
+            components = await this.componentRepository.find({
+                where: [
+                    { code: ILike(`%${q.code}%`) },
+                    { name: ILike(`%${q.name}%`) }
+                ],
+                relations: [ 'component_logs', 'component_workloads' ],
+            });
+        }
+        else {
+            components = await this.componentRepository.find();
+        }
 
         if (components.length === 0) return [];
 
         return components;
     }
 
-    async getComponentByID(id: string) {
+    async getComponentById(id: string) {
         const component = await this.componentRepository.findOne({
             where: { id },
         });
 
-        if (!component) return null;
-
-        return component;
-    }
-
-    async searchComponent(keyword: string) {
-        const component = await this.componentRepository.findOne({
-            where: {
-                code: Like(`%${keyword}%`),
-                name: Like(`%${keyword}%`),
-            },
-        });
-
-        if (!component) return null;
+        if(!component){
+            throw new AppError('Component not found.', 404);
+        }
 
         return component;
     }

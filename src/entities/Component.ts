@@ -14,12 +14,7 @@ import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
-
-enum ComponentStatus {
-    published = 'published',
-    draft = 'draft',
-    archived = 'archived',
-}
+import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 @Entity('components')
 class Component {

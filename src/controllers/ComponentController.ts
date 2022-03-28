@@ -5,25 +5,14 @@ import { ComponentService } from '../services/ComponentService';
 class ComponentController {
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
-        const components = await componentService.getComponents();
+        const components = await componentService.getComponents(request.query);
 
         return response.status(200).json(components);
     }
 
     async getComponentById(request: Request, response: Response) {
-        const { id } = request.params;
-
         const componentService = new ComponentService();
-        const component = await componentService.getComponentByID(id);
-
-        return response.status(200).json(component);
-    }
-
-    async searchComponent(request: Request, response: Response) {
-        const { keyword } = request.params;
-
-        const componentService = new ComponentService();
-        const component = await componentService.searchComponent(keyword);
+        const component = await componentService.getComponentById(request.params.id);
 
         return response.status(200).json(component);
     }
