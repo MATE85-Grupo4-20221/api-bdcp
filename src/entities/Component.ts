@@ -1,71 +1,89 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { User } from './User';
+import { ComponentWorkload } from './ComponentWorkload';
+import { ComponentLog } from './ComponentLog';
 
-@Entity('component')
+enum ComponentStatus {
+    published = 'published',
+    draft = 'draft',
+    archived = 'archived',
+}
+
+@Entity('components')
 class Component {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     readonly id: string;
+
+    @Column({ name: 'user_id' })
+        userId: string;
+
+    @Column({ name: 'workload_id' })
+        workloadId: string;
+
+    @Column({ enum: ComponentStatus })
+        status: ComponentStatus;
 
     @Column()
         code: string;
-    
+
     @Column()
         name: string;
-    
+
     @Column()
         department: number;
-    
-    @Column({ name: 'teaching_workload' })
-        teachingWorkload: number;
-    
-    @Column({ name: 'student_workload' })
-        studentWorkload: number;
 
     @Column()
-        kind: string;
-    
-    @Column()
-        module: string;
-    
-    @Column()
-        semester: string;
-
-    @Column()
-        syllabus: string;
+        type: string;
 
     @Column()
         program: string;
 
     @Column()
+        semester: string;
+
+    @Column()
+        prerequeriments: string;
+
+    @Column()
+        methodology: string;
+
+    @Column()
         objective: string;
 
     @Column()
-        metolodogy: string;
+        syllabus: string;
 
     @Column()
-        bibliography: string;  
+        bibliography: string;
 
-    @CreateDateColumn({ name: 'created_at' })
+    @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
         updatedAt: Date;
-
-    @Column({ name: 'user_id' })
-        userId: string;
 
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'user_id' })
         user: User;
 
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
-    }
+    @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
+    @JoinColumn({ name: 'workload_id' })
+        workload: ComponentWorkload;
+
+    @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
+        logs: ComponentLog[];
 
 }
 
