@@ -99,13 +99,8 @@ class ComponentController {
                         code: content.code,
                         name: content.name,
                         kind:content.kind,
-<<<<<<< HEAD
                         program: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
                     }; 
-=======
-                        syllabus: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
-                    };
->>>>>>> 962012ab9bb707948dac9c36aa4ebf740de55114
                 }).toArray();
 
         axios(options1)
