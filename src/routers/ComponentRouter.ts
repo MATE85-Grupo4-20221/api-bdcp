@@ -58,7 +58,7 @@ const componentController = new ComponentController();
 *         - updatedAt
 *       properties:
 *         id:
-*           type: number
+*           type: string
 *           description: The uuid id of the component
 *         code:
 *           type: string
@@ -69,18 +69,12 @@ const componentController = new ComponentController();
 *         department:
 *           type: string
 *           description: Component's department
-*         teachingWorkload:
-*           type: number
-*           description: Amount of hours invented in the component
-*         studentWorkload:
-*           type: number
-*           description: Amount of in-class hours invested in the component
-*         kind:
+*         type:
 *           type: string
-*           description: Kind of component (optional or required)
-*         module:
+*           description: Type of component (optional or required)
+*         prerequeriments:
 *           type: string
-*           description: Type of module
+*           description: The component that are prerequeriments
 *         semester:
 *           type: string
 *           description: First acting semester of component
@@ -101,80 +95,160 @@ const componentController = new ComponentController();
 *           description: Book references
 *         createdAt:
 *           type: date
-*           description: Date of content's creation
+*           description: Date of component's creation
 *         updatedAt:
 *           type: date
-*           description: Date of content's last update
+*           description: Date of component's last update
 *         userId:
 *           type: string
-*           description: Content's creator's uid
+*           description: Componen's creator's uid
 *         user:
 *           $ref: '#/components/schemas/User'
+*         componentWorkload:
+*           $ref: '#/components/schemas/ComponentWorkload'
 *       example:
 *         id: 27
 *         name: Geometria Analítica
 *         userId: 50496915-d356-43a0-84a4-43f83bad2225
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
-*/
-
-/**
- *    ContentUpsert:
- *       type: object
- *       required:
- *         - id
- *         - userId
- *         - createdAt
- *         - updatedAt
- *       properties:
- *         code:
- *           type: string
- *           description: Component's code
- *         name:
- *           type: string
- *           description: Component's name
- *         department:
- *           type: string
- *           description: Component's department
- *          teachingWorkload:
- *           type: number
- *           description: Amount of hours invented in the component
- *         studentWorkload:
- *           type: number
- *           description: Amount of in-class hours invested in the component
- *         kind:
- *           type: string
- *           description: Kind of component (optional or required)
- *          module:
- *           type: string
- *           description: Type of module
- *         semester:
- *           type: string
- *           description: First acting semester of component
- *         syllabus:
- *           type: string
- *           description: Component's syllabus
- *         program:
- *           type: string
- *           description: Component's program
- *         objective:
- *           type: string
- *           description: Component's objective
- *         metolodogy:
- *           type: string
- *           description: Metodology applied by the professor
- *         bibliography:
- *           type: string
- *           description: Book references
- *         createdAt:
- *           type: date
- *           description: Date of content's creation
- *         updatedAt:
- *           type: date
- *           description: Date of content's last update
- *       example:
- *         name: Geometria Analitica
- *         code: MATA01
+*
+*     ComponentWorkload:
+*       type: object
+*       required:
+*         - componentId
+*         - teacherTheoryWorkload
+*         - teacherPracticeWorkload
+*         - teacherTheoryPracticeWorkload
+*         - teacherInternshipWorkload
+*         - teacherPracticeInternshipWorkload
+*         - studentTheoryWorkload
+*         - studentPracticeWorkload
+*         - studentTheoryPracticeWorkload
+*         - studentInternshipWorkload
+*         - studentPracticeInternshipWorkload
+*         - moduleTheoryWorkload
+*         - modulePracticeWorkload
+*         - moduleTheoryPracticeWorkload
+*         - moduleInternshipWorkload
+*         - modulePracticeInternshipWorkload
+*       properties:
+*         id:
+*           type: string
+*           description: The uuid id of the component workload
+*         componentId:
+*           type: string
+*           description: Component's code
+*         teacherTheoryWorkload:
+*           type: number
+*           description: Teacher Theorical Workload
+*         teacherPracticeWorkload:
+*           type: number
+*           description: Teacher Practice Workload
+*         teacherTheoryPracticeWorkload:
+*           type: number
+*           description: Teacher Theorical and Practice Workload
+*         teacherInternshipWorkload:
+*           type: number
+*           description: Teacher Internship Workload
+*         teacherPracticeInternshipWorkload:
+*           type: number
+*           description: Teacher Practice and Internship Workload
+*         studentTheoryWorkload:
+*           type: number
+*           description: Student Theorical Workload
+*         studentPracticeWorkload:
+*           type: number
+*           description: Student Practice Workload
+*         studentTheoryPracticeWorkload:
+*           type: number
+*           description: Student Theorical and Practice Workload
+*         studentInternshipWorkload:
+*           type: number
+*           description: Student Internship Workload
+*         studentPracticeInternshipWorkload:
+*           type: number
+*           description: Student Practice and Internship Workload
+*         moduleTheoryWorkload:
+*           type: number
+*           description: Module Theorical Workload
+*         modulePracticeWorkload:
+*           type: number
+*           description: Module Practice Workload
+*         moduleTheoryPracticeWorkload:
+*           type: number
+*           description: Module Theorical and Practice Workload
+*         moduleInternshipWorkload:
+*           type: number
+*           description: Module Internship Workload
+*         modulePracticeInternshipWorkload:
+*           type: number
+*           description: Module Practice and Internship Workload
+*       example:
+*         id: 12345678-d356-43a0-84a4-43f83bad2225
+*         componentId: 87654321-d356-43a0-84a4-43f83bad2225
+*         teacherTheoryWorkload: 32
+*         teacherPracticeWorkload: 32
+*         teacherTheoryPracticeWorkload: 0
+*         teacherInternshipWorkload: 0
+*         teacherPracticeInternshipWorkload: 0
+*         studentTheoryWorkload: 32
+*         studentPracticeWorkload: 32
+*         studentTheoryPracticeWorkload: 0
+*         studentInternshipWorkload: 0
+*         studentPracticeInternshipWorkload: 0
+*         moduleTheoryWorkload: 32
+*         modulePracticeWorkload: 32
+*         moduleTheoryPracticeWorkload: 0
+*         moduleInternshipWorkload: 0
+*         modulePracticeInternshipWorkload: 0
+*
+*     ComponentUpsert:
+*       type: object
+*       required:
+*         - id
+*         - userId
+*         - createdAt
+*         - updatedAt
+*       properties:
+*         code:
+*           type: string
+*           description: Component's code
+*         name:
+*           type: string
+*           description: Component's name
+*         department:
+*           type: string
+*           description: Component's department
+*         type:
+*           type: string
+*           description: Type of component (optional or required)
+*         prerequeriments:
+*           type: string
+*           description: Component's prerequeriments
+*         semester:
+*           type: string
+*           description: First acting semester of component
+*         syllabus:
+*           type: string
+*           description: Component's syllabus
+*         program:
+*           type: string
+*           description: Component's program
+*         objective:
+*           type: string
+*           description: Component's objective
+*         metolodogy:
+*           type: string
+*           description: Metodology applied by the professor
+*         bibliography:
+*           type: string
+*           description: Book references
+*         componentWorkload:
+*           $ref: '#/components/schemas/ComponentWorkload'
+*       example:
+*         name: Geometria Analitica
+*         code: MATA01
 */
 
 /**
@@ -197,7 +271,7 @@ const componentController = new ComponentController();
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/', ensureAuthenticated, componentController.getComponents);
+componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
@@ -225,25 +299,13 @@ componentRouter.get('/', ensureAuthenticated, componentController.getComponents)
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of hours invented in the component
-*       - in: body
-*         name: studentWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of in-class hours invested in the component
-*       - in: body
-*         name: module
+*         name: prerequeriments
 *         schema:
 *           type: string
 *         required: false
-*         description: Type of module
+*         description: Component's prerequeriments
 *       - in: body
-*         name: actingSemester
+*         name: semester
 *         schema:
 *           type: string
 *         required: false
@@ -306,7 +368,7 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 * @swagger
 * /api/components/{id}:
 *   put:
-*     summary: Update a component 
+*     summary: Update a component
 *     tags: [Component]
 *     parameters:
 *       - in: params
@@ -334,23 +396,11 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of hours invented in the component
-*       - in: body
-*         name: studentWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of in-class hours invested in the component
-*       - in: body
-*         name: module
+*         name: prerequeriments
 *         schema:
 *           type: string
 *         required: false
-*         description: Type of module
+*         description: Component's prerequeriments
 *       - in: body
 *         name: semester
 *         schema:
@@ -399,6 +449,20 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *           type: date
 *         required: false
 *         description: Date of component's last update
+*       - in: body
+*         name: approval
+*         schema:
+*           type: object
+*           properties:
+*             agreementNumber:
+*               type: string
+*               required: false
+*               description: The number of the minute in which the component syllabus was approved
+*             agreementDate:
+*               type: date
+*               required: false
+*               description: The date in which the component syllabus was approved
+*
 *     requestBody:
 *       required: true
 *       content:
@@ -434,7 +498,7 @@ componentRouter.put('/:id', ensureAuthenticated, componentController.update);
  *           type: number
  *         required: true
  *         description: The component id
- * 
+ *
  *     responses:
  *       200:
  *         description: The component was deleted
