@@ -38,7 +38,7 @@ class Component {
         name: string;
 
     @Column()
-        department: number;
+        department: string;
 
     @Column()
         type: string;
