@@ -12,14 +12,14 @@ class ComponentLog {
     @Column({ name: 'component_id' })
         componentId: string;
 
-    @Column({ name: 'updated_by' })
-        updatedBy: string;
+    @Column({ name: 'updated_by', nullable: true })
+        updatedBy?: string;
 
-    @Column({ name: 'minute_number' })
-        minuteNumber: string;
+    @Column({ name: 'agreement_number', nullable: true })
+        agreementNumber?: string;
 
-    @Column({ name: 'minute_date' })
-        minuteDate: Date;
+    @Column({ name: 'agreement_date',type: 'timestamptz',  nullable: true })
+        agreementDate?: Date;
 
     @Column()
         description: string;
@@ -27,7 +27,7 @@ class ComponentLog {
     @Column()
         type: string;
 
-    @CreateDateColumn({ name: 'created_at' })
+    @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
 
     @ManyToOne(() => Component, (component) => component.logs)
