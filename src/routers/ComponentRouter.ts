@@ -454,15 +454,15 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *         schema:
 *           type: object
 *           properties:
-*             minuteNumber:
+*             agreementNumber:
 *               type: string
 *               required: false
 *               description: The number of the minute in which the component syllabus was approved
-*             minuteDate:
+*             agreementDate:
 *               type: date
 *               required: false
 *               description: The date in which the component syllabus was approved
-* 
+*
 *     requestBody:
 *       required: true
 *       content:

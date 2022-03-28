@@ -1,38 +1,30 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Component } from './Component';
 
 @Entity('users')
 class User {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
     @Column()
         name: string;
 
-    @Column()
+    @Column({ unique: true })
         email: string;
 
     @Column()
         password: string;
 
-    @CreateDateColumn({ name: 'created_at' })
+    @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
-        updatedAt: Date;
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
+        updatedAt?: Date;
 
     @OneToMany(() => Component, (component) => component.user)
         components: Component[];
-
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
-    }
-
 }
 
 export { User };

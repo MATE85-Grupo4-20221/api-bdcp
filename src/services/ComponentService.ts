@@ -16,7 +16,7 @@ export class ComponentService {
         this.componentRepository = getCustomRepository(ComponentRepository);
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
     }
-    
+
     async getComponents() {
         const components = await this.componentRepository.find();
 
@@ -31,7 +31,7 @@ export class ComponentService {
         });
 
         if (!component) return null;
-        
+
         return component;
     }
 
@@ -44,7 +44,7 @@ export class ComponentService {
         });
 
         if (!component) return null;
-        
+
         return component;
     }
 
@@ -60,18 +60,18 @@ export class ComponentService {
             let componentLog = component.generateLog(userId, ComponentLogType.CREATION);
             componentLog = this.componentLogRepository.create(componentLog);
             await this.componentLogRepository.save(componentLog);
-            
+
             return createdComponent;
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
-        }        
+        }
     }
 
     async update(
         id: string,
         componentDto: Omit<Component, 'createdAt' | 'updatedAt'> &
-            { approval?: Pick<ComponentLog, 'minuteDate' | 'minuteNumber'> },
+            { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
         userId: string
     ) {
         const componentExists = await this.componentRepository.findOne({
@@ -105,8 +105,8 @@ export class ComponentService {
                     userId,
                     ComponentLogType.APPROVAL,
                     undefined,
-                    approval.minuteNumber,
-                    approval.minuteDate,
+                    approval.agreementNumber,
+                    approval.agreementDate,
                 );
                 componentLog = this.componentLogRepository.create(componentLog);
                 await this.componentLogRepository.save(componentLog);

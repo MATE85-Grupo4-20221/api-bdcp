@@ -1,9 +1,25 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+
+enum ComponentStatus {
+    published = 'published',
+    draft = 'draft',
+    archived = 'archived',
+}
 
 @Entity('components')
 class Component {
@@ -17,8 +33,8 @@ class Component {
     @Column({ name: 'workload_id' })
         workloadId: string;
 
-    @Column()
-        status: string;
+    @Column({ enum: ComponentStatus })
+        status: ComponentStatus;
 
     @Column()
         code: string;
@@ -28,12 +44,6 @@ class Component {
 
     @Column()
         department: number;
-
-    @Column({ name: 'teaching_workload' })
-        teachingWorkload: number;
-
-    @Column({ name: 'student_workload' })
-        studentWorkload: number;
 
     @Column()
         type: string;
@@ -59,10 +69,10 @@ class Component {
     @Column()
         bibliography: string;
 
-    @CreateDateColumn({ name: 'created_at' })
+    @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
         updatedAt: Date;
 
     @ManyToOne(() => User, (user) => user.components)
@@ -80,15 +90,15 @@ class Component {
         userId: string,
         type: ComponentLogType,
         description?: string,
-        minuteNumber?: string,
-        minuteDate?: Date
+        agreementNumber?: string,
+        agreementDate?: Date
     ): ComponentLog {
         const log = new ComponentLog();
         log.componentId = this.id;
         log.updatedBy = userId;
         log.type = type;
-        log.minuteNumber = minuteNumber;
-        log.minuteDate = minuteDate;
+        log.agreementNumber = agreementNumber;
+        log.agreementDate = agreementDate;
         log.description = description;
 
         return log;
