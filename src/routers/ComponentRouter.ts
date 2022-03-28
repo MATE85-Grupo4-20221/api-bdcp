@@ -271,7 +271,7 @@ const componentController = new ComponentController();
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/', ensureAuthenticated, componentController.getComponents);
+componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
