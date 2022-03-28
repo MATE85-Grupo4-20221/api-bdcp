@@ -11,20 +11,20 @@ class ComponentController {
     }
 
     async getComponentById(request: Request, response: Response) {
-        const {id} = request.params;
-        
+        const { id } = request.params;
+
         const componentService = new ComponentService();
         const component = await componentService.getComponentByID(id);
-            
+
         return response.status(200).json(component);
     }
 
     async searchComponent(request: Request, response: Response) {
-        const {keyword} = request.params;
-        
+        const { keyword } = request.params;
+
         const componentService = new ComponentService();
         const component = await componentService.searchComponent(keyword);
-            
+
         return response.status(200).json(component);
     }
 
@@ -33,27 +33,27 @@ class ComponentController {
         const componentService = new ComponentService();
 
         const content = await componentService.create(authenticatedUserId, request.body);
-        
+
         return response.status(201).json(content);
     }
 
     async update(request: Request, response: Response) {
         const authenticatedUserId = request.headers.authenticatedUserId as string;
-        const {id} = request.params;
+        const { id } = request.params;
 
         const componentService = new ComponentService();
         const content = await componentService.update(id, request.body, authenticatedUserId);
-            
+
         return response.status(200).json(content);
     }
 
     async delete(request: Request, response: Response) {
-        const {id} = request.params;
+        const { id } = request.params;
 
         const componentService = new ComponentService();
         await componentService.delete(id);
 
-        return response.status(200).json({message: 'Component has been deleted!'});
+        return response.status(200).json({ message: 'Component has been deleted!' });
     }
 
 }
