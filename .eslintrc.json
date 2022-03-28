@@ -51,6 +51,13 @@
             }
         ],
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-        "func-names": ["error", "always"]
+        "func-names": ["error", "always"],
+        "array-bracket-spacing": [
+            "error",
+            "always"
+        ],
+        "object-curly-newline": "off",
+        "no-param-reassign": "error",
+        "object-curly-spacing": ["error", "always"]
     }
 }

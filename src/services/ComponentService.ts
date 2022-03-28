@@ -22,7 +22,7 @@ export class ComponentService {
 
     async getComponentByID(id: string) {
         const component = await this.componentRepository.findOne({
-            where: {id},
+            where: { id },
         });
 
         if (!component) return null;
@@ -48,7 +48,7 @@ export class ComponentService {
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
     ){
         try {
-            const componentDto = {...requestDto, userId: userId};
+            const componentDto = { ...requestDto, userId: userId };
             const component = this.componentRepository.create(componentDto);
             
             return await this.componentRepository.save(component);
@@ -63,7 +63,7 @@ export class ComponentService {
         componentDto: Omit<Component, 'createdAt' | 'updatedAt'>
     ) {
         const componentExists = await this.componentRepository.findOne({
-            where: {id}
+            where: { id }
         });
 
         if(!componentExists){
@@ -73,11 +73,11 @@ export class ComponentService {
         try {
             await this.componentRepository.createQueryBuilder().update(Component)
                 .set(componentDto)
-                .where('id = :id', {id})
+                .where('id = :id', { id })
                 .execute();
 
             return await this.componentRepository.findOne({
-                where: {id}
+                where: { id }
             });
         }
         catch (err) {
@@ -87,7 +87,7 @@ export class ComponentService {
 
     async delete(id: string){
         const componentExists = await this.componentRepository.findOne({
-            where: {id}
+            where: { id }
         });
 
         if(!componentExists){
@@ -97,7 +97,7 @@ export class ComponentService {
         await this.componentRepository.createQueryBuilder()
             .delete()
             .from(Component)
-            .where('id = :id', {id})
+            .where('id = :id', { id })
             .execute();
     }
 

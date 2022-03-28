@@ -1,4 +1,14 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
@@ -10,10 +20,10 @@ class Component {
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
-    @Column({name: 'user_id'})
+    @Column({ name: 'user_id' })
         userId: string;
 
-    @Column({name: 'workload_id'})
+    @Column({ name: 'workload_id' })
         workloadId: string;
 
     @Column()
@@ -52,10 +62,10 @@ class Component {
     @Column()
         bibliography: string;
 
-    @CreateDateColumn({name: 'created_at'})
+    @CreateDateColumn({ name: 'created_at' })
         createdAt: Date;
 
-    @UpdateDateColumn({name: 'updated_at'})
+    @UpdateDateColumn({ name: 'updated_at' })
         updatedAt: Date;
 
     @ManyToOne(() => User, (user) => user.components)
@@ -63,7 +73,7 @@ class Component {
         user: User;
 
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
-    @JoinColumn({name: 'workload_id'})
+    @JoinColumn({ name: 'workload_id' })
         workload: ComponentWorkload;
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
