@@ -1,8 +1,5 @@
-import * as dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
-
-dotenv.config();
 
 function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
     const splitToken = request.headers.authorization?.split('Bearer ');
