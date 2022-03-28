@@ -7,7 +7,7 @@ const env = process.env.NODE_ENV || 'local';
 getConnectionOptions()
     .then(async options => {
         const extra = env !== 'local' ? { ssl: { rejectUnauthorized: false } } : undefined;
-        return createConnection({ ...options, extra });
+        return createConnection({ ...options, extra, migrationsRun: true });
     })
     .then(connection => {
         console.log(`DB connection is UP? ${connection.isConnected}`);
