@@ -1,8 +1,8 @@
 import { getCustomRepository, Repository, ILike } from 'typeorm';
 
+import { AppError } from '../errors/AppError';
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
-import { AppError } from '../errors/AppError';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
@@ -17,21 +17,23 @@ export class ComponentService {
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
     }
 
-    async getComponents(q: any) {
-        let components;
+    async searchComponents(keyword: string) {
+        const components = await this.componentRepository.find({
+            where: [
+                { code: ILike(`%${keyword}%`) },
+                { name: ILike(`%${keyword}%`) }
+            ],
+            //relations: [ 'component_logs', 'component_workloads' ],
+            //ele n reconhece as relations e dá erro, mas a função funciona com essa parte comentada
+        });
 
-        if(q) {
-            components = await this.componentRepository.find({
-                where: [
-                    { code: ILike(`%${q.code}%`) },
-                    { name: ILike(`%${q.name}%`) }
-                ],
-                relations: [ 'component_logs', 'component_workloads' ],
-            });
-        }
-        else {
-            components = await this.componentRepository.find();
-        }
+        if (components.length === 0) return [];
+
+        return components;
+    }
+
+    async getComponents() {
+        const components = await this.componentRepository.find();
 
         if (components.length === 0) return [];
 
@@ -54,6 +56,14 @@ export class ComponentService {
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
     ){
+        const componentExists = await this.componentRepository.findOne({
+            where: { code: requestDto.code },
+        });
+
+        if (componentExists) {
+            throw new AppError('Component already exists.', 400);
+        }
+
         try {
             const componentDto = { ...requestDto, userId: userId };
             const component = this.componentRepository.create(componentDto);

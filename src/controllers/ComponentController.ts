@@ -3,9 +3,16 @@ import { Request, Response } from 'express';
 import { ComponentService } from '../services/ComponentService';
 
 class ComponentController {
+    async searchComponents(request: Request, response: Response) {
+        const componentService = new ComponentService();
+        const components = await componentService.searchComponents(request.params.keyword);
+
+        return response.status(200).json(components);
+    }
+
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
-        const components = await componentService.getComponents(request.query);
+        const components = await componentService.getComponents();
 
         return response.status(200).json(components);
     }

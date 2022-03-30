@@ -315,6 +315,34 @@ componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
+* /api/components/search/{keyword}:
+*   get:
+*     summary: Returns the list of all component found
+*     tags: [Component]
+*     parameters:
+*       - in: params
+*         name: keyword
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*         description: The list of all component found
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+componentRouter.get('/search/:keyword', componentController.searchComponents);
+
+/**
+* @swagger
 * /api/components/{id}:
 *   get:
 *     summary: Returns the component by id
