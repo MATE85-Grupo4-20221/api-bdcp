@@ -31,11 +31,15 @@ class ComponentLog {
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;
 
-    @ManyToOne(() => Component, (component) => component.logs)
+    @ManyToOne(() => Component, (component) => component.logs, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
     @JoinColumn({ name: 'component_id' })
         component: Component;
 
-    @ManyToOne(() => User, (user) => user.components)
+    @ManyToOne(() => User, (user) => user.components, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
     @JoinColumn({ name: 'updated_by' })
         user: User;
 

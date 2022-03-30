@@ -15,7 +15,6 @@ import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
-import { ComponentType } from '../interfaces/ComponentType';
 
 @Entity('components')
 class Component {
@@ -28,9 +27,6 @@ class Component {
 
     @Column({ enum: ComponentStatus })
         status: ComponentStatus;
-
-    @Column({ enum: ComponentType })
-        type: ComponentType;
 
     @Column()
         code: string;
@@ -68,15 +64,17 @@ class Component {
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
         updatedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.components)
-    @JoinColumn({ name: 'created_by' })
-        user: User;
-
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
         workload: ComponentWorkload;
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];
+
+    @ManyToOne(() => User, (user) => user.components, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
+    @JoinColumn({ name: 'created_by' })
+        user: User;
 
     generateLog(
         userId: string,

@@ -56,7 +56,9 @@ class ComponentWorkload {
     @Column({ name: 'module_practice_internship', default: 0 })
         modulePracticeInternship: number;
 
-    @OneToOne(() => Component, (component) => component.workload)
+    @OneToOne(() => Component, (component) => component.workload, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
     @JoinColumn({ name: 'component_id' })
         component: Component;
 
