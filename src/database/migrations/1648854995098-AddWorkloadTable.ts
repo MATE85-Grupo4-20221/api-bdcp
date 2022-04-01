@@ -11,13 +11,11 @@ export class AddWorkloadTable1648854995098 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "component" ADD "methodology" character varying NOT NULL`);
         await queryRunner.query(`ALTER TABLE "component" ADD "workload_id" integer`);
         await queryRunner.query(`ALTER TABLE "component" ADD CONSTRAINT "UQ_55d581a6e731c7b955c03720571" UNIQUE ("workload_id")`);
-        await queryRunner.query(`ALTER TABLE "component" ADD CONSTRAINT "FK_f1dfba965ebd74db6dbe138c385" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "component" ADD CONSTRAINT "FK_55d581a6e731c7b955c03720571" FOREIGN KEY ("workload_id") REFERENCES "workload"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "component" DROP CONSTRAINT "FK_55d581a6e731c7b955c03720571"`);
-        await queryRunner.query(`ALTER TABLE "component" DROP CONSTRAINT "FK_f1dfba965ebd74db6dbe138c385"`);
         await queryRunner.query(`ALTER TABLE "component" DROP CONSTRAINT "UQ_55d581a6e731c7b955c03720571"`);
         await queryRunner.query(`ALTER TABLE "component" DROP COLUMN "workload_id"`);
         await queryRunner.query(`ALTER TABLE "component" DROP COLUMN "methodology"`);
