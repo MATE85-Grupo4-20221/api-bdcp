@@ -3,17 +3,22 @@ import { getCustomRepository, Like, Repository } from 'typeorm';
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
 import { AppError } from '../errors/AppError';
+import { WorkloadService } from './WorkloadService';
 
 export class ComponentService {
 
     private componentRepository : Repository<Component>;
+    private workloadService: WorkloadService;
 
     constructor() {
         this.componentRepository = getCustomRepository(ComponentRepository);
+        this.workloadService = new WorkloadService();
     }
     
     async getComponents() {
-        const components = await this.componentRepository.find();
+        const components = await this.componentRepository.find({
+            relations: [ 'workload' ],
+        });
 
         if (components.length === 0) return [];
 
@@ -49,7 +54,14 @@ export class ComponentService {
     ){
         try {
             const componentDto = { ...requestDto, userId: userId };
+
+            if(componentDto.workload != null) {
+                const workload = await this.workloadService.create(componentDto.workload);
+                componentDto.workloadId = workload.id;
+            }
+
             const component = this.componentRepository.create(componentDto);
+            component.workloadId = componentDto.workloadId;
             
             return await this.componentRepository.save(component);
         }
@@ -71,6 +83,16 @@ export class ComponentService {
         }
 
         try {
+            if(componentDto.workload != null) {
+                const workloadData = {
+                    ...componentDto.workload,
+                    id: componentDto.workload.id ?? componentDto.workloadId,
+                };
+
+                const workload = await this.workloadService.upsert(workloadData);
+                componentDto.workloadId = workload?.id;
+            }
+
             await this.componentRepository.createQueryBuilder().update(Component)
                 .set(componentDto)
                 .where('id = :id', { id })
@@ -94,11 +116,16 @@ export class ComponentService {
             throw new AppError('Component not found.', 404);
         }
 
-        await this.componentRepository.createQueryBuilder()
-            .delete()
-            .from(Component)
-            .where('id = :id', { id })
-            .execute();
+        await Promise.all([
+            componentExists.workloadId != null
+                ? this.workloadService.delete(componentExists.workloadId)
+                : null,
+            this.componentRepository.createQueryBuilder()
+                .delete()
+                .from(Component)
+                .where('id = :id', { id })
+                .execute(),
+        ]);
     }
 
 }

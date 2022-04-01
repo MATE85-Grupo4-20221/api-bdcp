@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { User } from './User';
+import { Workload } from './Workload';
 
 @Entity('component')
 class Component {
@@ -17,12 +18,6 @@ class Component {
     
     @Column()
         department: number;
-    
-    @Column({ name: 'teaching_workload' })
-        teachingWorkload: number;
-    
-    @Column({ name: 'student_workload' })
-        studentWorkload: number;
 
     @Column()
         kind: string;
@@ -42,7 +37,7 @@ class Component {
     @Column()
         objective: string;
 
-    @Column()
+    @Column({ name: 'methodology' })
         metolodogy: string;
 
     @Column()
@@ -60,6 +55,13 @@ class Component {
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'user_id' })
         user: User;
+    
+    @Column({ name: 'workload_id', nullable: true })
+        workloadId?: number;
+
+    @OneToOne(() => Workload, (workload) => workload.component)
+    @JoinColumn({ name: 'workload_id' })
+        workload?: Workload;
 
     constructor(){
         if(!this.id){
