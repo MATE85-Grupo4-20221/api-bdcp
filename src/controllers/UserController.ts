@@ -12,10 +12,10 @@ class UserController {
 
     async getUserById(request: Request, response: Response) {
         const { id } = request.params;
-        
+
         const userService = new UserService();
         const user = await userService.getUserByID(id);
-            
+
         return response.status(200).json(user);
     }
 
@@ -24,8 +24,8 @@ class UserController {
 
         const userService = new UserService();
         const user = await userService.create(name, email, password);
-        
-        return response.status(201).json(user);
+
+        return response.status(201).send({ id: user.id });
     }
 
     async update(request: Request, response: Response) {
@@ -34,7 +34,7 @@ class UserController {
 
         const userService = new UserService();
         const user = await userService.update(id, email, password);
-            
+
         return response.status(200).json(user);
     }
 

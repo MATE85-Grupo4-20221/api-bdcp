@@ -37,7 +37,7 @@ class UserService {
         });
 
         if (userExists) {
-            throw new AppError('This email is already using.', 400);
+            throw new AppError('User already exists.', 400);
         }
 
         try {

@@ -87,7 +87,7 @@ const userController = new UserController();
 *       500:
 *         description: Internal Server Error
 */
-userRouter.post('/', ensureAuthenticated, userController.create);
+userRouter.post('/', userController.create);
 
 /**
 * @swagger

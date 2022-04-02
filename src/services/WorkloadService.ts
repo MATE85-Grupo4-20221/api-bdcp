@@ -1,14 +1,14 @@
 import { getCustomRepository, Repository } from 'typeorm';
-import { WorkloadRepository } from '../repositories/WorkloadRepository';
+import { ComponentWorkloadRepository } from '../repositories/ComponentWorkloadRepository';
 import { AppError } from '../errors/AppError';
-import { Workload } from '../entities/Workload';
+import { ComponentWorkload } from '../entities/ComponentWorkload';
 
 export class WorkloadService {
 
-    private workloadRepository : Repository<Workload>;
+    private workloadRepository : Repository<ComponentWorkload>;
 
     constructor() {
-        this.workloadRepository = getCustomRepository(WorkloadRepository);
+        this.workloadRepository = getCustomRepository(ComponentWorkloadRepository);
     }
 
     async getWorkloadById(id: string) {
@@ -22,7 +22,7 @@ export class WorkloadService {
     }
 
     async create(
-        dto: Omit<Workload, 'id'>
+        dto: Omit<ComponentWorkload, 'id'>
     ) {
         try {
             const workload = this.workloadRepository.create(dto);
@@ -36,7 +36,7 @@ export class WorkloadService {
 
     async update(
         id: number,
-        dto: Partial<Workload>
+        dto: Partial<ComponentWorkload>
     ) {
         const workloadExists = await this.workloadRepository.findOne({
             where: { id }
@@ -47,7 +47,7 @@ export class WorkloadService {
         }
 
         try {
-            await this.workloadRepository.createQueryBuilder().update(Workload)
+            await this.workloadRepository.createQueryBuilder().update(ComponentWorkload)
                 .set(dto)
                 .where('id = :id', { id })
                 .execute();
@@ -62,7 +62,7 @@ export class WorkloadService {
     }
 
     async upsert(
-        dto: Workload
+        dto: ComponentWorkload
     ) {
         const workloadExists = dto?.id == null
             ? null
@@ -73,7 +73,7 @@ export class WorkloadService {
             return this.create(dto);
         }
 
-        await this.workloadRepository.createQueryBuilder().update(Workload)
+        await this.workloadRepository.createQueryBuilder().update(ComponentWorkload)
             .set(dto)
             .where('id = :id', { id:  dto.id })
             .execute();
@@ -83,7 +83,7 @@ export class WorkloadService {
         });
     }
 
-    async delete(id: number){
+    async delete(id: string){
         const workloadExists = await this.workloadRepository.findOne({
             where: { id }
         });
@@ -94,7 +94,7 @@ export class WorkloadService {
 
         await this.workloadRepository.createQueryBuilder()
             .delete()
-            .from(Workload)
+            .from(ComponentWorkload)
             .where('id = :id', { id })
             .execute();
     }

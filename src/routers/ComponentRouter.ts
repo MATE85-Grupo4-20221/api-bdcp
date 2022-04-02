@@ -144,7 +144,7 @@ const componentController = new ComponentController();
 *         - updatedAt
 *       properties:
 *         id:
-*           type: number
+*           type: string
 *           description: The uuid id of the component
 *         code:
 *           type: string
@@ -155,12 +155,12 @@ const componentController = new ComponentController();
 *         department:
 *           type: string
 *           description: Component's department
-*         kind:
+*         type:
 *           type: string
-*           description: Kind of component (optional or required)
-*         module:
+*           description: Type of component (optional or required)
+*         prerequeriments:
 *           type: string
-*           description: Type of module
+*           description: The component that are prerequeriments
 *         semester:
 *           type: string
 *           description: First acting semester of component
@@ -181,13 +181,13 @@ const componentController = new ComponentController();
 *           description: Book references
 *         createdAt:
 *           type: date
-*           description: Date of content's creation
+*           description: Date of component's creation
 *         updatedAt:
 *           type: date
-*           description: Date of content's last update
+*           description: Date of component's last update
 *         userId:
 *           type: string
-*           description: Content's creator's uid
+*           description: Componen's creator's uid
 *         user:
 *           $ref: '#/components/schemas/User'
 *         workloadId:
@@ -201,7 +201,7 @@ const componentController = new ComponentController();
 *         userId: 50496915-d356-43a0-84a4-43f83bad2225
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
-*         workloadId: 6
+*         workloadId: abcdef6
 */
 
 /**
@@ -288,7 +288,7 @@ const componentController = new ComponentController();
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/', ensureAuthenticated, componentController.getComponents);
+componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
@@ -316,11 +316,11 @@ componentRouter.get('/', ensureAuthenticated, componentController.getComponents)
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: module
+*         name: prerequeriments
 *         schema:
 *           type: string
 *         required: false
-*         description: Type of module
+*         description: Component's prerequeriments
 *       - in: body
 *         name: semester
 *         schema:
@@ -450,7 +450,7 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 * @swagger
 * /api/components/{id}:
 *   put:
-*     summary: Update a component 
+*     summary: Update a component
 *     tags: [Component]
 *     parameters:
 *       - in: params
@@ -478,11 +478,11 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: module
+*         name: prerequeriments
 *         schema:
 *           type: string
 *         required: false
-*         description: Type of module
+*         description: Component's prerequeriments
 *       - in: body
 *         name: semester
 *         schema:
@@ -604,6 +604,20 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *           type: date
 *         required: false
 *         description: Date of component's last update
+*       - in: body
+*         name: approval
+*         schema:
+*           type: object
+*           properties:
+*             agreementNumber:
+*               type: string
+*               required: false
+*               description: The number of the minute in which the component syllabus was approved
+*             agreementDate:
+*               type: date
+*               required: false
+*               description: The date in which the component syllabus was approved
+*
 *     requestBody:
 *       required: true
 *       content:
@@ -639,7 +653,7 @@ componentRouter.put('/:id', ensureAuthenticated, componentController.update);
  *           type: number
  *         required: true
  *         description: The component id
- * 
+ *
  *     responses:
  *       200:
  *         description: The component was deleted
