@@ -58,10 +58,10 @@ export class ComponentService {
             if(componentDto.workload != null) {
                 const workload = await this.workloadService.create(componentDto.workload);
                 componentDto.workloadId = workload.id;
+                delete componentDto.workload;
             }
 
             const component = this.componentRepository.create(componentDto);
-            component.workloadId = componentDto.workloadId;
             
             return await this.componentRepository.save(component);
         }
@@ -86,11 +86,12 @@ export class ComponentService {
             if(componentDto.workload != null) {
                 const workloadData = {
                     ...componentDto.workload,
-                    id: componentDto.workload.id ?? componentDto.workloadId,
+                    id: componentDto.workload.id ?? componentDto.workloadId ?? componentExists.workloadId,
                 };
 
                 const workload = await this.workloadService.upsert(workloadData);
                 componentDto.workloadId = workload?.id;
+                delete componentDto.workload;
             }
 
             await this.componentRepository.createQueryBuilder().update(Component)
@@ -116,16 +117,14 @@ export class ComponentService {
             throw new AppError('Component not found.', 404);
         }
 
-        await Promise.all([
-            componentExists.workloadId != null
-                ? this.workloadService.delete(componentExists.workloadId)
-                : null,
-            this.componentRepository.createQueryBuilder()
-                .delete()
-                .from(Component)
-                .where('id = :id', { id })
-                .execute(),
-        ]);
+        await this.componentRepository.createQueryBuilder()
+            .delete()
+            .from(Component)
+            .where('id = :id', { id })
+            .execute();
+        
+        if (componentExists.workloadId != null)
+            await this.workloadService.delete(componentExists.workloadId);
     }
 
 }

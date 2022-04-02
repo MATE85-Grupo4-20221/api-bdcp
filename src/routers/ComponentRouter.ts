@@ -49,6 +49,92 @@ const componentController = new ComponentController();
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
 *
+*     Workload:
+*       type: object
+*       required:
+*         - id
+*         - studentTheory
+*         - studentPractice
+*         - studentInternship
+*         - studentTheoryPractice
+*         - studentPracticeInternship
+*         - teacherTheory
+*         - teacherPractice
+*         - teacherInternship
+*         - teacherTheoryPractice
+*         - teacherPracticeInternship
+*         - moduleTheory
+*         - modulePractice
+*         - moduleInternship
+*         - moduleTheoryPractice
+*         - modulePracticeInternship
+*       properties:
+*         id:
+*           type: number
+*           description: The auto-generated id of the workload
+*         studentTheory:
+*           type: number
+*           description: The student's theory workload
+*         studentPractice:
+*           type: number
+*           description: The student's practice workload
+*         studentInternship:
+*           type: number
+*           description: The student's internship workload
+*         studentTheoryPractice:
+*           type: number
+*           description: The student's theoryPractice workload
+*         studentPracticeInternship:
+*           type: number
+*           description: The student's practiceInternship workload
+*         teacherTheory:
+*           type: number
+*           description: The teacher's theory workload
+*         teacherPractice:
+*           type: number
+*           description: The teacher's practice workload
+*         teacherInternship:
+*           type: number
+*           description: The teacher's internship workload
+*         teacherTheoryPractice:
+*           type: number
+*           description: The teacher's theoryPractice workload
+*         teacherPracticeInternship:
+*           type: number
+*           description: The teacher's practiceInternship workload
+*         moduleTheory:
+*           type: number
+*           description: The module's theory workload
+*         modulePractice:
+*           type: number
+*           description: The module's practice workload
+*         moduleInternship:
+*           type: number
+*           description: The module's internship workload
+*         moduleTheoryPractice:
+*           type: number
+*           description: The module's theoryPractice workload
+*         modulePracticeInternship:
+*           type: number
+*           description: The module's practiceInternship workload
+*       example:
+*         id: 3
+*         studentTheory: 68
+*         studentPractice: 34
+*         studentInternship: 0
+*         studentTheoryPractice: 0
+*         studentPracticeInternship: 0
+*         teacherTheory: 68
+*         teacherPractice: 34
+*         teacherInternship: 0
+*         teacherTheoryPractice: 0
+*         teacherPracticeInternship: 0
+*         moduleTheory: 68
+*         modulePractice: 34
+*         moduleInternship: 0
+*         moduleTheoryPractice: 0
+*         modulePracticeInternship: 0
+*
 *     Component:
 *       type: object
 *       required:
@@ -69,12 +155,6 @@ const componentController = new ComponentController();
 *         department:
 *           type: string
 *           description: Component's department
-*         teachingWorkload:
-*           type: number
-*           description: Amount of hours invented in the component
-*         studentWorkload:
-*           type: number
-*           description: Amount of in-class hours invested in the component
 *         kind:
 *           type: string
 *           description: Kind of component (optional or required)
@@ -110,12 +190,18 @@ const componentController = new ComponentController();
 *           description: Content's creator's uid
 *         user:
 *           $ref: '#/components/schemas/User'
+*         workloadId:
+*           type: string
+*           description: Content's workload
+*         workload:
+*           $ref: '#/components/schemas/Workload'
 *       example:
 *         id: 27
 *         name: Geometria Analítica
 *         userId: 50496915-d356-43a0-84a4-43f83bad2225
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
+*         workloadId: 6
 */
 
 /**
@@ -172,6 +258,11 @@ const componentController = new ComponentController();
  *         updatedAt:
  *           type: date
  *           description: Date of content's last update
+ *         workloadId:
+ *           type: number
+ *           description: Id of component's workload
+ *         workload:
+ *           type: object
  *       example:
  *         name: Geometria Analitica
  *         code: MATA01
@@ -225,25 +316,13 @@ componentRouter.get('/', ensureAuthenticated, componentController.getComponents)
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of hours invented in the component
-*       - in: body
-*         name: studentWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of in-class hours invested in the component
-*       - in: body
 *         name: module
 *         schema:
 *           type: string
 *         required: false
 *         description: Type of module
 *       - in: body
-*         name: actingSemester
+*         name: semester
 *         schema:
 *           type: string
 *         required: false
@@ -278,6 +357,71 @@ componentRouter.get('/', ensureAuthenticated, componentController.getComponents)
 *           type: string
 *         required: false
 *         description: Book references
+*       - in: body
+*         name: workload
+*         schema:
+*           type: object
+*           properties:
+*             studentTheory:
+*               type: number
+*               required: false
+*               description: The student's theory workload
+*             studentPractice:
+*               type: number
+*               required: false
+*               description: The student's practice workload
+*             studentInternship:
+*               type: number
+*               required: false
+*               description: The student's internship workload
+*             studentTheoryPractice:
+*               type: number
+*               required: false
+*               description: The student's theory-practice workload
+*             studentPracticeInternship:
+*               type: number
+*               required: false
+*               description: The student's practice-internship workload
+*             teacherTheory:
+*               type: number
+*               required: false
+*               description: The teacher's Theory workload
+*             teacherPractice:
+*               type: number
+*               required: false
+*               description: The teacher's Practice workload
+*             teacherInternship:
+*               type: number
+*               required: false
+*               description: The teacher's Internship workload
+*             teacherTheoryPractice:
+*               type: number
+*               required: false
+*               description: The teacher's Theory Practice workload
+*             teacherPracticeInternship:
+*               type: number
+*               required: false
+*               description: The teacher's Practice Internship workload
+*             moduleTheory:
+*               type: number
+*               required: false
+*               description: The module's Theory workload
+*             modulePractice:
+*               type: number
+*               required: false
+*               description: The module's Practice workload
+*             moduleInternship:
+*               type: number
+*               required: false
+*               description: The module's Internship workload
+*             moduleTheoryPractice:
+*               type: number
+*               required: false
+*               description: The module's Theory Practice workload
+*             modulePracticeInternship:
+*               type: number
+*               required: false
+*               description: The module's Practice Internship workload
 *       - in: body
 *         name: createdAt
 *         schema:
@@ -334,18 +478,6 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *         required: false
 *         description: Component's department
 *       - in: body
-*         name: teachingWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of hours invented in the component
-*       - in: body
-*         name: studentWorkload
-*         schema:
-*           type: number
-*         required: false
-*         description: Amount of in-class hours invested in the component
-*       - in: body
 *         name: module
 *         schema:
 *           type: string
@@ -387,6 +519,79 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *           type: string
 *         required: false
 *         description: Book references
+*       - in: body
+*         name: workloadId
+*         schema:
+*           type: number
+*         required: false
+*         description: the component's workload id
+*       - in: body
+*         name: workload
+*         schema:
+*           type: object
+*           properties:
+*             studentTheory:
+*               type: number
+*               required: false
+*               description: The student's theory workload
+*             studentPractice:
+*               type: number
+*               required: false
+*               description: The student's practice workload
+*             studentInternship:
+*               type: number
+*               required: false
+*               description: The student's internship workload
+*             studentTheoryPractice:
+*               type: number
+*               required: false
+*               description: The student's theory-practice workload
+*             studentPracticeInternship:
+*               type: number
+*               required: false
+*               description: The student's practice-internship workload
+*             teacherTheory:
+*               type: number
+*               required: false
+*               description: The teacher's Theory workload
+*             teacherPractice:
+*               type: number
+*               required: false
+*               description: The teacher's Practice workload
+*             teacherInternship:
+*               type: number
+*               required: false
+*               description: The teacher's Internship workload
+*             teacherTheoryPractice:
+*               type: number
+*               required: false
+*               description: The teacher's Theory Practice workload
+*             teacherPracticeInternship:
+*               type: number
+*               required: false
+*               description: The teacher's Practice Internship workload
+*             moduleTheory:
+*               type: number
+*               required: false
+*               description: The module's Theory workload
+*             modulePractice:
+*               type: number
+*               required: false
+*               description: The module's Practice workload
+*             moduleInternship:
+*               type: number
+*               required: false
+*               description: The module's Internship workload
+*             moduleTheoryPractice:
+*               type: number
+*               required: false
+*               description: The module's Theory Practice workload
+*             modulePracticeInternship:
+*               type: number
+*               required: false
+*               description: The module's Practice Internship workload
+*         required: false
+*         description: Compoenent's workload data
 *       - in: body
 *         name: createdAt
 *         schema:
