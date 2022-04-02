@@ -18,18 +18,14 @@ export class ComponentService {
     }
 
     async searchComponents(keyword: string) {
-        const components = await this.componentRepository.find({
+        return this.componentRepository.find({
             where: [
                 { code: ILike(`%${keyword}%`) },
                 { name: ILike(`%${keyword}%`) }
             ],
-            //relations: [ 'component_logs', 'component_workloads' ],
+            relations: [ 'component_logs', 'component_workloads' ],
             //ele n reconhece as relations e dá erro, mas a função funciona com essa parte comentada
         });
-
-        if (components.length === 0) return [];
-
-        return components;
     }
 
     async getComponents() {
