@@ -1,13 +1,22 @@
 import { Request, Response } from 'express';
+
 import { ComponentService } from '../services/ComponentService';
 
 class ComponentController {
-
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
         const components = await componentService.getComponents(request.query);
 
         return response.status(200).json(components);
+    }
+
+    async getComponentById(request: Request, response: Response) {
+        const { id } = request.params;
+
+        const componentService = new ComponentService();
+        const component = await componentService.getComponentById(id);
+
+        return response.status(200).json(component);
     }
 
     async create(request: Request, response: Response) {
@@ -36,13 +45,6 @@ class ComponentController {
         await componentService.delete(id);
 
         return response.status(200).json({ message: 'Component has been deleted!' });
-    }
-
-    async importCourses(request: Request, response: Response) {
-        const authenticatedUserId = request.headers.authenticatedUserId as string;
-        const componentService = new ComponentService();
-        await componentService.importCourses(authenticatedUserId);
-        response.status(201).end();
     }
 
 }
