@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 import { Component } from './Component';
 
@@ -7,6 +7,9 @@ class ComponentWorkload {
 
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
+
+    @Column({ name: 'component_id' })
+        componentId: string;
 
     @Column({ name: 'teacher_theory', default: 0 })
         teacherTheory: number;
@@ -53,7 +56,10 @@ class ComponentWorkload {
     @Column({ name: 'module_practice_internship', default: 0 })
         modulePracticeInternship: number;
 
-    @OneToOne(() => Component, (component) => component.workload)
+    @OneToOne(() => Component, (component) => component.workload, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
+    @JoinColumn({ name: 'component_id' })
         component: Component;
 
 }

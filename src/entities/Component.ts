@@ -66,16 +66,18 @@ class Component {
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
         updatedAt?: Date;
 
-    @ManyToOne(() => User, (user) => user.components)
-    @JoinColumn({ name: 'created_by' })
-        user: User;
-    
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({ name: 'workload_id' })
         workload?: ComponentWorkload;
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];
+
+    @ManyToOne(() => User, (user) => user.components, {
+        cascade: [ 'insert', 'update', 'remove' ]
+    })
+    @JoinColumn({ name: 'created_by' })
+        user: User;
 
     generateLog(
         userId: string,

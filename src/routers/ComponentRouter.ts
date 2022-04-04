@@ -292,6 +292,62 @@ componentRouter.get('/', componentController.getComponents);
 
 /**
 * @swagger
+* /api/components/search/{keyword}:
+*   get:
+*     summary: Returns the list of all component found
+*     tags: [Component]
+*     parameters:
+*       - in: params
+*         name: keyword
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*         description: The list of all component found
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+componentRouter.get('/search/:keyword', componentController.searchComponents);
+
+/**
+* @swagger
+* /api/components/{id}:
+*   get:
+*     summary: Returns the component by id
+*     tags: [Component]
+*     parameters:
+*       - in: params
+*         name: id
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*         description: The component by id
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               items:
+*                 $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+componentRouter.get('/:id', componentController.getComponentById);
+
+/**
+* @swagger
 * /api/components:
 *   post:
 *     summary: Create a component
@@ -665,5 +721,27 @@ componentRouter.put('/:id', ensureAuthenticated, componentController.update);
  *         description: Internal Server Error
  */
 componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
+
+/**
+* @swagger
+* /api/components/import:
+*   post:
+*     summary: Import and insert components from UFBA website in the database
+*     tags: [Component]
+*     responses:
+*       200:
+*         description: Insert components in the database using the crawler
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/Component'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+componentRouter.post('/import', ensureAuthenticated, componentController.importCourses);
 
 export { componentRouter };
