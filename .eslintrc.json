@@ -58,7 +58,6 @@
         ],
         "object-curly-newline": "off",
         "no-param-reassign": "error",
-        "object-curly-spacing": ["error", "always"],
-        "object-shorthand": "error"
+        "object-curly-spacing": ["error", "always"]
     }
 }
