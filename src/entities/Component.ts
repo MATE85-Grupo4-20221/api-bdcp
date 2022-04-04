@@ -9,7 +9,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-
 import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
@@ -30,8 +29,8 @@ class Component {
     @Column({ name: 'created_by' })
         userId: string;
 
-    @Column({ name: 'workload_id' })
-        workloadId: string;
+    @Column({ name: 'workload_id', nullable: true })
+        workloadId?: string;
 
     @Column({ enum: ComponentStatus })
         status: ComponentStatus;
@@ -78,10 +77,10 @@ class Component {
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'created_by' })
         user: User;
-
+    
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({ name: 'workload_id' })
-        workload: ComponentWorkload;
+        workload?: ComponentWorkload;
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];

@@ -3,6 +3,7 @@ import { getCustomRepository, Like, Repository } from 'typeorm';
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
 import { AppError } from '../errors/AppError';
+import { WorkloadService } from './WorkloadService';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
@@ -11,14 +12,18 @@ export class ComponentService {
 
     private componentRepository : Repository<Component>;
     private componentLogRepository: Repository<ComponentLog>;
+    private workloadService: WorkloadService;
 
     constructor() {
         this.componentRepository = getCustomRepository(ComponentRepository);
+        this.workloadService = new WorkloadService();
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
     }
 
     async getComponents() {
-        const components = await this.componentRepository.find();
+        const components = await this.componentRepository.find({
+            relations: [ 'workload' ],
+        });
 
         if (components.length === 0) return [];
 
@@ -54,6 +59,13 @@ export class ComponentService {
     ){
         try {
             const componentDto = { ...requestDto, userId: userId };
+
+            if(componentDto.workload != null) {
+                const workload = await this.workloadService.create(componentDto.workload);
+                componentDto.workloadId = workload.id;
+                delete componentDto.workload;
+            }
+
             const component = this.componentRepository.create(componentDto);
             const createdComponent = await this.componentRepository.save(component);
 
@@ -83,6 +95,16 @@ export class ComponentService {
         }
 
         try {
+            if(componentDto.workload != null) {
+                const workloadData = {
+                    ...componentDto.workload,
+                    id: componentDto.workload.id ?? componentDto.workloadId ?? componentExists.workloadId,
+                };
+
+                const workload = await this.workloadService.upsert(workloadData);
+                componentDto.workloadId = workload?.id;
+                delete componentDto.workload;
+            }
             const approval = componentDto?.approval;
             delete componentDto?.approval;
 
@@ -145,6 +167,9 @@ export class ComponentService {
             .from(Component)
             .where('id = :id', { id })
             .execute();
+        
+        if (componentExists.workloadId != null)
+            await this.workloadService.delete(componentExists.workloadId);
     }
 
 }
