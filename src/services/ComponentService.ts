@@ -33,6 +33,16 @@ export class ComponentService {
         return components;
     }
 
+    async getComponentById(id: string) {
+        const component = await this.componentRepository.findOne({
+            where: { id },
+        });
+
+        if (!component) return null;
+
+        return component;
+    }
+
     async create(
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>

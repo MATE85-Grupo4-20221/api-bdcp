@@ -291,6 +291,38 @@ const componentController = new ComponentController();
 componentRouter.get('/', componentController.getComponents);
 
 /**
+ * @swagger
+ * /api/components/{id}:
+ *   get:
+ *     summary: Get a component by id
+ *     tags: [Component]
+ *     parameters:
+ *       - in: params
+ *         name: id
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: The component id
+ *
+ *     responses:
+ *       200:
+ *         description: The component was found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                 $ref: '#/components/schemas/Component'
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: The component was not found
+ *       500:
+ *         description: Internal Server Error
+ */
+componentRouter.get('/:id', ensureAuthenticated, componentController.getComponentById);
+
+/**
 * @swagger
 * /api/components:
 *   post:

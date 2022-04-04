@@ -20,13 +20,20 @@ class ComponentController {
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
 
-        const filter    = request.query.filter as string;
-        const page      = parseInt(String(request.query.page)) || 0;
-        const limit     = parseInt(String(request.query.limit)) || 10;
+        const filter = request.query.filter as string;
+        const page = parseInt(String(request.query.page)) || 0;
+        const limit = parseInt(String(request.query.limit)) || 10;
 
         const components = await componentService.getComponents(filter);
 
         return response.status(200).json(paginate(components, { page, limit }));
+    }
+
+    async getComponentById(request: Request, response: Response) {
+        const componentService = new ComponentService();
+        const component = await componentService.getComponentById(request.params.id);
+
+        return response.status(200).json(component);
     }
 
     async create(request: Request, response: Response) {
