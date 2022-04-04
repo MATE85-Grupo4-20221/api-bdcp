@@ -7,8 +7,11 @@ class ComponentController {
     async importComponentsFromSiac(request: Request, response: Response) {
         const authenticatedUserId = request.headers.authenticatedUserId as string;
         const crawlerService = new CrawlerService();
-
-        await crawlerService.importComponentsFromSiac(authenticatedUserId);
+        const {cdCurso, nuPerCursoInicial} = request.body;
+        if(cdCurso == undefined || nuPerCursoInicial == undefined){
+            return response.status(400).json('O código do curso ou o semestre vigente não foram encontrados');
+        }
+        await crawlerService.importComponentsFromSiac(authenticatedUserId, cdCurso, nuPerCursoInicial);
         
         return response.status(201).end();
     }

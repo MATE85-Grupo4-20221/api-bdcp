@@ -62,7 +62,8 @@ export class CrawlerService {
         }
     }
 
-    async importComponentsFromSiac(userId: string) {
+    async importComponentsFromSiac(userId: string, cdCurso: string, nuPerCursoInicial: string) {
+        'https://alunoweb.ufba.br/SiacWWW/ListaDisciplinasEmentaPublico.do?cdCurso=' + cdCurso + '&nuPerCursoInicial=' + nuPerCursoInicial
         const options1: AxiosRequestConfig = {
             method: 'get',
             url: 'https://alunoweb.ufba.br/SiacWWW/ListaDisciplinasEmentaPublico.do?cdCurso=112140&nuPerCursoInicial=20132',
