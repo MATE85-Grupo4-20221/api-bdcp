@@ -1,4 +1,4 @@
-import { getCustomRepository, Repository, ILike } from 'typeorm';
+import { getCustomRepository, Repository } from 'typeorm';
 import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
 import type { CheerioAPI } from 'cheerio';
@@ -10,6 +10,7 @@ import { WorkloadService } from './WorkloadService';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { IComponentAcceptableQueryParams } from '../interfaces/IComponentAcceptableQueryParams';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 interface ComponentInfo {
@@ -36,41 +37,27 @@ export class ComponentService {
 
     constructor() {
         this.componentRepository = getCustomRepository(ComponentRepository);
-        this.workloadService = new WorkloadService();
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
+        this.workloadService = new WorkloadService();
     }
 
-    async searchComponents(keyword: string) {
-        return this.componentRepository.find({
-            where: [
-                { code: ILike(`%${keyword}%`) },
-                { name: ILike(`%${keyword}%`) }
-            ],
-            relations: [ 'component_logs', 'component_workloads' ],
-            //ele n reconhece as relations e dá erro, mas a função funciona com essa parte comentada
-        });
-    }
+    async getComponents(queryHttpParams: IComponentAcceptableQueryParams) {
+        const components = this.componentRepository.createQueryBuilder('components')
+            .innerJoinAndSelect('components.workload', 'workload')
+            .innerJoinAndSelect('components.logs', 'logs');
 
-    async getComponents() {
-        return this.componentRepository.find();
-    }
-
-    async getComponentById(id: string) {
-        const component = await this.componentRepository.findOne({
-            where: { id },
-        });
-
-        if (!component) {
-            throw new AppError('Component not found.', 404);
+        for(const q in queryHttpParams) {
+            components.where(`components.${q} ilike :key`, { key: `%${queryHttpParams[q as keyof IComponentAcceptableQueryParams]}%` });
         }
 
-        return component;
+        return await components.getMany();
     }
 
     async create(
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
     ) {
+    ){
         const componentExists = await this.componentRepository.findOne({
             where: { code: requestDto.code },
         });

@@ -2,25 +2,12 @@ import { Request, Response } from 'express';
 import { ComponentService } from '../services/ComponentService';
 
 class ComponentController {
-    async searchComponents(request: Request, response: Response) {
-        const componentService = new ComponentService();
-        const components = await componentService.searchComponents(request.params.keyword);
-
-        return response.status(200).json(components);
-    }
 
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
-        const components = await componentService.getComponents();
+        const components = await componentService.getComponents(request.query);
 
         return response.status(200).json(components);
-    }
-
-    async getComponentById(request: Request, response: Response) {
-        const componentService = new ComponentService();
-        const component = await componentService.getComponentById(request.params.id);
-
-        return response.status(200).json(component);
     }
 
     async create(request: Request, response: Response) {

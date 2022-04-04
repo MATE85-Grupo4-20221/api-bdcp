@@ -64,7 +64,7 @@ class Component {
         createdAt: Date;
 
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
-        updatedAt: Date;
+        updatedAt?: Date;
 
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({ name: 'workload_id' })
