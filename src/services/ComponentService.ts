@@ -1,4 +1,7 @@
 import { getCustomRepository, Repository, ILike } from 'typeorm';
+import axios, { AxiosRequestConfig } from 'axios';
+import * as cheerio from 'cheerio';
+import type { CheerioAPI } from 'cheerio';
 
 import { AppError } from '../errors/AppError';
 import { Component } from '../entities/Component';
@@ -6,10 +9,27 @@ import { ComponentRepository } from '../repositories/ComponentRepository';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { ComponentStatus } from '../interfaces/ComponentStatus';
+
+interface ComponentInfo {
+    code: string;
+    componentName: string,
+    workload: {
+        theoretical: number;
+        practice: number,
+        internship: number,
+    }
+    department: string,
+    currentSemester: string, // 2007.2
+    description: string,
+    goal: string,
+    program: string,
+    bibliography: string,
+}
 
 export class ComponentService {
 
-    private componentRepository : Repository<Component>;
+    private componentRepository: Repository<Component>;
     private componentLogRepository: Repository<ComponentLog>;
 
     constructor() {
@@ -29,11 +49,7 @@ export class ComponentService {
     }
 
     async getComponents() {
-        const components = await this.componentRepository.find();
-
-        if (components.length === 0) return [];
-
-        return components;
+        return this.componentRepository.find();
     }
 
     async getComponentById(id: string) {
@@ -41,7 +57,7 @@ export class ComponentService {
             where: { id },
         });
 
-        if(!component){
+        if (!component) {
             throw new AppError('Component not found.', 404);
         }
 
@@ -51,7 +67,7 @@ export class ComponentService {
     async create(
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
-    ){
+    ) {
         const componentExists = await this.componentRepository.findOne({
             where: { code: requestDto.code },
         });
@@ -61,7 +77,7 @@ export class ComponentService {
         }
 
         try {
-            const componentDto = { ...requestDto, userId: userId };
+            const componentDto = { ...requestDto, userId };
             const component = this.componentRepository.create(componentDto);
             const createdComponent = await this.componentRepository.save(component);
 
@@ -79,14 +95,14 @@ export class ComponentService {
     async update(
         id: string,
         componentDto: Omit<Component, 'createdAt' | 'updatedAt'> &
-            { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
+        { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
         userId: string
     ) {
         const componentExists = await this.componentRepository.findOne({
             where: { id }
         });
 
-        if(!componentExists){
+        if (!componentExists) {
             throw new AppError('Component not found.', 404);
         }
 
@@ -136,12 +152,12 @@ export class ComponentService {
         }
     }
 
-    async delete(id: string){
+    async delete(id: string) {
         const componentExists = await this.componentRepository.findOne({
             where: { id }
         });
 
-        if(!componentExists){
+        if (!componentExists) {
             throw new AppError('Component not found.', 404);
         }
 
@@ -153,6 +169,116 @@ export class ComponentService {
             .from(Component)
             .where('id = :id', { id })
             .execute();
+    }
+
+    async createComponent(userId: string, data: ComponentInfo) {
+        const componentExists = await this.componentRepository.findOne({
+            where: { code: data.code },
+        });
+
+        if (componentExists) {
+            throw new AppError('Component already exists.', 400);
+        }
+
+        const component = this.componentRepository.create({
+            userId,
+            code: data.code,
+            name: data.componentName,
+            department: data.department,
+            semester: data.currentSemester,
+            program: data.description,
+            objective: data.goal,
+            syllabus: data.program,
+            bibliography: data.bibliography,
+            status: ComponentStatus.PUBLISHED,
+            prerequeriments: 'Nenhum Cadastrado',
+            methodology: 'Nenhum Cadastrado',
+        });
+        await this.componentRepository.save(component);
+        const componentLog = component.generateLog(userId, ComponentLogType.CREATION);
+        await this.componentLogRepository.save(componentLog);
+
+    }
+
+    async importCourses(userId: string) {
+        const options1: AxiosRequestConfig = {
+            method: 'get',
+            url: 'https://alunoweb.ufba.br/SiacWWW/ListaDisciplinasEmentaPublico.do?cdCurso=112140&nuPerCursoInicial=20132',
+            responseType: 'arraybuffer',
+            responseEncoding: 'binary',
+            headers: {
+                'Content-type': 'application/json'
+            },
+        };
+        const options2: AxiosRequestConfig = {
+            method: 'get',
+            url: '',
+            responseType: 'arraybuffer',
+            responseEncoding: 'binary',
+            headers: {
+                'Content-type': 'application/json'
+            },
+        };
+
+        function getCourseUrls($: CheerioAPI) {
+            return $('table').eq(2).find('tr')
+                .map((_: any, lesson: any) => {
+                    const $lesson = $(lesson);
+                    return 'https://alunoweb.ufba.br' + $lesson.find('td:nth-child(3) a').attr('href');
+                }).toArray();
+        }
+
+        function extractCourseInfo($: CheerioAPI): Array < ComponentInfo > {
+            return $('table').eq(1)
+                .map((_: any, lesson: any) => {
+                    const $lesson = $(lesson);
+
+                    const content = $lesson.find('.even').children();
+                    const rows = content.map((_, a) => a.children[0]);
+                    const rawData: string[] = rows.map((_, x) => $(x).text().trim()).toArray();
+
+                    const [ code, componentName ] = rawData[0].split('-');
+
+                    return {
+                        code: code.trim(),
+                        componentName: componentName.trim(),
+                        workload: {
+                            theoretical: Number(rawData[1]),
+                            practice: Number(rawData[2]),
+                            internship: Number(rawData[3]),
+                        },
+                        department: rawData[4],
+                        currentSemester: rawData[5],
+                        description: rawData[6],
+                        goal: rawData[7],
+                        program: rawData[8],
+                        bibliography: rawData[9],
+                    };
+                }).toArray();
+        }
+
+        const { data } = await axios(options1);
+
+        const decoder = new TextDecoder('ISO-8859-1');
+        const html = decoder.decode(data);
+        const $ = cheerio.load(html);
+        const urlList = getCourseUrls($);
+        urlList.splice(0, 2);
+        const lessonsArr: ComponentInfo[] = [];
+
+        const responses = await Promise.all(urlList.map(url => axios({ ...options2, url, })));
+
+        for (const response of responses) {
+            const decoder = new TextDecoder('ISO-8859-1');
+            const html = decoder.decode(response.data);
+            const $ = cheerio.load(html); // Initialize cheerio
+            const courseInfo = extractCourseInfo($);
+            console.log(courseInfo);
+            lessonsArr.push(...courseInfo);
+            this.createComponent(userId, courseInfo[0]).catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
 }

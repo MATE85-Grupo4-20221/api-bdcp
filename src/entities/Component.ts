@@ -25,10 +25,10 @@ class Component {
     @Column({ name: 'created_by' })
         userId: string;
 
-    @Column({ enum: ComponentStatus })
+    @Column({ enum: ComponentStatus, default: ComponentStatus.DRAFT })
         status: ComponentStatus;
 
-    @Column()
+    @Column({ unique: true })
         code: string;
 
     @Column()

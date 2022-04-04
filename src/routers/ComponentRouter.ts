@@ -597,9 +597,9 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 
 /**
 * @swagger
-* /api/components/crawler:
-*   get:
-*     summary: Uses crawler to insert components in the database
+* /api/components/import:
+*   post:
+*     summary: Import and insert components from UFBA website in the database
 *     tags: [Component]
 *     responses:
 *       200:
@@ -615,6 +615,6 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/crawler', ensureAuthenticated, componentController.fillDatabaseWithCrawler);
+componentRouter.post('/import', ensureAuthenticated, componentController.importCourses);
 
 export { componentRouter };
