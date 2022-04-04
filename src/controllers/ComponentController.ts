@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { paginate } from '../helpers/paginate';
 import { ComponentService } from '../services/ComponentService';
 import { CrawlerService } from '../services/CrawlerService';
 
@@ -7,20 +8,25 @@ class ComponentController {
     async importComponentsFromSiac(request: Request, response: Response) {
         const authenticatedUserId = request.headers.authenticatedUserId as string;
         const crawlerService = new CrawlerService();
-        const {cdCurso, nuPerCursoInicial} = request.body;
+        const { cdCurso, nuPerCursoInicial } = request.body;
         if(cdCurso == undefined || nuPerCursoInicial == undefined){
             return response.status(400).json('O código do curso ou o semestre vigente não foram encontrados');
         }
         await crawlerService.importComponentsFromSiac(authenticatedUserId, cdCurso, nuPerCursoInicial);
-        
+
         return response.status(201).end();
     }
 
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
-        const components = await componentService.getComponents(request.query);
 
-        return response.status(200).json(components);
+        const filter    = request.query.filter as string;
+        const page      = parseInt(String(request.query.page)) || 0;
+        const limit     = parseInt(String(request.query.limit)) || 10;
+
+        const components = await componentService.getComponents(filter);
+
+        return response.status(200).json(paginate(components, { page, limit }));
     }
 
     async create(request: Request, response: Response) {
