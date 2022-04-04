@@ -13,12 +13,7 @@ import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
-
-enum ComponentStatus {
-    published = 'published',
-    draft = 'draft',
-    archived = 'archived',
-}
+import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 @Entity('components')
 class Component {
@@ -32,20 +27,17 @@ class Component {
     @Column({ name: 'workload_id', nullable: true })
         workloadId?: string;
 
-    @Column({ enum: ComponentStatus })
+    @Column({ enum: ComponentStatus, default: ComponentStatus.DRAFT })
         status: ComponentStatus;
 
-    @Column()
+    @Column({ unique: true })
         code: string;
 
     @Column()
         name: string;
 
     @Column()
-        department: number;
-
-    @Column()
-        type: string;
+        department: string;
 
     @Column()
         program: string;
@@ -72,7 +64,7 @@ class Component {
         createdAt: Date;
 
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', nullable: true })
-        updatedAt: Date;
+        updatedAt?: Date;
 
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'created_by' })

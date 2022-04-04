@@ -1,4 +1,4 @@
-import { getCustomRepository, Like, Repository } from 'typeorm';
+import { getCustomRepository, Repository } from 'typeorm';
 
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
@@ -7,6 +7,7 @@ import { WorkloadService } from './WorkloadService';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { IComponentAcceptableQueryParams } from '../interfaces/IComponentAcceptableQueryParams';
 
 export class ComponentService {
 
@@ -16,36 +17,26 @@ export class ComponentService {
 
     constructor() {
         this.componentRepository = getCustomRepository(ComponentRepository);
-        this.workloadService = new WorkloadService();
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
+        this.workloadService = new WorkloadService();
     }
 
-    async getComponents() {
-        const components = await this.componentRepository.find({
-            relations: [ 'workload' ],
-        });
+    async getComponents(queryHttpParams: IComponentAcceptableQueryParams) {
+        const components = this.componentRepository.createQueryBuilder('components')
+            .innerJoinAndSelect('components.workload', 'workload')
+            .innerJoinAndSelect('components.logs', 'logs');
 
-        if (components.length === 0) return [];
+        for(const q in queryHttpParams) {
+            components.where(`components.${q} ilike :key`, { key: `%${queryHttpParams[q as keyof IComponentAcceptableQueryParams]}%` });
+        }
 
-        return components;
+        return await components.getMany();
     }
 
-    async getComponentByID(id: string) {
+    async getComponentById(id: string) {
         const component = await this.componentRepository.findOne({
             where: { id },
-        });
-
-        if (!component) return null;
-
-        return component;
-    }
-
-    async searchComponent(keyword: string) {
-        const component = await this.componentRepository.findOne({
-            where: {
-                code: Like(`%${keyword}%`),
-                name: Like(`%${keyword}%`),
-            },
+            relations: [ 'workload', 'logs' ]
         });
 
         if (!component) return null;
@@ -57,6 +48,14 @@ export class ComponentService {
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
     ){
+        const componentExists = await this.componentRepository.findOne({
+            where: { code: requestDto.code },
+        });
+
+        if (componentExists) {
+            throw new AppError('Component already exists.', 400);
+        }
+
         try {
             const componentDto = { ...requestDto, userId: userId };
 
