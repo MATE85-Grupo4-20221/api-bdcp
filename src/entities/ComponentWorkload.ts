@@ -9,52 +9,52 @@ class ComponentWorkload {
     readonly id: string;
 
     @Column({ name: 'teacher_theory', default: 0 })
-        teacherTheory: number;
+        teacherTheory?: number;
 
     @Column({ name: 'teacher_practice', default: 0 })
-        teacherPractice: number;
+        teacherPractice?: number;
 
     @Column({ name: 'teacher_theory_practice', default: 0 })
-        teacherTheoryPractice: number;
+        teacherTheoryPractice?: number;
 
     @Column({ name: 'teacher_internship', default: 0 })
-        teacherInternship: number;
+        teacherInternship?: number;
 
     @Column({ name: 'teacher_practice_internship', default: 0 })
-        teacherPracticeInternship: number;
+        teacherPracticeInternship?: number;
 
     @Column({ name: 'student_theory', default: 0 })
-        studentTheory: number;
+        studentTheory?: number;
 
     @Column({ name: 'student_practice', default: 0 })
-        studentPractice: number;
+        studentPractice?: number;
 
     @Column({ name: 'student_theory_practice', default: 0 })
-        studentTheoryPractice: number;
+        studentTheoryPractice?: number;
 
     @Column({ name: 'student_internship', default: 0 })
-        studentInternship: number;
+        studentInternship?: number;
 
     @Column({ name: 'student_practice_internship', default: 0 })
-        studentPracticeInternship: number;
+        studentPracticeInternship?: number;
 
     @Column({ name: 'module_theory', default: 0 })
-        moduleTheory: number;
+        moduleTheory?: number;
 
     @Column({ name: 'module_practice', default: 0 })
-        modulePractice: number;
+        modulePractice?: number;
 
     @Column({ name: 'module_theory_practice', default: 0 })
-        moduleTheoryPractice: number;
+        moduleTheoryPractice?: number;
 
     @Column({ name: 'module_internship', default: 0 })
-        moduleInternship: number;
+        moduleInternship?: number;
 
     @Column({ name: 'module_practice_internship', default: 0 })
-        modulePracticeInternship: number;
+        modulePracticeInternship?: number;
 
     @OneToOne(() => Component, (component) => component.workload)
-        component: Component;
+        component?: Component;
 
 }
 
