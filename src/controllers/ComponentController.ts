@@ -58,17 +58,23 @@ class ComponentController {
     }
 
     async fillDatabaseWithCrawler(request: Request, response: Response) {
+        const body = request.body;
+        console.log(request.body.cdCurso);
+        if(body.cdCurso == undefined || body.nuPerCursoInicial == undefined){
+            return response.status(400).json('O código do curso ou o semestre vigente não foram encontrados');
+        }
         const authenticatedUserId = request.headers.authenticatedUserId as string;
         const componentService = new ComponentService();
         const options1: AxiosRequestConfig = {
             method: 'get',
-            url: 'https://alunoweb.ufba.br/SiacWWW/ListaDisciplinasEmentaPublico.do?cdCurso=112140&nuPerCursoInicial=20132',
+            url: 'https://alunoweb.ufba.br/SiacWWW/ListaDisciplinasEmentaPublico.do?cdCurso=' + body.cdCurso + '&nuPerCursoInicial=' + body.nuPerCursoInicial,
             responseType: 'arraybuffer',
             responseEncoding: 'binary',
             headers: {
                 'Content-type': 'application/json'
             },
         };
+        console.log(options1.url);
         const options2: AxiosRequestConfig = {
             method: 'get',
             url: '',
@@ -99,7 +105,12 @@ class ComponentController {
                         code: content.code,
                         name: content.name,
                         type:content.type,
+                        department: $lesson.find('tr:nth-child(5) td:nth-child(4)').text(),
                         program: $lesson.find('tr:nth-child(7) td:nth-child(1)').text(),
+                        semester: $lesson.find('tr:nth-child(5) td:nth-child(5)').text(),
+                        objective: $lesson.find('tr:nth-child(10) td:nth-child(1)').text(),
+                        syllabus: $lesson.find('tr:nth-child(12) td:nth-child(1)').text(),
+                        bibliography: $lesson.find('tr:nth-child(14) td:nth-child(1)').text(),
                     }; 
                 }).toArray();
 

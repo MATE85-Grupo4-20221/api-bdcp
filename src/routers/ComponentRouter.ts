@@ -514,9 +514,22 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 /**
 * @swagger
 * /api/components/crawler:
-*   get:
+*   post:
 *     summary: Uses crawler to insert components in the database
 *     tags: [Component]
+*     parameters:
+*       - in: body
+*         name: cdCurso
+*         schema:
+*           type: string
+*         required: false
+*         description: Class code
+*       - in: body
+*         name: nuPerCursoInicial
+*         schema:
+*           type: string
+*         required: false
+*         description: First semester of the class
 *     responses:
 *       200:
 *         description: Insert components in the database using the crawler
@@ -531,6 +544,6 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/crawler', ensureAuthenticated, componentController.fillDatabaseWithCrawler);
+componentRouter.post('/crawler', ensureAuthenticated, componentController.fillDatabaseWithCrawler);
 
 export { componentRouter };
