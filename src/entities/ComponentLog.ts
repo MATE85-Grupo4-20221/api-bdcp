@@ -35,7 +35,7 @@ class ComponentLog {
     @JoinColumn({ name: 'component_id' })
         component: Component;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { eager: true })
     @JoinColumn({ name: 'updated_by' })
         user: User;
 
