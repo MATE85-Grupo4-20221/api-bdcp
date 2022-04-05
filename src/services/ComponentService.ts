@@ -7,6 +7,7 @@ import { WorkloadService } from './WorkloadService';
 import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 export class ComponentService {
 
@@ -23,8 +24,8 @@ export class ComponentService {
     async getComponents(filter = '') {
         const components = await this.componentRepository.find({
             where: [
-                { code: ILike(`${filter}%`) },
-                { name: ILike(`${filter}%`) }
+                { code: ILike(`${filter}%`), status: ComponentStatus.PUBLISHED },
+                { name: ILike(`${filter}%`), status: ComponentStatus.PUBLISHED }
             ],
             order: { code: 'ASC' },
             relations: [ 'logs', 'workload' ],

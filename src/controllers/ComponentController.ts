@@ -6,12 +6,14 @@ import { CrawlerService } from '../services/CrawlerService';
 
 class ComponentController {
     async importComponentsFromSiac(request: Request, response: Response) {
+        const { cdCurso, nuPerCursoInicial } = request.body;
         const authenticatedUserId = request.headers.authenticatedUserId as string;
         const crawlerService = new CrawlerService();
-        const { cdCurso, nuPerCursoInicial } = request.body;
+
         if(cdCurso == undefined || nuPerCursoInicial == undefined){
-            return response.status(400).json('O código do curso ou o semestre vigente não foram encontrados');
+            return response.status(400).json({ message: 'O código do curso ou o semestre vigente não foram encontrados!' });
         }
+
         await crawlerService.importComponentsFromSiac(authenticatedUserId, cdCurso, nuPerCursoInicial);
 
         return response.status(201).end();

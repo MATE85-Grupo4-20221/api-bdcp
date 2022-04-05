@@ -297,6 +297,12 @@ componentRouter.get('/', componentController.getComponents);
  *     summary: Get a component by id
  *     tags: [Component]
  *     parameters:
+ *       - in: header
+ *         name: authenticatedUserId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The authenticated user id
  *       - in: params
  *         name: id
  *         schema:
@@ -329,6 +335,12 @@ componentRouter.get('/:id', ensureAuthenticated, componentController.getComponen
 *     summary: Create a component
 *     tags: [Component]
 *     parameters:
+*       - in: header
+*         name: authenticatedUserId
+*         schema:
+*           type: string
+*         required: true
+*         description: The authenticated user id
 *       - in: body
 *         name: code
 *         schema:
@@ -485,6 +497,12 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *     summary: Update a component
 *     tags: [Component]
 *     parameters:
+*       - in: header
+*         name: authenticatedUserId
+*         schema:
+*           type: string
+*         required: true
+*         description: The authenticated user id
 *       - in: params
 *         name: id
 *         schema:
@@ -679,6 +697,12 @@ componentRouter.put('/:id', ensureAuthenticated, componentController.update);
  *     summary: Delete a component by id
  *     tags: [Component]
  *     parameters:
+ *       - in: header
+ *         name: authenticatedUserId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The authenticated user id
  *       - in: params
  *         name: id
  *         schema:
@@ -704,15 +728,28 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 *   post:
 *     summary: Import and insert components from UFBA website in the database
 *     tags: [Component]
+*     parameters:
+*       - in: header
+*         name: authenticatedUserId
+*         schema:
+*           type: string
+*         required: true
+*         description: The authenticated user id
+*       - in: body
+*         name: cdCurso
+*         schema:
+*           type: string
+*         required: true
+*         description: The course code
+*       - in: body
+*         name: nuPerCursoInicial
+*         schema:
+*           type: string
+*         required: true
+*         description: The course current semester
 *     responses:
-*       200:
+*       201:
 *         description: Insert components in the database using the crawler
-*         content:
-*           application/json:
-*             schema:
-*               type: array
-*               items:
-*                 $ref: '#/components/schemas/Component'
 *       400:
 *         description: Bad Request
 *       500:

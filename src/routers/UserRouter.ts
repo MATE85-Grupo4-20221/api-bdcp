@@ -96,6 +96,12 @@ userRouter.post('/', userController.create);
 *     summary: Update a user
 *     tags: [User]
 *     parameters:
+*       - in: header
+*         name: authenticatedUserId
+*         schema:
+*           type: string
+*         required: true
+*         description: The authenticated user id
 *       - in: params
 *         name: id
 *         schema:
