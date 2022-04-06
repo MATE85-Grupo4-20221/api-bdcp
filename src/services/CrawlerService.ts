@@ -36,7 +36,11 @@ export class CrawlerService {
         }
 
         try {
-            const workload = await this.workloadService.create({});
+            const workload = await this.workloadService.create({
+                studentPractice: data.workload?.practice,
+                studentTheory: data.workload?.theoretical,
+                studentInternship: data.workload?.internship,
+            });
 
             const component = this.componentRepository.create({
                 userId,
@@ -92,7 +96,7 @@ export class CrawlerService {
                 }).toArray();
         }
 
-        function extractCourseInfo($: CheerioAPI): Array < IComponentInfoCrawler > {
+        function extractCourseInfo($: CheerioAPI): Array <IComponentInfoCrawler> {
             return $('table').eq(1)
                 .map((_: any, lesson: any) => {
                     const $lesson = $(lesson);
@@ -100,6 +104,7 @@ export class CrawlerService {
                     const content = $lesson.find('.even').children();
                     const rows = content.map((_, a) => a.children[0]);
                     const rawData: string[] = rows.map((_, x) => $(x).text().trim()).toArray();
+                    console.log(rawData);
 
                     const [ code, componentName ] = rawData[0].split('-');
 
@@ -115,6 +120,11 @@ export class CrawlerService {
                         status: ComponentStatus.PUBLISHED,
                         prerequeriments: 'Não há Pré-requisitos cadastrados',
                         methodology: 'Não há Metodologia cadastrado',
+                        workload: {
+                            theoretical: Number(rawData[1]),
+                            practice: Number(rawData[2]),
+                            internship: Number(rawData[3]),
+                        }
                     };
                 }).toArray();
         }

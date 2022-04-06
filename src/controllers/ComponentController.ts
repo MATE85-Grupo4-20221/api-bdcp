@@ -10,7 +10,7 @@ class ComponentController {
         const authenticatedUserId = request.headers.authenticatedUserId as string;
         const crawlerService = new CrawlerService();
 
-        if(cdCurso == undefined || nuPerCursoInicial == undefined){
+        if(!cdCurso || !nuPerCursoInicial){
             return response.status(400).json({ message: 'O código do curso ou o semestre vigente não foram encontrados!' });
         }
 
