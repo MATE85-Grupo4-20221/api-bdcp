@@ -15,6 +15,11 @@ const componentController = new ComponentController();
 /**
 * @swagger
 * components:
+*   securitySchemes:
+*     bearerAuth:            
+*       type: http
+*       scheme: bearer
+*       bearerFormat: JWT
 *   schemas:
 *     User:
 *       type: object
@@ -179,6 +184,10 @@ const componentController = new ComponentController();
 *         bibliography:
 *           type: string
 *           description: Book references
+*         status:
+*           type: string
+*           enum: [published, draft, archived]
+*           description: Component's status
 *         createdAt:
 *           type: date
 *           description: Date of component's creation
@@ -654,19 +663,6 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *           type: date
 *         required: false
 *         description: Date of component's last update
-*       - in: body
-*         name: approval
-*         schema:
-*           type: object
-*           properties:
-*             agreementNumber:
-*               type: string
-*               required: false
-*               description: The number of the minute in which the component syllabus was approved
-*             agreementDate:
-*               type: date
-*               required: false
-*               description: The date in which the component syllabus was approved
 *
 *     requestBody:
 *       required: true
@@ -756,5 +752,50 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 *         description: Internal Server Error
 */
 componentRouter.post('/import', ensureAuthenticated, componentController.importComponentsFromSiac);
+
+/**
+ * @swagger
+ * /api/components/approve:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Approve a component and move it to published
+ *     tags: [Component]
+ *     parameters:
+ *       - in: params
+ *         name: id
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: The component id
+ *       - in: body
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [published, draft, archived]
+ *         required: true
+ *         description: Component's status. <b>In order to approve a component, it's status must be sent as published</b>
+ *       - in: body
+ *         name: approval
+ *         schema:
+ *           type: object
+ *           properties:
+ *             agreementNumber:
+ *               type: string
+ *               required: true
+ *               description: The number of the minute in which the component syllabus was approved
+ *             agreementDate:
+ *               type: date
+ *               required: true
+ *               description: The date in which the component syllabus was approved
+ *     responses:
+ *       204:
+ *         description: Component successfully approved
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
+componentRouter.post('/:id/approve', ensureAuthenticated, componentController.approve);
 
 export { componentRouter };

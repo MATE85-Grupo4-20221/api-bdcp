@@ -7,6 +7,7 @@ import {
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
+    Unique,
     UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
@@ -16,6 +17,7 @@ import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 @Entity('components')
+@Unique([ 'code', 'status' ])
 class Component {
 
     @PrimaryGeneratedColumn('uuid')
@@ -30,7 +32,7 @@ class Component {
     @Column({ enum: ComponentStatus, default: ComponentStatus.DRAFT })
         status: ComponentStatus;
 
-    @Column({ unique: true })
+    @Column()
         code: string;
 
     @Column()

@@ -66,6 +66,16 @@ class ComponentController {
         return response.status(200).json({ message: 'Component has been deleted!' });
     }
 
+    async approve(request: Request, response: Response) {
+        const { id } = request.params;
+        const authenticatedUserId = request.headers.authenticatedUserId as string;
+
+        const componentService = new ComponentService();
+        await componentService.approve(id, request.body, authenticatedUserId);
+
+        return response.status(204).json();
+    }
+
 }
 
 export { ComponentController };

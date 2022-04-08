@@ -49,7 +49,10 @@ export class ComponentService {
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
     ){
         const componentExists = await this.componentRepository.findOne({
-            where: { code: requestDto.code },
+            where: { 
+                code: requestDto.code,
+                status: ComponentStatus.DRAFT
+            },
         });
 
         if (componentExists) {
@@ -104,7 +107,6 @@ export class ComponentService {
                 componentDto.workloadId = workload?.id;
                 delete componentDto.workload;
             }
-            const approval = componentDto?.approval;
             delete componentDto?.approval;
 
             await this.componentRepository.createQueryBuilder().update(Component)
@@ -112,33 +114,12 @@ export class ComponentService {
                 .where('id = :id', { id })
                 .execute();
 
-            const isApproved = approval != null && Object.keys(approval).length > 0;
-            const previousApprovalLogExists = isApproved
-                ? await this.componentLogRepository.findOne({
-                    where: {
-                        componentId: id,
-                        type: ComponentLogType.APPROVAL
-                    }
-                })
-                : null;
-            if (isApproved && !previousApprovalLogExists) {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.APPROVAL,
-                    undefined,
-                    approval.agreementNumber,
-                    approval.agreementDate,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            } else {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.UPDATE,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            }
+            let componentLog = componentExists.generateLog(
+                userId,
+                ComponentLogType.UPDATE,
+            );
+            componentLog = this.componentLogRepository.create(componentLog);
+            await this.componentLogRepository.save(componentLog);
 
             return await this.componentRepository.findOne({
                 where: { id }
@@ -146,6 +127,64 @@ export class ComponentService {
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
+        }
+    }
+
+    async approve(
+        id: string,
+        componentDto: Pick<Component, 'status'> &
+            { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
+        userId: string
+    ) {
+        const componentExists = await this.componentRepository.findOne({
+            where: { id }
+        });
+
+        if(!componentExists){
+            throw new AppError('Component not found.', 404);
+        }
+
+        const approval = componentDto?.approval;
+        delete componentDto?.approval;
+
+        const isApproved = componentDto.status === ComponentStatus.PUBLISHED &&
+            approval != null && Object.keys(approval).length > 0;
+
+        if(!isApproved) return;
+
+        const [ currentPublishedComponent, previousApprovalLogExists ] = await Promise.all([
+            this.componentRepository.findOne({
+                where: {
+                    code: componentExists.code,
+                    status: ComponentStatus.PUBLISHED
+                },
+            }),
+            this.componentLogRepository.findOne({
+                where: {
+                    componentId: id,
+                    type: ComponentLogType.APPROVAL
+                }
+            })
+        ]);
+
+        if(currentPublishedComponent && currentPublishedComponent.id != componentExists.id)
+            await this.delete(currentPublishedComponent.id);
+        
+        await this.componentRepository.createQueryBuilder().update(Component)
+            .set(componentDto)
+            .where('id = :id', { id })
+            .execute();
+
+        if (!previousApprovalLogExists) {
+            let componentLog = componentExists.generateLog(
+                userId,
+                ComponentLogType.APPROVAL,
+                undefined,
+                approval.agreementNumber,
+                approval.agreementDate,
+            );
+            componentLog = this.componentLogRepository.create(componentLog);
+            await this.componentLogRepository.save(componentLog);
         }
     }
 
