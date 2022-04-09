@@ -27,6 +27,11 @@
   },
   "homepage": "https://github.com/MATE85-Grupo4-20221/api-bdcp#readme",
   "dependencies": {
+    "axios": "^0.26.1",
+    "cheerio": "^1.0.0-rc.10",
+    "class-transformer": "^0.5.1",
+    "class-transformer-validator": "^0.9.1",
+    "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-async-errors": "^3.1.1",
@@ -39,9 +44,7 @@
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "typeorm": "^0.2.45",
-    "uuid": "^8.3.2",
-    "axios": "^0.26.1",
-    "cheerio": "^1.0.0-rc.10"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
