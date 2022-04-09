@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
+import { CreateUserRequestDto, UpdateUserRequestDto } from '../dtos/user';
 import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
+import { makeValidateBody } from '../middlewares/Validator';
 
 const userRouter = Router();
 const userController = new UserController();
@@ -87,7 +89,7 @@ const userController = new UserController();
 *       500:
 *         description: Internal Server Error
 */
-userRouter.post('/', userController.create);
+userRouter.post('/', makeValidateBody(CreateUserRequestDto), userController.create);
 
 /**
 * @swagger
@@ -134,6 +136,6 @@ userRouter.post('/', userController.create);
 *       500:
 *         description: Internal Server Error
 */
-userRouter.put('/', ensureAuthenticated, userController.update);
+userRouter.put('/', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.update);
 
 export { userRouter };

@@ -5,10 +5,12 @@ import { Request, Response, NextFunction } from 'express';
 export const makeValidateBody = <T>(
     c: T,
     whitelist = true,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     errorHandler?: (err: any, req: Request, res: Response, next: NextFunction) => void
 ) => {
     return function ExpressClassValidate(req: Request, res: Response, next: NextFunction) {
         const toValidate = req.body ?? {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transformAndValidate(c as any, toValidate, { validator: { whitelist } })
             .then(transformed => {
                 req.body = transformed;
