@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { CustomIsNotEmpty, CustomIsString } from '../../decorators/validation';
 
 export class ResetPasswordRequestDto {
-    @IsNotEmpty()
-    @IsString()
+    @CustomIsNotEmpty()
+    @CustomIsString()
     public email: string;
 }

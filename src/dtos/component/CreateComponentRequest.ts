@@ -1,51 +1,51 @@
-import { IsDefined, IsString, IsOptional, Matches, ValidateNested } from 'class-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Component } from '../../entities/Component';
 import { ComponentWorkloadDto } from './ComponentWorkload';
+import { CustomIsDefined, CustomIsString, CustomMatches } from '../../decorators/validation';
 
 
 export class CreateComponentRequestDto
 implements Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' | 'generateLog' | 'workload' | 'createdAt' | 'updatedAt'> {
-
-    @IsDefined()
-    @IsString()
-    @Matches(/^[A-Z]{3,4}[0-9]{2,4}$/)
+    @CustomIsDefined()
+    @CustomIsString()
+    @CustomMatches(/^[A-Z]{3,4}[0-9]{2,4}$/)
     public code: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public name: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public department: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public program: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public semester: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public prerequeriments: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public methodology: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public objective: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public syllabus: string;
 
-    @IsDefined()
-    @IsString()
+    @CustomIsDefined()
+    @CustomIsString()
     public bibliography: string;
     
     public workloadId?: string;

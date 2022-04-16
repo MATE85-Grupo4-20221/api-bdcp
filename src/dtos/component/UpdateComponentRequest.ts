@@ -1,50 +1,51 @@
-import { IsString, IsOptional, Matches, ValidateNested } from 'class-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Component } from '../../entities/Component';
 import { ComponentWorkloadDto } from './ComponentWorkload';
+import { CustomIsString, CustomMatches } from '../../decorators/validation';
 
 export class UpdateComponentRequestDto
 implements Partial<Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' | 'workload' | 'generateLog' | 'createdAt' | 'updatedAt'>> {
 
     @IsOptional()
-    @IsString()
-    @Matches(/^[A-Z]{3,4}[0-9]{2,4}$/)
+    @CustomIsString()
+    @CustomMatches(/^[A-Z]{3,4}[0-9]{2,4}$/)
     public code?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public name?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public department?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public program?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public semester?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public prerequeriments?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public methodology?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public objective?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public syllabus?: string;
 
     @IsOptional()
-    @IsString()
+    @CustomIsString()
     public bibliography?: string;
     
     public workloadId?: string;
