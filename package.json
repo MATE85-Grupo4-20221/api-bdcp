@@ -13,7 +13,8 @@
     "migration:generate": "ts-node-dev -r dotenv/config ./node_modules/typeorm/cli.js migration:generate --name",
     "migration:revert": "ts-node-dev -r dotenv/config ./node_modules/typeorm/cli.js migration:revert",
     "migration:run": "ts-node-dev -r dotenv/config ./node_modules/typeorm/cli.js migration:run",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
   },
   "homepage": "https://github.com/MATE85-Grupo4-20221/api-bdcp#readme",
   "dependencies": {
+    "axios": "^0.26.1",
+    "cheerio": "^1.0.0-rc.10",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-async-errors": "^3.1.1",
@@ -36,18 +39,19 @@
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21",
+    "supertest": "^6.2.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "typeorm": "^0.2.45",
-    "uuid": "^8.3.2",
-    "axios": "^0.26.1",
-    "cheerio": "^1.0.0-rc.10"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/jest": "^27.4.1",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash": "^4.14.180",
+    "@types/mock-express-request": "^0.2.0",
     "@types/node": "^17.0.21",
     "@types/nodemailer": "^6.4.4",
     "@types/swagger-jsdoc": "^6.0.1",
@@ -57,6 +61,10 @@
     "@typescript-eslint/parser": "^5.16.0",
     "dotenv": "^16.0.0",
     "eslint": "^8.11.0",
+    "jest": "^27.5.1",
+    "mock-express-request": "^0.2.2",
+    "mock-express-response": "^0.3.0",
+    "ts-jest": "^27.1.4",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.6.2"
   }
