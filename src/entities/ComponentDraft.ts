@@ -25,34 +25,34 @@ class ComponentDraft {
     @Column({ name: 'workload_id', nullable: true })
         workloadId?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         code?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         name?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         department?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         program?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         semester?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         prerequeriments?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         methodology?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         objective?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         syllabus?: string;
 
-    @Column({ nullable: true, default: '' })
+    @Column({ default: '' })
         bibliography?: string;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

@@ -28,7 +28,7 @@ export class ComponentDraftService {
                 { code: ILike(`${filter}%`) },
                 { name: ILike(`${filter}%`) }
             ],
-            order: { code: 'ASC' },
+            order: { updatedAt: 'DESC' },
             relations: [ 'workload' ],
         });
 
@@ -59,7 +59,7 @@ export class ComponentDraftService {
             }
 
             const draft = this.componentDraftRepository.create(draftDto);
-            return await this.componentDraftRepository.save(draft);
+            return this.componentDraftRepository.save(draft);
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
@@ -87,7 +87,7 @@ export class ComponentDraftService {
                 delete requestDto.workload;
             }
 
-            return await this.componentDraftRepository.save({
+            return this.componentDraftRepository.save({
                 ...draftExists,
                 ...requestDto
             });

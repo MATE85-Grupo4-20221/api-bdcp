@@ -341,7 +341,7 @@ componentDraftRouter.get('/', componentDraftController.getDrafts);
  *       500:
  *         description: Internal Server Error
  */
-componentDraftRouter.get('/:id',/* ensureAuthenticated,*/ componentDraftController.getDraftById);
+componentDraftRouter.get('/:id', ensureAuthenticated, componentDraftController.getDraftById);
 
 /**
 * @swagger
