@@ -8,30 +8,30 @@ export const makeValidateBody = <T>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     errorHandler?: (err: any, req: Request, res: Response, next: NextFunction) => void
 ) => {
-    return function ExpressClassValidate(req: Request, res: Response, next: NextFunction) {
+    return async (req: Request, res: Response, next: NextFunction) => {
         const toValidate = req.body ?? {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transformAndValidate(c as any, toValidate, { validator: { whitelist } })
-            .then(transformed => {
-                req.body = transformed;
-                next();
-            })
-            .catch( err => {
-                if (errorHandler) {
-                    errorHandler(err, req, res, next);
-                } else {
-                    const error = !Array.isArray(err) || !(err[0] instanceof ValidationError)
-                        ? err
-                        : err.map( e => ({
-                            property: e.property,
-                            reasons: Object.values(e.constraints ?? {}),
-                        }));
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const transformed = await transformAndValidate(c as any, toValidate, { validator: { whitelist } });
+            
+            req.body = transformed;
+            next();
+        } catch (err) {
+            if (errorHandler) {
+                errorHandler(err, req, res, next);
+            } else {
+                const error = !Array.isArray(err) || !(err[0] instanceof ValidationError)
+                    ? err
+                    : err.map( e => ({
+                        property: e.property,
+                        reasons: Object.values(e.constraints ?? {}),
+                    }));
 
-                    res.status(400).json({
-                        message: 'Validation failed',
-                        error,
-                    });
-                }
-            });
+                res.status(400).json({
+                    message: 'Validation failed',
+                    error,
+                });
+            }
+        }
     };
 };
