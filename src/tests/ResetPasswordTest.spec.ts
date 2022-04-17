@@ -1,3 +1,4 @@
+import { UserController } from '../controllers/UserController';
 import { AuthController } from '../controllers/AuthController';
 import { AppError } from '../errors/AppError';
 import connection from './connection';
@@ -16,6 +17,24 @@ beforeEach(async () => {
     await connection.clear();
 });
 describe('Reset password user', ()=>{
+    it("should be able to create new user", async ()=>{
+      const userController = new UserController();
+      const req = new MockExpressRequest({
+        method:"POST",
+        headers: {
+          'Content-Type':'application/json',
+        },
+        body:{
+          "name": "Test",
+          "email": "test@gmail.com",
+          "password":"test123"
+        }
+      });
+      const res = new MockExpressResponse();
+      await userController.create(req, res);
+      expect(res.statusCode).toBe(201);
+      
+    })
     it("should be able to reset passord user", async ()=>{
         const authController = new AuthController();
         const req = new MockExpressRequest({
