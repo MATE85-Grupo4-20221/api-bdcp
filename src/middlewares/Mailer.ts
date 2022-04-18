@@ -4,8 +4,10 @@ class MailerService{
 
     private client: Transporter;
 
-    constructor(){
-        nodemailer.createTestAccount().then(account => {
+    constructor(){}
+
+    async construct(){
+        await nodemailer.createTestAccount().then(account => {
             const transporter = nodemailer.createTransport({
                 host: account.smtp.host,
                 port: account.smtp.port,
