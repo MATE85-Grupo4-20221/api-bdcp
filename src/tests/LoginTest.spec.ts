@@ -1,6 +1,5 @@
 import { UserController } from '../controllers/UserController';
 import { AuthController } from '../controllers/AuthController';
-import { AppError } from '../errors/AppError';
 import connection from './connection';
 var MockExpressRequest = require('mock-express-request');
 var MockExpressResponse = require('mock-express-response');
@@ -12,29 +11,26 @@ beforeAll(async ()=>{
 afterAll(async ()=>{
     await connection.close();
 });
-  
-beforeEach(async () => {
-    await connection.clear();
+beforeEach(async() => {
+    const userController = new UserController();
+    const req = new MockExpressRequest({
+      method:"POST",
+      headers: {
+        'Content-Type':'application/json',
+      },
+      body:{
+        "name": "Test",
+        "email": "test@gmail.com",
+        "password":"test123"
+      }
+    });
+    const res = new MockExpressResponse();
+    await userController.create(req, res);
+})
+afterEach(async () => {
+  await connection.clear();
 });
 describe('Login user', ()=>{
-    it("should be able to create new user", async ()=>{
-      const userController = new UserController();
-      const req = new MockExpressRequest({
-        method:"POST",
-        headers: {
-          'Content-Type':'application/json',
-        },
-        body:{
-          "name": "Test",
-          "email": "test@gmail.com",
-          "password":"test123"
-        }
-      });
-      const res = new MockExpressResponse();
-      await userController.create(req, res);
-      expect(res.statusCode).toBe(201);
-      
-    })
     it("should be able to login user", async ()=>{
         const authController = new AuthController();
         const req = new MockExpressRequest({

@@ -3,17 +3,11 @@ import { app } from './app';
 
 const PORT = process.env.PORT || 3333;
 const env = process.env.NODE_ENV || 'local';
-if(process.env.NODE_ENV == 'test'){
-    process.env.DB_NAME = "bdcp_teste";
-}
 
 getConnectionOptions()
     .then(async options => {
         console.log({ options });
-        const extra = env !== 'local' && env !== 'test' ? { ssl: { rejectUnauthorized: false } } : undefined;
-        if(env == 'test'){
-            return createConnection({ ...options, extra, dropSchema:true, migrationsRun: true });
-        }
+        const extra = env !== 'local' ? { ssl: { rejectUnauthorized: false } } : undefined;
         return createConnection({ ...options, extra, migrationsRun: true });
     })
     .then(connection => {
