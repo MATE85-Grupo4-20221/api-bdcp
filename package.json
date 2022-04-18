@@ -14,7 +14,7 @@
     "migration:revert": "ts-node-dev -r dotenv/config ./node_modules/typeorm/cli.js migration:revert",
     "migration:run": "ts-node-dev -r dotenv/config ./node_modules/typeorm/cli.js migration:run",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",
