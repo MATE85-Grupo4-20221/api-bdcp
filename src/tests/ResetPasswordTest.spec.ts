@@ -33,22 +33,22 @@ afterEach(async ()=>{
   await connection.clear();
 })
 describe('Reset password user', ()=>{
-    // it("should be able to reset user password", async ()=>{
-    //     const authController = new AuthController();
-    //     const req = new MockExpressRequest({
-    //       method:"POST",
-    //       headers: {
-    //         'Content-Type':'application/json',
-    //       },
-    //       body:{
-    //         "email": "test@gmail.com",
-    //       }
-    //     });
-    //     const res = new MockExpressResponse();
-    //     await authController.resetPassword(req, res);
-    //     expect(res.statusCode).toBe(201);
+    it("should be able to reset user password", async ()=>{
+        const authController = new AuthController();
+        const req = new MockExpressRequest({
+          method:"POST",
+          headers: {
+            'Content-Type':'application/json',
+          },
+          body:{
+            "email": "test@gmail.com",
+          }
+        });
+        const res = new MockExpressResponse();
+        await authController.resetPassword(req, res);
+        expect(res.statusCode).toBe(201);
         
-    // })
+    })
     it("should not be able to reset password user with incorrect email", async ()=>{
       const authController = new AuthController();
       const req = new MockExpressRequest({
