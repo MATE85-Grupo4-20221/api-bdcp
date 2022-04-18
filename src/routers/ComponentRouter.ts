@@ -292,9 +292,9 @@ componentRouter.get('/', componentController.getComponents);
 
 /**
  * @swagger
- * /api/components/{id}:
+ * /api/components/{code}:
  *   get:
- *     summary: Get a component by id
+ *     summary: Get a component by code
  *     tags: [Component]
  *     parameters:
  *       - in: header
@@ -304,11 +304,11 @@ componentRouter.get('/', componentController.getComponents);
  *         required: true
  *         description: The authenticated user id
  *       - in: params
- *         name: id
+ *         name: code
  *         schema:
- *           type: number
+ *           type: string
  *         required: true
- *         description: The component id
+ *         description: The component code
  *
  *     responses:
  *       200:
@@ -326,7 +326,7 @@ componentRouter.get('/', componentController.getComponents);
  *       500:
  *         description: Internal Server Error
  */
-componentRouter.get('/:id', ensureAuthenticated, componentController.getComponentById);
+componentRouter.get('/:code', ensureAuthenticated, componentController.getComponentByCode);
 
 /**
 * @swagger

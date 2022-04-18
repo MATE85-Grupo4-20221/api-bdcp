@@ -7,14 +7,24 @@ import { CrawlerService } from '../services/CrawlerService';
 class ComponentController {
     async importComponentsFromSiac(request: Request, response: Response) {
         const { cdCurso, nuPerCursoInicial } = request.body;
-        const authenticatedUserId = request.headers.authenticatedUserId as string;
+        const authenticatedUserId = request.headers
+            .authenticatedUserId as string;
         const crawlerService = new CrawlerService();
 
-        if(!cdCurso || !nuPerCursoInicial){
-            return response.status(400).json({ message: 'O código do curso ou o semestre vigente não foram encontrados!' });
+        if (!cdCurso || !nuPerCursoInicial) {
+            return response
+                .status(400)
+                .json({
+                    message:
+                        'O código do curso ou o semestre vigente não foram encontrados!',
+                });
         }
 
-        await crawlerService.importComponentsFromSiac(authenticatedUserId, cdCurso, nuPerCursoInicial);
+        await crawlerService.importComponentsFromSiac(
+            authenticatedUserId,
+            cdCurso,
+            nuPerCursoInicial
+        );
 
         return response.status(201).end();
     }
@@ -31,28 +41,40 @@ class ComponentController {
         return response.status(200).json(paginate(components, { page, limit }));
     }
 
-    async getComponentById(request: Request, response: Response) {
+    async getComponentByCode(request: Request, response: Response) {
         const componentService = new ComponentService();
-        const component = await componentService.getComponentById(request.params.id);
+
+        const component = await componentService.getComponentByCode(
+            request.params.code
+        );
 
         return response.status(200).json(component);
     }
 
     async create(request: Request, response: Response) {
-        const authenticatedUserId = request.headers.authenticatedUserId as string;
+        const authenticatedUserId = request.headers
+            .authenticatedUserId as string;
         const componentService = new ComponentService();
 
-        const content = await componentService.create(authenticatedUserId, request.body);
+        const content = await componentService.create(
+            authenticatedUserId,
+            request.body
+        );
 
         return response.status(201).json(content);
     }
 
     async update(request: Request, response: Response) {
-        const authenticatedUserId = request.headers.authenticatedUserId as string;
+        const authenticatedUserId = request.headers
+            .authenticatedUserId as string;
         const { id } = request.params;
 
         const componentService = new ComponentService();
-        const content = await componentService.update(id, request.body, authenticatedUserId);
+        const content = await componentService.update(
+            id,
+            request.body,
+            authenticatedUserId
+        );
 
         return response.status(200).json(content);
     }
@@ -63,9 +85,10 @@ class ComponentController {
         const componentService = new ComponentService();
         await componentService.delete(id);
 
-        return response.status(200).json({ message: 'Component has been deleted!' });
+        return response
+            .status(200)
+            .json({ message: 'Component has been deleted!' });
     }
-
 }
 
 export { ComponentController };
