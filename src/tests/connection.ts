@@ -1,9 +1,18 @@
-import {createConnection, getConnection} from 'typeorm';
+import {createConnection, getConnection, getConnectionOptions} from 'typeorm';
+require('dotenv').config()
 
 const connection = {
   async create(){
-    process.env.DB_NAME = "bdcp_teste";
-    await createConnection();
+    process.env.DB_NAME = process.env.DB_TEST_NAME;
+    
+    await getConnectionOptions()
+    .then(async options => {
+        return createConnection({ ...options, dropSchema:true, migrationsRun:true });
+    })
+    .catch(err => {
+        console.log(err);
+        throw err;
+    });
   },
 
   async close(){
@@ -11,13 +20,13 @@ const connection = {
   },
 
   async clear(){
-    const connection = getConnection();
-    const entities = connection.entityMetadatas;
+    // Fetch all the entities
+    const entities = getConnection().entityMetadatas;
 
-    entities.forEach(async (entity) => {
-      const repository = connection.getRepository(entity.name);
-      await repository.query(`DELETE FROM ${entity.tableName}`);
-    });
+    for (const entity of entities) {
+        const repository = getConnection().getRepository(entity.name); // Get repository
+        await repository.delete({})// Clear each entity table's content
+    }
   },
 };
 export default connection;
