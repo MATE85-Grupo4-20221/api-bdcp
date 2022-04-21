@@ -1,4 +1,4 @@
-import { getCustomRepository, ILike, Repository } from 'typeorm';
+import { getCustomRepository, ILike, Raw, Repository, } from 'typeorm';
 
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
@@ -34,12 +34,13 @@ export class ComponentService {
         return components;
     }
 
-    async getComponentById(id: string) {
+    async getComponentByCode(code: string) {
         const component = await this.componentRepository.findOne({
-            where: { id },
+            where: { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` }), },
+            relations: [ 'logs', 'workload' ]
         });
 
-        if (!component) return null;
+        if (!component) throw new AppError('Component not found.', 404);
 
         return component;
     }

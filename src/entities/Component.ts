@@ -41,6 +41,9 @@ class Component {
         department: string;
 
     @Column()
+        modality: string;
+
+    @Column()
         program: string;
 
     @Column()
@@ -59,6 +62,9 @@ class Component {
         syllabus: string;
 
     @Column()
+        learningAssessment: string;
+
+    @Column()
         bibliography: string;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -70,7 +76,7 @@ class Component {
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'created_by' })
         user: User;
-    
+
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({ name: 'workload_id' })
         workload?: ComponentWorkload;
