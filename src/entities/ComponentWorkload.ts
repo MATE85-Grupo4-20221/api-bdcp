@@ -1,6 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Component } from './Component';
+import { ComponentDraft } from './ComponentDraft';
 
 @Entity('component_workloads')
 class ComponentWorkload {
@@ -55,6 +56,9 @@ class ComponentWorkload {
 
     @OneToOne(() => Component, (component) => component.workload)
         component?: Component;
+
+    @OneToOne(() => ComponentDraft, (component) => component.workload)
+        componentDraft?: ComponentDraft;
 
 }
 

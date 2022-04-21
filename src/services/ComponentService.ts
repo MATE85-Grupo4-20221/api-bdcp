@@ -1,4 +1,4 @@
-import { getCustomRepository, ILike, Repository } from 'typeorm';
+import { getCustomRepository, ILike, Raw, Repository, } from 'typeorm';
 
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
@@ -35,12 +35,13 @@ export class ComponentService {
         return components;
     }
 
-    async getComponentById(id: string) {
+    async getComponentByCode(code: string) {
         const component = await this.componentRepository.findOne({
-            where: { id },
+            where: { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` }), },
+            relations: [ 'logs', 'workload' ]
         });
 
-        if (!component) return null;
+        if (!component) throw new AppError('Component not found.', 404);
 
         return component;
     }
@@ -82,8 +83,7 @@ export class ComponentService {
 
     async update(
         id: string,
-        componentDto: UpdateComponentRequestDto &
-            { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
+        componentDto: UpdateComponentRequestDto,
         userId: string
     ) {
         const componentExists = await this.componentRepository.findOne({
@@ -105,41 +105,18 @@ export class ComponentService {
                 componentDto.workloadId = workload?.id;
                 delete componentDto.workload;
             }
-            const approval = componentDto?.approval;
-            delete componentDto?.approval;
 
             await this.componentRepository.createQueryBuilder().update(Component)
                 .set(componentDto)
                 .where('id = :id', { id })
                 .execute();
 
-            const isApproved = approval != null && Object.keys(approval).length > 0;
-            const previousApprovalLogExists = isApproved
-                ? await this.componentLogRepository.findOne({
-                    where: {
-                        componentId: id,
-                        type: ComponentLogType.APPROVAL
-                    }
-                })
-                : null;
-            if (isApproved && !previousApprovalLogExists) {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.APPROVAL,
-                    undefined,
-                    approval.agreementNumber,
-                    approval.agreementDate,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            } else {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.UPDATE,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            }
+            let componentLog = componentExists.generateLog(
+                userId,
+                ComponentLogType.UPDATE,
+            );
+            componentLog = this.componentLogRepository.create(componentLog);
+            await this.componentLogRepository.save(componentLog);
 
             return await this.componentRepository.findOne({
                 where: { id }
