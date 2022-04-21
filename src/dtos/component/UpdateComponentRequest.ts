@@ -47,6 +47,14 @@ implements Partial<Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' 
     @IsOptional()
     @CustomIsString()
     public bibliography?: string;
+
+    @IsOptional()
+    @CustomIsString()
+    public modality?: string;
+
+    @IsOptional()
+    @CustomIsString()
+    public learningAssessment?: string;
     
     public workloadId?: string;
 

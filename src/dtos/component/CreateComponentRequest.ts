@@ -6,7 +6,7 @@ import { CustomIsDefined, CustomIsString, CustomMatches } from '../../decorators
 
 
 export class CreateComponentRequestDto
-implements Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' | 'generateLog' | 'workload' | 'createdAt' | 'updatedAt'> {
+implements Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' | 'generateLog' | 'workload' | 'createdAt' | 'updatedAt' | 'publishDraft'> {
     @CustomIsDefined()
     @CustomIsString()
     @CustomMatches(/^[A-Z]{3,4}[0-9]{2,4}$/)
@@ -47,6 +47,14 @@ implements Omit<Component, 'id' | 'userId' | 'status' | 'logs' | 'user' | 'gener
     @CustomIsDefined()
     @CustomIsString()
     public bibliography: string;
+    
+    @CustomIsDefined()
+    @CustomIsString()
+    public modality: string;
+
+    @CustomIsDefined()
+    @CustomIsString()
+    public learningAssessment: string;
     
     public workloadId?: string;
 

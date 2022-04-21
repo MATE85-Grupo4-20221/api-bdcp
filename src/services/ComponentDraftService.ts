@@ -9,6 +9,9 @@ import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
 import { ComponentWorkload } from '../entities/ComponentWorkload';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { ApproveDraftRequestDto } from '../dtos/component/draft/ApproveDraftRequest';
+import { CreateDraftRequestDto } from '../dtos/component/draft/CreateDraftRequest';
+import { UpdateComponentRequestDto } from '../dtos/component';
 
 export class ComponentDraftService {
 
@@ -49,7 +52,7 @@ export class ComponentDraftService {
 
     async create(
         userId: string,
-        requestDto: Omit<ComponentDraft, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
+        requestDto: CreateDraftRequestDto
     ){
         try {
             const draftDto = { ...requestDto, userId: userId };
@@ -70,7 +73,7 @@ export class ComponentDraftService {
 
     async update(
         id: string,
-        requestDto: Omit<ComponentDraft, 'createdAt' | 'updatedAt'>,
+        requestDto: UpdateComponentRequestDto,
     ) {
         const draftExists = await this.componentDraftRepository.findOne({
             where: { id }
@@ -82,7 +85,7 @@ export class ComponentDraftService {
             if(requestDto.workload != null) {
                 const workloadData = {
                     ...requestDto.workload,
-                    id: requestDto.workload.id ?? requestDto.workloadId ?? draftExists.workloadId,
+                    id: requestDto.workloadId ?? draftExists.workloadId as string,
                 };
                 const workload = await this.workloadService.upsert(workloadData);
                 requestDto.workloadId = workload?.id;
@@ -116,7 +119,7 @@ export class ComponentDraftService {
 
     async approve(
         draftId: string,
-        approvalDto: Required<Pick<ComponentLog, 'agreementDate' | 'agreementNumber'>>,
+        approvalDto: ApproveDraftRequestDto,
         userId: string
     ) {
         try {

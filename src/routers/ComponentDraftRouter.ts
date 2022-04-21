@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { ComponentDraftController } from '../controllers/ComponentDraftController';
+import { ApproveDraftRequestDto, CreateDraftRequestDto, UpdateComponentRequestDto } from '../dtos/component';
 import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
+import { makeValidateBody } from '../middlewares/Validator';
 
 const componentDraftRouter = Router();
 const componentDraftController = new ComponentDraftController();
@@ -503,7 +505,7 @@ componentDraftRouter.get('/:code', ensureAuthenticated, componentDraftController
 *       400:
 *         description: An error has been ocurred.
 */
-componentDraftRouter.post('/', ensureAuthenticated, componentDraftController.create);
+componentDraftRouter.post('/', ensureAuthenticated, makeValidateBody(CreateDraftRequestDto), componentDraftController.create);
 
 /**
 * @swagger
@@ -703,7 +705,7 @@ componentDraftRouter.post('/', ensureAuthenticated, componentDraftController.cre
 *       500:
 *         description: Internal Server Error
 */
-componentDraftRouter.put('/:id', ensureAuthenticated, componentDraftController.update);
+componentDraftRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponentRequestDto), componentDraftController.update);
 
 /**
  * @swagger
@@ -783,6 +785,6 @@ componentDraftRouter.delete('/:id', ensureAuthenticated, componentDraftControlle
  *       500:
  *         description: Internal Server Error
  */
-componentDraftRouter.post('/:id/approve', ensureAuthenticated, componentDraftController.approve);
+componentDraftRouter.post('/:id/approve', ensureAuthenticated, makeValidateBody(ApproveDraftRequestDto), componentDraftController.approve);
 
 export { componentDraftRouter };
