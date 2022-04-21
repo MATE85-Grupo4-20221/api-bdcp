@@ -307,9 +307,9 @@ componentDraftRouter.get('/', componentDraftController.getDrafts);
 
 /**
  * @swagger
- * /api/component-drafts/{id}:
+ * /api/component-drafts/{code}:
  *   get:
- *     summary: Get a draft by id
+ *     summary: Get a draft by code
  *     tags: [ComponentDraft]
  *     parameters:
  *       - in: header
@@ -319,11 +319,11 @@ componentDraftRouter.get('/', componentDraftController.getDrafts);
  *         required: true
  *         description: The authenticated user id
  *       - in: params
- *         name: id
+ *         name: code
  *         schema:
- *           type: number
+ *           type: string
  *         required: true
- *         description: The draft id
+ *         description: The draft code
  *
  *     responses:
  *       200:
@@ -341,7 +341,7 @@ componentDraftRouter.get('/', componentDraftController.getDrafts);
  *       500:
  *         description: Internal Server Error
  */
-componentDraftRouter.get('/:id', ensureAuthenticated, componentDraftController.getDraftById);
+componentDraftRouter.get('/:code', ensureAuthenticated, componentDraftController.getDraftByCode);
 
 /**
 * @swagger

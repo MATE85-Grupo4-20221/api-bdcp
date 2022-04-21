@@ -15,9 +15,9 @@ class ComponentDraftController {
         return response.status(200).json(paginate(components, { page, limit }));
     }
 
-    async getDraftById(request: Request, response: Response) {
+    async getDraftByCode(request: Request, response: Response) {
         const draftService = new ComponentDraftService();
-        const component = await draftService.getDraftById(request.params.id);
+        const component = await draftService.getDraftByCode(request.params.code);
 
         return response.status(200).json(component);
     }

@@ -35,6 +35,9 @@ class ComponentDraft {
         department?: string;
 
     @Column({ default: '' })
+        modality: string;
+
+    @Column({ default: '' })
         program?: string;
 
     @Column({ default: '' })
@@ -51,6 +54,9 @@ class ComponentDraft {
 
     @Column({ default: '' })
         syllabus?: string;
+
+    @Column({ default: '' })
+        learningAssessment: string;
 
     @Column({ default: '' })
         bibliography?: string;

@@ -1,4 +1,4 @@
-import { getCustomRepository, ILike, Repository, getConnection } from 'typeorm';
+import { getCustomRepository, Repository, getConnection, Raw } from 'typeorm';
 import { ComponentDraftRepository } from '../repositories/ComponentDraftRepository';
 import { AppError } from '../errors/AppError';
 import { WorkloadService } from './WorkloadService';
@@ -25,8 +25,8 @@ export class ComponentDraftService {
     async getDrafts(filter = '') {
         const drafts = await this.componentDraftRepository.find({
             where: [
-                { code: ILike(`${filter}%`) },
-                { name: ILike(`${filter}%`) }
+                { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ filter.toLowerCase() }%` }) },
+                { name: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ filter.toLowerCase() }%` }) }
             ],
             order: { updatedAt: 'DESC' },
             relations: [ 'workload' ],
@@ -35,9 +35,11 @@ export class ComponentDraftService {
         return drafts;
     }
 
-    async getDraftById(id: string) {
+    async getDraftByCode(code: string) {
         const draft = await this.componentDraftRepository.findOne({
-            where: { id },
+            where: {
+                code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` })
+            },
         });
 
         if (!draft) return null;
