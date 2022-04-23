@@ -1,11 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsOptional, ValidateNested } from 'class-validator';
+import { IsDefined, IsOptional, ValidateNested } from 'class-validator';
 import { CustomIsString, CustomMatches } from '../../../decorators/validation';
 import { ComponentWorkloadDto } from '../ComponentWorkload';
 import { CreateComponentRequestDto } from '../CreateComponentRequest';
 
 export class CreateDraftRequestDto extends CreateComponentRequestDto {
-    @IsOptional()
+    @IsDefined()
     @CustomIsString()
     @CustomMatches(/^[A-Z]{3,4}[0-9]{2,4}$/)
     declare public code: string;

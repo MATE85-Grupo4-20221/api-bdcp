@@ -12,6 +12,7 @@ import { User } from './User';
 import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { Component } from './Component';
 
 @Entity('component_drafts')
 class ComponentDraft {
@@ -19,14 +20,17 @@ class ComponentDraft {
     @PrimaryGeneratedColumn('uuid')
     readonly id: string;
 
+    @Column({ name: 'component_id' })
+        componentId: string;
+
     @Column({ name: 'created_by' })
         userId: string;
 
     @Column({ name: 'workload_id', nullable: true })
         workloadId?: string;
 
-    @Column({ default: '' })
-        code?: string;
+    @Column({ unique: true })
+        code: string;
 
     @Column({ default: '' })
         name?: string;
@@ -74,6 +78,10 @@ class ComponentDraft {
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.componentDraft)
     @JoinColumn({ name: 'workload_id' })
         workload?: ComponentWorkload;
+
+    @OneToOne(() => Component, (component) => component.draft)
+    @JoinColumn({ name: 'component_id' })
+        component: Component;
 
     generateDraftLog(componentId?: string): ComponentLog {
         const log = new ComponentLog();

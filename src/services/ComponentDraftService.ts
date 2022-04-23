@@ -43,6 +43,7 @@ export class ComponentDraftService {
             where: {
                 code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` })
             },
+            relations: [ 'workload' ],
         });
 
         if (!draft) return null;
@@ -54,17 +55,38 @@ export class ComponentDraftService {
         userId: string,
         requestDto: CreateDraftRequestDto
     ){
+        const draftExists = await this.componentDraftRepository.findOne({
+            where: { code: requestDto.code },
+        });
+
+        if (draftExists) {
+            throw new AppError('Draft already exists.', 400);
+        }
+
         try {
             const draftDto = { ...requestDto, userId: userId };
 
-            if(draftDto.workload != null) {
-                const workload = await this.workloadService.create(draftDto.workload);
-                draftDto.workloadId = workload.id;
-                delete draftDto.workload;
-            }
+            const [ draftWorkload, componentWorkload ] = await Promise.all([
+                this.workloadService.create(draftDto.workload ?? {}),
+                this.workloadService.create(draftDto.workload ?? {})
+            ]);
+            draftDto.workloadId = draftWorkload.id;
 
-            const draft = this.componentDraftRepository.create(draftDto);
-            return this.componentDraftRepository.save(draft);
+            delete draftDto.workload;
+
+            const component = this.componentRepository.create({
+                ...draftDto,
+                status: ComponentStatus.DRAFT,
+                workloadId: componentWorkload.id
+            });
+            await this.componentRepository.save(component);
+
+            const draft = this.componentDraftRepository.create({ ...draftDto, componentId: component.id });
+            await this.componentDraftRepository.save(draft);
+
+            await this.componentRepository.save({ ...component, draftId: draft.id });
+
+            return draft;
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
@@ -81,6 +103,14 @@ export class ComponentDraftService {
         if(!draftExists){
             throw new AppError('Draft not found.', 404);
         }
+
+        const codeDraft = requestDto?.code !== draftExists.code
+            ? await this.componentDraftRepository.findOne({ where: { code: requestDto.code } })
+            : null;
+        if(codeDraft) {
+            throw new AppError('Invalid code', 400);
+        }
+
         try {
             if(requestDto.workload != null) {
                 const workloadData = {
@@ -133,16 +163,14 @@ export class ComponentDraftService {
                 throw new AppError('Draft not found.', 404);
             }
 
-            const currentPublishedComponent = await this.componentRepository.findOne({
-                where: { code: draftExists.code },
-            });
+            const [ currentPublishedComponent, draftWorkload ] = await Promise.all([
+                this.componentRepository.findOne({
+                    where: { id: draftExists.componentId },
+                }),
+                this.workloadService.getWorkloadById(draftExists.workloadId as string)
+            ]) as [ Component, ComponentWorkload ];
 
-            const previousWorkloadId = currentPublishedComponent?.workloadId;
-            const component = currentPublishedComponent
-                ? currentPublishedComponent.publishDraft(draftExists)
-                : this.componentRepository.create({ ...draftExists, status: ComponentStatus.PUBLISHED });
-
-            const draftCreationLog = draftExists.generateDraftLog(component?.id);
+            const component = currentPublishedComponent.publishDraft(draftExists);
 
             const approvalLog = component.generateLog(
                 userId,
@@ -156,13 +184,9 @@ export class ComponentDraftService {
 
             const [ updatedComponent ] = await Promise.all([
                 queryRunner.manager.save(Component, component),
-                queryRunner.manager.save(ComponentLog, draftCreationLog),
                 queryRunner.manager.save(ComponentLog, approvalLog),
-                queryRunner.manager.delete(ComponentDraft, draftId)
+                queryRunner.manager.save(ComponentWorkload, { ...draftWorkload, id: currentPublishedComponent.workloadId }),
             ]); 
-
-            if(previousWorkloadId && previousWorkloadId !== component.workloadId)
-                await queryRunner.manager.delete(ComponentWorkload, previousWorkloadId);
 
             await queryRunner.commitTransaction();
 
