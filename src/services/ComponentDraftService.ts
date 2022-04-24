@@ -12,16 +12,19 @@ import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ApproveDraftRequestDto } from '../dtos/component/draft/ApproveDraftRequest';
 import { CreateDraftRequestDto } from '../dtos/component/draft/CreateDraftRequest';
 import { UpdateComponentRequestDto } from '../dtos/component';
+import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 
 export class ComponentDraftService {
 
     private componentDraftRepository : Repository<ComponentDraft>;
     private componentRepository: Repository<Component>;
+    private componentLogRepository: Repository<ComponentLog>;
     private workloadService: WorkloadService;
 
     constructor() {
         this.componentDraftRepository = getCustomRepository(ComponentDraftRepository);
         this.componentRepository = getCustomRepository(ComponentRepository);
+        this.componentLogRepository = getCustomRepository(ComponentLogRepository);
         this.workloadService = new WorkloadService();
     }
 
@@ -80,9 +83,14 @@ export class ComponentDraftService {
                 workloadId: componentWorkload.id
             });
             await this.componentRepository.save(component);
+            let componentLog = component.generateLog(userId, ComponentLogType.CREATION);
+            componentLog = this.componentLogRepository.create(componentLog);
 
             const draft = this.componentDraftRepository.create({ ...draftDto, componentId: component.id });
-            await this.componentDraftRepository.save(draft);
+            await Promise.all([
+                this.componentDraftRepository.save(draft),
+                this.componentLogRepository.save(componentLog),
+            ]);
 
             await this.componentRepository.save({ ...component, draftId: draft.id });
 
