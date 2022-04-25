@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { ComponentController } from '../controllers/ComponentController';
+import { CreateComponentRequestDto, UpdateComponentRequestDto } from '../dtos/component';
 import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
+import { makeValidateBody } from '../middlewares/Validator';
 
 const componentRouter = Router();
 const componentController = new ComponentController();
@@ -488,7 +490,7 @@ componentRouter.get('/:code', ensureAuthenticated, componentController.getCompon
 *       400:
 *         description: An error has been ocurred.
 */
-componentRouter.post('/', ensureAuthenticated, componentController.create);
+componentRouter.post('/', ensureAuthenticated, makeValidateBody(CreateComponentRequestDto), componentController.create);
 
 /**
 * @swagger
@@ -688,7 +690,7 @@ componentRouter.post('/', ensureAuthenticated, componentController.create);
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.put('/:id', ensureAuthenticated, componentController.update);
+componentRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponentRequestDto), componentController.update);
 
 /**
  * @swagger

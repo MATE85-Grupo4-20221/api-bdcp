@@ -9,6 +9,7 @@ import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
+import { CreateComponentRequestDto, UpdateComponentRequestDto } from '../dtos/component';
 
 export class ComponentService {
 
@@ -48,8 +49,8 @@ export class ComponentService {
 
     async create(
         userId: string,
-        requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
-    ) {
+        requestDto: CreateComponentRequestDto
+    ){
         const componentExists = await this.componentRepository.findOne({
             where: { code: requestDto.code },
         });
@@ -83,7 +84,7 @@ export class ComponentService {
 
     async update(
         id: string,
-        componentDto: Omit<Component, 'createdAt' | 'updatedAt'>,
+        componentDto: UpdateComponentRequestDto,
         userId: string
     ) {
         const componentExists = await this.componentRepository.findOne({
@@ -98,7 +99,7 @@ export class ComponentService {
             if (componentDto.workload != null) {
                 const workloadData = {
                     ...componentDto.workload,
-                    id: componentDto.workload.id ?? componentDto.workloadId ?? componentExists.workloadId,
+                    id: componentDto.workloadId ?? componentExists.workloadId as string,
                 };
 
                 const workload = await this.workloadService.upsert(workloadData);
