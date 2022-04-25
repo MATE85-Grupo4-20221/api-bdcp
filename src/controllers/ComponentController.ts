@@ -89,6 +89,14 @@ class ComponentController {
             .status(200)
             .json({ message: 'Component has been deleted!' });
     }
+
+    async export(request: Request, response: Response) {
+        const { id } = request.params;
+        const componentService = new ComponentService();
+        const buffer = await componentService.export(id);
+        response.set({ 'Content-Type': 'application/pdf' });
+        return response.status(200).send(buffer);
+    }
 }
 
 export { ComponentController };

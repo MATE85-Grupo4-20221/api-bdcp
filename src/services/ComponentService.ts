@@ -1,5 +1,6 @@
 import { getCustomRepository, ILike, Raw, Repository, } from 'typeorm';
-
+import puppeteer from 'puppeteer';
+import { generateHtml } from '../helpers/templates/component';
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
 import { AppError } from '../errors/AppError';
@@ -11,7 +12,7 @@ import { ComponentStatus } from '../interfaces/ComponentStatus';
 
 export class ComponentService {
 
-    private componentRepository : Repository<Component>;
+    private componentRepository: Repository<Component>;
     private componentLogRepository: Repository<ComponentLog>;
     private workloadService: WorkloadService;
 
@@ -36,7 +37,7 @@ export class ComponentService {
 
     async getComponentByCode(code: string) {
         const component = await this.componentRepository.findOne({
-            where: { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` }), },
+            where: { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${code.toLowerCase()}%` }), },
             relations: [ 'logs', 'workload' ]
         });
 
@@ -48,7 +49,7 @@ export class ComponentService {
     async create(
         userId: string,
         requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
-    ){
+    ) {
         const componentExists = await this.componentRepository.findOne({
             where: { code: requestDto.code },
         });
@@ -60,7 +61,7 @@ export class ComponentService {
         try {
             const componentDto = { ...requestDto, userId: userId };
 
-            if(componentDto.workload != null) {
+            if (componentDto.workload != null) {
                 const workload = await this.workloadService.create(componentDto.workload);
                 componentDto.workloadId = workload.id;
                 delete componentDto.workload;
@@ -89,12 +90,12 @@ export class ComponentService {
             where: { id }
         });
 
-        if(!componentExists){
+        if (!componentExists) {
             throw new AppError('Component not found.', 404);
         }
 
         try {
-            if(componentDto.workload != null) {
+            if (componentDto.workload != null) {
                 const workloadData = {
                     ...componentDto.workload,
                     id: componentDto.workload.id ?? componentDto.workloadId ?? componentExists.workloadId,
@@ -126,12 +127,12 @@ export class ComponentService {
         }
     }
 
-    async delete(id: string){
+    async delete(id: string) {
         const componentExists = await this.componentRepository.findOne({
             where: { id }
         });
 
-        if(!componentExists){
+        if (!componentExists) {
             throw new AppError('Component not found.', 404);
         }
 
@@ -146,6 +147,69 @@ export class ComponentService {
 
         if (componentExists.workloadId != null)
             await this.workloadService.delete(componentExists.workloadId);
+    }
+
+    async export(id: string) {
+        const component = await this.componentRepository.findOne({
+            where: { id }
+        });
+
+        if (!component) {
+            throw new AppError('Component not found.', 404);
+        }
+
+        const { workload } = component;
+
+        const data = {
+            ...component,
+            workload: workload ? {
+                student: {
+                    theory: workload.studentTheory,
+                    practice: workload.studentPractice,
+                    theoryPractice: workload.studentTheoryPractice,
+                    internship: workload.studentInternship,
+                    practiceInternship: workload.studentPracticeInternship,
+                },
+                professor: {
+                    theory: workload.teacherTheory,
+                    practice: workload.teacherPractice,
+                    theoryPractice: workload.teacherTheoryPractice,
+                    internship: workload.teacherInternship,
+                    practiceInternship: workload.teacherPracticeInternship,
+                },
+                module: {
+                    theory: workload.moduleTheory,
+                    practice: workload.modulePractice,
+                    theoryPractice: workload.moduleTheoryPractice,
+                    internship: workload.moduleInternship,
+                    practiceInternship: workload.modulePracticeInternship,
+                }
+            } : undefined,
+        };
+
+        const html = generateHtml(data);
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+            ],
+        });
+        const page = await browser.newPage();
+        await page.setViewport({
+            width: 1560,
+            height: 1920
+        });
+        await page.setContent(html, { waitUntil: 'domcontentloaded' });
+        const pdf = await page.pdf({
+            printBackground: true,
+        });
+
+        await browser.close();
+
+        return pdf;
     }
 
 }
