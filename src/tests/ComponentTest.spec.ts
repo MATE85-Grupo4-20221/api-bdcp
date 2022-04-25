@@ -141,46 +141,12 @@ describe('Create new Component', ()=>{
         });
         expect(res.statusCode).toBe(401);
     });
-    // it("should not be able to create new user without password", async ()=>{
-    //   const userController = new UserController();
-    //   const req = new MockExpressRequest({
-    //     method:"POST",
-    //     headers: {
-    //       'Content-Type':'application/json',
-    //     },
-    //     body:{
-    //       "name": "Test",
-    //       "email": "test@gmail.com"
-    //     }
-    //   });
-    //   const res = new MockExpressResponse();
-    //   await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
-    // });
-    // it("should not be able to create new user without name", async ()=>{
-    //   const userController = new UserController();
-    //   const req = new MockExpressRequest({
-    //     method:"POST",
-    //     headers: {
-    //       'Content-Type':'application/json',
-    //     },
-    //     body:{
-    //       "email": "test@gmail.com",
-    //       "password":"test123"
-    //     }
-    //   });
-    //   const res = new MockExpressResponse();
-    //   await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
-    // });
-    // it("should not be able to create new user with empty body", async ()=>{
-    //   const userController = new UserController();
-    //   const req = new MockExpressRequest({
-    //     method:"POST",
-    //     headers: {
-    //       'Content-Type':'application/json',
-    //     },
-    //     body:{}
-    //   });
-    //   const res = new MockExpressResponse();
-    //   await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
-    // });
+    it("should not be able to create new component with empty body", async ()=>{
+      const res = await supertest(app)
+        .post('/api/components')
+        .set('Content-Type', `application/json`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({});
+        expect(res.statusCode).toBe(400);
+    });
 })
