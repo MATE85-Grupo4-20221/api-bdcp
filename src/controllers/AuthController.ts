@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-
+import { LoginRequestDto, ResetPasswordRequestDto } from '../dtos/auth';
 import { AuthService } from '../services/AuthService';
 
 class AuthController {
     async login(request: Request, response: Response) {
-        const { email, password } = request.body;
+        const { email, password } = request.body as LoginRequestDto;
 
         const authService = new AuthService();
         const token = await authService.login(email, password);
@@ -13,7 +13,7 @@ class AuthController {
     }
 
     async resetPassword(request: Request, response: Response) {
-        const { email } = request.body;
+        const { email } = request.body as ResetPasswordRequestDto;
 
         const authService = new AuthService();
         await authService.resetPassword(email);

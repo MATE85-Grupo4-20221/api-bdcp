@@ -92,11 +92,7 @@ export class WorkloadService {
             throw new AppError('Workload not found.', 404);
         }
 
-        await this.workloadRepository.createQueryBuilder()
-            .delete()
-            .from(ComponentWorkload)
-            .where('id = :id', { id })
-            .execute();
+        return this.workloadRepository.delete(workloadExists.id);
     }
 
 }

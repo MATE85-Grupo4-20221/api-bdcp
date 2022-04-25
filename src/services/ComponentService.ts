@@ -1,4 +1,4 @@
-import { getCustomRepository, ILike, Repository } from 'typeorm';
+import { getCustomRepository, ILike, Raw, Repository, } from 'typeorm';
 
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
@@ -8,6 +8,7 @@ import { ComponentLog } from '../entities/ComponentLog';
 import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
+import { CreateComponentRequestDto, UpdateComponentRequestDto } from '../dtos/component';
 
 export class ComponentService {
 
@@ -34,19 +35,20 @@ export class ComponentService {
         return components;
     }
 
-    async getComponentById(id: string) {
+    async getComponentByCode(code: string) {
         const component = await this.componentRepository.findOne({
-            where: { id },
+            where: { code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` }), },
+            relations: [ 'logs', 'workload' ]
         });
 
-        if (!component) return null;
+        if (!component) throw new AppError('Component not found.', 404);
 
         return component;
     }
 
     async create(
         userId: string,
-        requestDto: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>
+        requestDto: CreateComponentRequestDto
     ){
         const componentExists = await this.componentRepository.findOne({
             where: { code: requestDto.code },
@@ -81,8 +83,7 @@ export class ComponentService {
 
     async update(
         id: string,
-        componentDto: Omit<Component, 'createdAt' | 'updatedAt'> &
-            { approval?: Pick<ComponentLog, 'agreementDate' | 'agreementNumber'> },
+        componentDto: UpdateComponentRequestDto,
         userId: string
     ) {
         const componentExists = await this.componentRepository.findOne({
@@ -97,48 +98,25 @@ export class ComponentService {
             if(componentDto.workload != null) {
                 const workloadData = {
                     ...componentDto.workload,
-                    id: componentDto.workload.id ?? componentDto.workloadId ?? componentExists.workloadId,
+                    id: componentDto.workloadId ?? componentExists.workloadId as string,
                 };
 
                 const workload = await this.workloadService.upsert(workloadData);
                 componentDto.workloadId = workload?.id;
                 delete componentDto.workload;
             }
-            const approval = componentDto?.approval;
-            delete componentDto?.approval;
 
             await this.componentRepository.createQueryBuilder().update(Component)
                 .set(componentDto)
                 .where('id = :id', { id })
                 .execute();
 
-            const isApproved = approval != null && Object.keys(approval).length > 0;
-            const previousApprovalLogExists = isApproved
-                ? await this.componentLogRepository.findOne({
-                    where: {
-                        componentId: id,
-                        type: ComponentLogType.APPROVAL
-                    }
-                })
-                : null;
-            if (isApproved && !previousApprovalLogExists) {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.APPROVAL,
-                    undefined,
-                    approval.agreementNumber,
-                    approval.agreementDate,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            } else {
-                let componentLog = componentExists.generateLog(
-                    userId,
-                    ComponentLogType.UPDATE,
-                );
-                componentLog = this.componentLogRepository.create(componentLog);
-                await this.componentLogRepository.save(componentLog);
-            }
+            let componentLog = componentExists.generateLog(
+                userId,
+                ComponentLogType.UPDATE,
+            );
+            componentLog = this.componentLogRepository.create(componentLog);
+            await this.componentLogRepository.save(componentLog);
 
             return await this.componentRepository.findOne({
                 where: { id }

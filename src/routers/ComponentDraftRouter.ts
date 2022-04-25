@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { ComponentController } from '../controllers/ComponentController';
-import { CreateComponentRequestDto, UpdateComponentRequestDto } from '../dtos/component';
+import { ComponentDraftController } from '../controllers/ComponentDraftController';
+import { ApproveDraftRequestDto, CreateDraftRequestDto, UpdateComponentRequestDto } from '../dtos/component';
 import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
 import { makeValidateBody } from '../middlewares/Validator';
 
-const componentRouter = Router();
-const componentController = new ComponentController();
+const componentDraftRouter = Router();
+const componentDraftController = new ComponentDraftController();
 
 /**
 * @swagger
 * tags:
-*   name: Component
-*   description: The Component managing API
+*   name: ComponentDraft
+*   description: The Component Draft managing API
 */
 
 /**
@@ -142,6 +142,17 @@ const componentController = new ComponentController();
 *       required:
 *         - id
 *         - userId
+*         - code
+*         - name
+*         - department
+*         - status
+*         - prerequeriments
+*         - semester
+*         - syllabus
+*         - program
+*         - objective
+*         - methodology
+*         - bibliography
 *         - createdAt
 *         - updatedAt
 *       properties:
@@ -157,9 +168,10 @@ const componentController = new ComponentController();
 *         department:
 *           type: string
 *           description: Component's department
-*         type:
+*         status:
 *           type: string
-*           description: Type of component (optional or required)
+*           description: Component status
+*           enum: [published, draft, archived]
 *         prerequeriments:
 *           type: string
 *           description: The component that are prerequeriments
@@ -175,7 +187,7 @@ const componentController = new ComponentController();
 *         objective:
 *           type: string
 *           description: Component's objective
-*         metolodogy:
+*         methodology:
 *           type: string
 *           description: Metodology applied by the professor
 *         bibliography:
@@ -204,100 +216,103 @@ const componentController = new ComponentController();
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
 *         workloadId: abcdef6
-*/
-
-/**
- *    ContentUpsert:
- *       type: object
- *       required:
- *         - id
- *         - userId
- *         - createdAt
- *         - updatedAt
- *       properties:
- *         code:
- *           type: string
- *           description: Component's code
- *         name:
- *           type: string
- *           description: Component's name
- *         department:
- *           type: string
- *           description: Component's department
- *          teachingWorkload:
- *           type: number
- *           description: Amount of hours invented in the component
- *         studentWorkload:
- *           type: number
- *           description: Amount of in-class hours invested in the component
- *         kind:
- *           type: string
- *           description: Kind of component (optional or required)
- *          module:
- *           type: string
- *           description: Type of module
- *         semester:
- *           type: string
- *           description: First acting semester of component
- *         syllabus:
- *           type: string
- *           description: Component's syllabus
- *         program:
- *           type: string
- *           description: Component's program
- *         objective:
- *           type: string
- *           description: Component's objective
- *         metolodogy:
- *           type: string
- *           description: Metodology applied by the professor
- *         bibliography:
- *           type: string
- *           description: Book references
- *         createdAt:
- *           type: date
- *           description: Date of content's creation
- *         updatedAt:
- *           type: date
- *           description: Date of content's last update
- *         workloadId:
- *           type: number
- *           description: Id of component's workload
- *         workload:
- *           type: object
- *       example:
- *         name: Geometria Analitica
- *         code: MATA01
+*
+*     ComponentDraft:
+*       type: object
+*       required:
+*         - id
+*         - userId
+*         - createdAt
+*         - updatedAt
+*       properties:
+*         id:
+*           type: string
+*           description: The uuid id of the component
+*         code:
+*           type: string
+*           description: Component's code
+*         name:
+*           type: string
+*           description: Component's name
+*         department:
+*           type: string
+*           description: Component's department
+*         prerequeriments:
+*           type: string
+*           description: The component that are prerequeriments
+*         semester:
+*           type: string
+*           description: First acting semester of component
+*         syllabus:
+*           type: string
+*           description: Component's syllabus
+*         program:
+*           type: string
+*           description: Component's program
+*         objective:
+*           type: string
+*           description: Component's objective
+*         methodology:
+*           type: string
+*           description: Metodology applied by the professor
+*         bibliography:
+*           type: string
+*           description: Book references
+*         createdAt:
+*           type: date
+*           description: Date of component's creation
+*         updatedAt:
+*           type: date
+*           description: Date of component's last update
+*         userId:
+*           type: string
+*           description: Componen's creator's uid
+*         user:
+*           $ref: '#/components/schemas/User'
+*         workloadId:
+*           type: string
+*           description: Content's workload
+*         workload:
+*           $ref: '#/components/schemas/Workload'
+*       example:
+*         id: 27
+*         name: Geometria Analítica
+*         code: MATA01
+*         userId: 50496915-d356-43a0-84a4-43f83bad2225
+*         createdAt: 2022-03-18 17:12:52
+*         updatedAt: 2022-03-18 17:12:52
+*         workloadId: abcdef6
+*
 */
 
 /**
 * @swagger
-* /api/components:
+* /api/component-drafts:
 *   get:
-*     summary: Returns the list of all the component
-*     tags: [Component]
+*     summary: Returns the list of all the drafts
+*     tags: [ComponentDraft]
 *     responses:
 *       200:
-*         description: The list of all the component
+*         description: The list of all the drafts
 *         content:
 *           application/json:
 *             schema:
 *               type: array
 *               items:
-*                 $ref: '#/components/schemas/Component'
+*                 $ref: '#/components/schemas/ComponentDraft'
 *       400:
 *         description: Bad Request
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.get('/', componentController.getComponents);
+componentDraftRouter.get('/', componentDraftController.getDrafts);
 
 /**
  * @swagger
- * /api/components/{code}:
+ * /api/component-drafts/{code}:
  *   get:
- *     summary: Get a component by code
- *     tags: [Component]
+ *     summary: Get a draft by code
+ *     tags: [ComponentDraft]
  *     parameters:
  *       - in: header
  *         name: authenticatedUserId
@@ -310,32 +325,32 @@ componentRouter.get('/', componentController.getComponents);
  *         schema:
  *           type: string
  *         required: true
- *         description: The component code
+ *         description: The draft code
  *
  *     responses:
  *       200:
- *         description: The component was found
+ *         description: The draft was found
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Component'
+ *                 $ref: '#/components/schemas/ComponentDraft'
  *       400:
  *         description: Bad Request
  *       404:
- *         description: The component was not found
+ *         description: The draft was not found
  *       500:
  *         description: Internal Server Error
  */
-componentRouter.get('/:code', ensureAuthenticated, componentController.getComponentByCode);
+componentDraftRouter.get('/:code', ensureAuthenticated, componentDraftController.getDraftByCode);
 
 /**
 * @swagger
-* /api/components:
+* /api/component-drafts:
 *   post:
-*     summary: Create a component
-*     tags: [Component]
+*     summary: Create a draft
+*     tags: [ComponentDraft]
 *     parameters:
 *       - in: header
 *         name: authenticatedUserId
@@ -392,7 +407,7 @@ componentRouter.get('/:code', ensureAuthenticated, componentController.getCompon
 *         required: false
 *         description: Component's objective
 *       - in: body
-*         name: metolodogy
+*         name: methodology
 *         schema:
 *           type: string
 *         required: false
@@ -482,22 +497,22 @@ componentRouter.get('/:code', ensureAuthenticated, componentController.getCompon
 *         description: Date of content's last update
 *     responses:
 *       201:
-*         description: The content has been created
+*         description: The draft has been created
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Content'
+*               $ref: '#/components/schemas/ContentDraft'
 *       400:
 *         description: An error has been ocurred.
 */
-componentRouter.post('/', ensureAuthenticated, makeValidateBody(CreateComponentRequestDto), componentController.create);
+componentDraftRouter.post('/', ensureAuthenticated, makeValidateBody(CreateDraftRequestDto), componentDraftController.create);
 
 /**
 * @swagger
-* /api/components/{id}:
+* /api/component-drafts/{id}:
 *   put:
-*     summary: Update a component
-*     tags: [Component]
+*     summary: Update a draft
+*     tags: [ComponentDraft]
 *     parameters:
 *       - in: header
 *         name: authenticatedUserId
@@ -560,7 +575,7 @@ componentRouter.post('/', ensureAuthenticated, makeValidateBody(CreateComponentR
 *         required: false
 *         description: Component's objective
 *       - in: body
-*         name: metolodogy
+*         name: methodology
 *         schema:
 *           type: string
 *         required: false
@@ -678,26 +693,26 @@ componentRouter.post('/', ensureAuthenticated, makeValidateBody(CreateComponentR
 *             $ref: '#/components/schemas/ComponentUpsert'
 *     responses:
 *       200:
-*         description: The component component has been updated
+*         description: The draft has been updated
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Component'
+*               $ref: '#/components/schemas/ComponentDraft'
 *       400:
 *         description: Bad Request
 *       404:
-*         description: The component was not found
+*         description: The draft was not found
 *       500:
 *         description: Internal Server Error
 */
-componentRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponentRequestDto), componentController.update);
+componentDraftRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponentRequestDto), componentDraftController.update);
 
 /**
  * @swagger
- * /api/components/{id}:
+ * /api/component-drafts/{id}:
  *   delete:
- *     summary: Delete a component by id
- *     tags: [Component]
+ *     summary: Delete a draft by id
+ *     tags: [ComponentDraft]
  *     parameters:
  *       - in: header
  *         name: authenticatedUserId
@@ -710,11 +725,59 @@ componentRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponen
  *         schema:
  *           type: number
  *         required: true
- *         description: The component id
+ *         description: The draft id
  *
  *     responses:
  *       200:
- *         description: The component was deleted
+ *         description: The draft was deleted
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: The draft was not found
+ *       500:
+ *         description: Internal Server Error
+ */
+componentDraftRouter.delete('/:id', ensureAuthenticated, componentDraftController.delete);
+
+/**
+ * @swagger
+ * /api/component-drafts/{id}/approve:
+ *   post:
+ *     summary: Approve a draft
+ *     tags: [ComponentDraft]
+ *     parameters:
+ *       - in: header
+ *         name: authenticatedUserId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The authenticated user id
+ *       - in: params
+ *         name: id
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: The draft id
+ *       - in: body
+ *         name: agreementDate
+ *         schema:
+ *           type: date
+ *         required: true
+ *         description: The date of the meeting in which the draft was approved
+ *       - in: body
+ *         name: agreementNumber
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: The identification number of the meeting in which the draft was approved
+ *
+ *     responses:
+ *       200:
+ *         description: The draft was approved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ComponentDraft'
  *       400:
  *         description: Bad Request
  *       404:
@@ -722,41 +785,6 @@ componentRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponen
  *       500:
  *         description: Internal Server Error
  */
-componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
+componentDraftRouter.post('/:id/approve', ensureAuthenticated, makeValidateBody(ApproveDraftRequestDto), componentDraftController.approve);
 
-/**
-* @swagger
-* /api/components/import:
-*   post:
-*     summary: Import and insert components from UFBA website in the database
-*     tags: [Component]
-*     parameters:
-*       - in: header
-*         name: authenticatedUserId
-*         schema:
-*           type: string
-*         required: true
-*         description: The authenticated user id
-*       - in: body
-*         name: cdCurso
-*         schema:
-*           type: string
-*         required: true
-*         description: The course code
-*       - in: body
-*         name: nuPerCursoInicial
-*         schema:
-*           type: string
-*         required: true
-*         description: The course current semester
-*     responses:
-*       201:
-*         description: Insert components in the database using the crawler
-*       400:
-*         description: Bad Request
-*       500:
-*         description: Internal Server Error
-*/
-componentRouter.post('/import', ensureAuthenticated, componentController.importComponentsFromSiac);
-
-export { componentRouter };
+export { componentDraftRouter };

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { CreateUserRequestDto, UpdateUserRequestDto } from '../dtos/user';
 
 import { UserService } from '../services/UserService';
 
@@ -20,7 +21,7 @@ class UserController {
     }
 
     async create(request: Request, response: Response) {
-        const { name, email, password } = request.body;
+        const { name, email, password } = request.body as CreateUserRequestDto;
 
         const userService = new UserService();
         const user = await userService.create(name, email, password);
@@ -30,7 +31,7 @@ class UserController {
 
     async update(request: Request, response: Response) {
         const { id } = request.params;
-        const { email, password } = request.body;
+        const { email, password } = request.body as UpdateUserRequestDto;
 
         const userService = new UserService();
         const user = await userService.update(id, email, password);

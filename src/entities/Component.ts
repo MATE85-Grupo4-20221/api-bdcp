@@ -14,6 +14,7 @@ import { ComponentWorkload } from './ComponentWorkload';
 import { ComponentLog } from './ComponentLog';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
+import { ComponentDraft } from './ComponentDraft';
 
 @Entity('components')
 class Component {
@@ -40,6 +41,9 @@ class Component {
         department: string;
 
     @Column()
+        modality: string;
+
+    @Column()
         program: string;
 
     @Column()
@@ -58,6 +62,9 @@ class Component {
         syllabus: string;
 
     @Column()
+        learningAssessment: string;
+
+    @Column()
         bibliography: string;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -69,7 +76,7 @@ class Component {
     @ManyToOne(() => User, (user) => user.components)
     @JoinColumn({ name: 'created_by' })
         user: User;
-    
+
     @OneToOne(() => ComponentWorkload, (componentWorkload) => componentWorkload.component)
     @JoinColumn({ name: 'workload_id' })
         workload?: ComponentWorkload;
@@ -93,6 +100,33 @@ class Component {
         log.description = description;
 
         return log;
+    }
+
+    publishDraft(draft: ComponentDraft) {
+        this.status = ComponentStatus.PUBLISHED;
+        
+        if(draft.workloadId)
+            this.workloadId = draft.workloadId;
+        if (draft.name)
+            this.name = draft.name;
+        if (draft.department)
+            this.department = draft.department;
+        if (draft.program)
+            this.program = draft.program;
+        if (draft.semester)
+            this.semester = draft.semester;
+        if (draft.prerequeriments)
+            this.prerequeriments = draft.prerequeriments;
+        if (draft.methodology)
+            this.methodology = draft.methodology;
+        if (draft.objective)
+            this.objective = draft.objective;
+        if (draft.syllabus)
+            this.syllabus = draft.syllabus;
+        if (draft.bibliography)
+            this.bibliography = draft.bibliography;
+
+        return this;
     }
 
 }
