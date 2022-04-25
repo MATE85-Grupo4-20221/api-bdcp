@@ -46,7 +46,8 @@
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "typeorm": "^0.2.45",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "z-schema": "^5.0.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
