@@ -4,7 +4,11 @@ import { Component } from './Component';
 import { User } from './User';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 
-@Entity('component_logs')
+@Entity('component_logs', {
+    orderBy: {
+        createdAt: 'DESC'
+    }
+})
 class ComponentLog {
 
     @PrimaryGeneratedColumn('uuid')
