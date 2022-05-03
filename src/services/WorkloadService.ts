@@ -24,7 +24,8 @@ export class WorkloadService {
         dto: Omit<ComponentWorkload, 'id'>
     ) {
         try {
-            const workload = this.workloadRepository.create(dto);
+            const workload = this.workloadRepository.create({ ...dto });
+
             return await this.workloadRepository.save(workload);
         }
         catch (err) {
@@ -71,10 +72,7 @@ export class WorkloadService {
             return this.create(dto);
         }
 
-        await this.workloadRepository.createQueryBuilder().update(ComponentWorkload)
-            .set(dto)
-            .where('id = :id', { id:  dto.id })
-            .execute();
+        await this.workloadRepository.save({ ...workloadExists, ...dto });
 
         return this.workloadRepository.findOne({
             where: { id: dto.id }
