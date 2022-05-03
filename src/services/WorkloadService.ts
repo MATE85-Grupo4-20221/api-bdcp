@@ -17,7 +17,6 @@ export class WorkloadService {
         });
 
         if (!workload) return null;
-        
         return workload;
     }
 
@@ -26,12 +25,12 @@ export class WorkloadService {
     ) {
         try {
             const workload = this.workloadRepository.create({ ...dto });
-            
+
             return await this.workloadRepository.save(workload);
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
-        }        
+        }
     }
 
     async update(

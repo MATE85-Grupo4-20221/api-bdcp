@@ -1,5 +1,6 @@
 import { getCustomRepository, ILike, In, Raw, Repository } from 'typeorm';
-
+import puppeteer from 'puppeteer';
+import { generateHtml } from '../helpers/templates/component';
 import { Component } from '../entities/Component';
 import { ComponentRepository } from '../repositories/ComponentRepository';
 import { AppError } from '../errors/AppError';
@@ -253,5 +254,72 @@ export class ComponentService {
                 this.workloadService.delete(draft?.workloadId as string),
             ]);
         }
+    }
+
+    async export(id: string) {
+        const component = await this.componentRepository.findOne({
+            where: { id },
+        });
+
+        if (!component) {
+            throw new AppError('Component not found.', 404);
+        }
+
+        const { workload } = component;
+
+        const data = {
+            ...component,
+            workload: workload
+                ? {
+                    student: {
+                        theory: workload.studentTheory,
+                        practice: workload.studentPractice,
+                        theoryPractice: workload.studentTheoryPractice,
+                        internship: workload.studentInternship,
+                        practiceInternship:
+                              workload.studentPracticeInternship,
+                    },
+                    professor: {
+                        theory: workload.teacherTheory,
+                        practice: workload.teacherPractice,
+                        theoryPractice: workload.teacherTheoryPractice,
+                        internship: workload.teacherInternship,
+                        practiceInternship:
+                              workload.teacherPracticeInternship,
+                    },
+                    module: {
+                        theory: workload.moduleTheory,
+                        practice: workload.modulePractice,
+                        theoryPractice: workload.moduleTheoryPractice,
+                        internship: workload.moduleInternship,
+                        practiceInternship: workload.modulePracticeInternship,
+                    },
+                }
+                : undefined,
+        };
+
+        const html = generateHtml(data);
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+            ],
+        });
+        const page = await browser.newPage();
+        await page.setViewport({
+            width: 1560,
+            height: 1920,
+        });
+        await page.setContent(html, { waitUntil: 'domcontentloaded' });
+        const pdf = await page.pdf({
+            printBackground: true,
+        });
+
+        await browser.close();
+
+        return pdf;
     }
 }
