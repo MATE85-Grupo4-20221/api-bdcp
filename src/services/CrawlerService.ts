@@ -13,15 +13,19 @@ import { ComponentLogRepository } from '../repositories/ComponentLogRepository';
 import { ComponentStatus } from '../interfaces/ComponentStatus';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
 import { IComponentInfoCrawler } from '../interfaces/IComponentInfoCrawler';
+import { ComponentDraft } from '../entities/ComponentDraft';
+import { ComponentDraftRepository } from '../repositories/ComponentDraftRepository';
 
 export class CrawlerService {
 
     private componentRepository : Repository<Component>;
+    private componentDraftRepository : Repository<ComponentDraft>;
     private componentLogRepository: Repository<ComponentLog>;
     private workloadService: WorkloadService;
 
     constructor() {
         this.componentRepository = getCustomRepository(ComponentRepository);
+        this.componentDraftRepository = getCustomRepository(ComponentDraftRepository);
         this.componentLogRepository = getCustomRepository(ComponentLogRepository);
         this.workloadService = new WorkloadService();
     }
@@ -36,15 +40,19 @@ export class CrawlerService {
         }
 
         try {
-            const workload = await this.workloadService.create({
-                studentPractice: data.workload?.practice,
-                studentTheory: data.workload?.theoretical,
-                studentInternship: data.workload?.internship,
-            });
+            const [ componentWorkload, draftWorkload ] = await Promise.all(
+                new Array(2)
+                    .fill(null)
+                    .map(() => this.workloadService.create({
+                        studentPractice: data.workload?.practice,
+                        studentTheory: data.workload?.theoretical,
+                        studentInternship: data.workload?.internship,
+                    }))
+            );
 
             const component = this.componentRepository.create({
                 userId,
-                workloadId: workload.id,
+                workloadId: componentWorkload.id,
                 code: data.code,
                 name: data.name,
                 department: data.department,
@@ -59,8 +67,21 @@ export class CrawlerService {
             });
             await this.componentRepository.save(component);
 
+            const draft = this.componentDraftRepository.create({
+                ...component,
+                id: undefined,
+                workloadId: draftWorkload.id,
+                status: undefined,
+                componentId: component.id
+            } as unknown as ComponentDraft);
+
             const componentLog = component.generateLog(userId, ComponentLogType.CREATION);
-            await this.componentLogRepository.save(componentLog);
+            await Promise.all([
+                this.componentLogRepository.save(componentLog),
+                this.componentDraftRepository.save(draft)
+            ]);
+
+            await this.componentRepository.save({ id: component.id, draftId: draft.id });
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);

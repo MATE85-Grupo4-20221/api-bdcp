@@ -28,43 +28,46 @@ class Component {
     @Column({ name: 'workload_id', nullable: true })
         workloadId?: string;
 
+    @Column({ name: 'component_draft_id', nullable: true })
+        draftId?: string | null;
+
     @Column({ enum: ComponentStatus, default: ComponentStatus.DRAFT })
         status: ComponentStatus;
 
     @Column({ unique: true })
         code: string;
 
-    @Column()
+    @Column({ default: '' })
         name: string;
 
-    @Column()
+    @Column({ default: '' })
         department: string;
 
-    @Column()
+    @Column({ default: '' })
         modality: string;
 
-    @Column()
+    @Column({ default: '' })
         program: string;
 
-    @Column()
+    @Column({ default: '' })
         semester: string;
 
-    @Column()
+    @Column({ default: '' })
         prerequeriments: string;
 
-    @Column()
+    @Column({ default: '' })
         methodology: string;
 
-    @Column()
+    @Column({ default: '' })
         objective: string;
 
-    @Column()
+    @Column({ default: '' })
         syllabus: string;
 
-    @Column()
+    @Column({ default: '' })
         learningAssessment: string;
 
-    @Column()
+    @Column({ default: '' })
         bibliography: string;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -83,6 +86,10 @@ class Component {
 
     @OneToMany(() => ComponentLog, (componentLog) => componentLog.component)
         logs: ComponentLog[];
+    
+    @OneToOne(() => ComponentDraft, (componentDraft) => componentDraft.component)
+    @JoinColumn({ name: 'component_draft_id' })
+        draft?: ComponentDraft;
 
     generateLog(
         userId: string,
@@ -105,26 +112,28 @@ class Component {
     publishDraft(draft: ComponentDraft) {
         this.status = ComponentStatus.PUBLISHED;
         
-        if(draft.workloadId)
-            this.workloadId = draft.workloadId;
-        if (draft.name)
+        if (draft.name != null)
             this.name = draft.name;
-        if (draft.department)
+        if (draft.department != null)
             this.department = draft.department;
-        if (draft.program)
+        if (draft.program != null)
             this.program = draft.program;
-        if (draft.semester)
+        if (draft.semester != null)
             this.semester = draft.semester;
-        if (draft.prerequeriments)
+        if (draft.prerequeriments != null)
             this.prerequeriments = draft.prerequeriments;
-        if (draft.methodology)
+        if (draft.methodology != null)
             this.methodology = draft.methodology;
-        if (draft.objective)
+        if (draft.objective != null)
             this.objective = draft.objective;
-        if (draft.syllabus)
+        if (draft.syllabus != null)
             this.syllabus = draft.syllabus;
-        if (draft.bibliography)
+        if (draft.bibliography != null)
             this.bibliography = draft.bibliography;
+        if (draft.learningAssessment != null)
+            this.learningAssessment = draft.learningAssessment;
+        if (draft.modality != null)
+            this.modality = draft.modality;
 
         return this;
     }

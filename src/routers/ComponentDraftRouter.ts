@@ -707,37 +707,37 @@ componentDraftRouter.post('/', ensureAuthenticated, makeValidateBody(CreateDraft
 */
 componentDraftRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateComponentRequestDto), componentDraftController.update);
 
-/**
- * @swagger
- * /api/component-drafts/{id}:
- *   delete:
- *     summary: Delete a draft by id
- *     tags: [ComponentDraft]
- *     parameters:
- *       - in: header
- *         name: authenticatedUserId
- *         schema:
- *           type: string
- *         required: true
- *         description: The authenticated user id
- *       - in: params
- *         name: id
- *         schema:
- *           type: number
- *         required: true
- *         description: The draft id
- *
- *     responses:
- *       200:
- *         description: The draft was deleted
- *       400:
- *         description: Bad Request
- *       404:
- *         description: The draft was not found
- *       500:
- *         description: Internal Server Error
- */
-componentDraftRouter.delete('/:id', ensureAuthenticated, componentDraftController.delete);
+// /**
+//  * @swagger
+//  * /api/component-drafts/{id}:
+//  *   delete:
+//  *     summary: Delete a draft by id
+//  *     tags: [ComponentDraft]
+//  *     parameters:
+//  *       - in: header
+//  *         name: authenticatedUserId
+//  *         schema:
+//  *           type: string
+//  *         required: true
+//  *         description: The authenticated user id
+//  *       - in: params
+//  *         name: id
+//  *         schema:
+//  *           type: number
+//  *         required: true
+//  *         description: The draft id
+//  *
+//  *     responses:
+//  *       200:
+//  *         description: The draft was deleted
+//  *       400:
+//  *         description: Bad Request
+//  *       404:
+//  *         description: The draft was not found
+//  *       500:
+//  *         description: Internal Server Error
+//  */
+// componentDraftRouter.delete('/:id', ensureAuthenticated, componentDraftController.delete);
 
 /**
  * @swagger

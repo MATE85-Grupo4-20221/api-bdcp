@@ -1,8 +1,24 @@
 import { Request, Response } from 'express';
+import { getAuthToken } from '../helpers/getAuthToken';
 
 import { paginate } from '../helpers/paginate';
+import { verifyAuthToken } from '../helpers/verifyAuthToken';
 import { ComponentService } from '../services/ComponentService';
 import { CrawlerService } from '../services/CrawlerService';
+
+const isUserAuthenticated = (authorization?: string) => {
+    try {
+        const authToken = getAuthToken(authorization);
+
+        if (!authToken) return false;
+
+        verifyAuthToken(authToken);
+
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 class ComponentController {
     async importComponentsFromSiac(request: Request, response: Response) {
@@ -12,12 +28,10 @@ class ComponentController {
         const crawlerService = new CrawlerService();
 
         if (!cdCurso || !nuPerCursoInicial) {
-            return response
-                .status(400)
-                .json({
-                    message:
-                        'O código do curso ou o semestre vigente não foram encontrados!',
-                });
+            return response.status(400).json({
+                message:
+                    'O código do curso ou o semestre vigente não foram encontrados!',
+            });
         }
 
         await crawlerService.importComponentsFromSiac(
@@ -32,11 +46,13 @@ class ComponentController {
     async getComponents(request: Request, response: Response) {
         const componentService = new ComponentService();
 
-        const filter = request.query.filter as string;
+        const search = request.query.search as string;
         const page = parseInt(String(request.query.page)) || 0;
         const limit = parseInt(String(request.query.limit)) || 10;
 
-        const components = await componentService.getComponents(filter);
+        const isAuthenticated = isUserAuthenticated(request.headers.authorization);
+
+        const components = await componentService.getComponents(search, isAuthenticated);
 
         return response.status(200).json(paginate(components, { page, limit }));
     }
@@ -88,6 +104,14 @@ class ComponentController {
         return response
             .status(200)
             .json({ message: 'Component has been deleted!' });
+    }
+
+    async export(request: Request, response: Response) {
+        const { id } = request.params;
+        const componentService = new ComponentService();
+        const buffer = await componentService.export(id);
+        response.set({ 'Content-Type': 'application/pdf' });
+        return response.status(200).send(buffer);
     }
 }
 

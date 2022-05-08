@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtPayload, verify } from 'jsonwebtoken';
+import { getAuthToken } from '../helpers/getAuthToken';
+import { verifyAuthToken } from '../helpers/verifyAuthToken';
 
 function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
-    const splitToken = request.headers.authorization?.split('Bearer ');
-    const authToken = splitToken?.[1];
+    const authToken = getAuthToken(request.headers.authorization);
 
-    if (!splitToken || splitToken.length < 2 || !authToken) {
+    if (!authToken) {
         return response.status(401).json({
             message: 'No token provided.',
         });
     }
 
     try {
-        const authenticatedUser = verify(authToken, String(process.env.JWT_SECRET)) as JwtPayload;
+        const authenticatedUser = verifyAuthToken(authToken);
         request.headers.authenticatedUserId = authenticatedUser.id;
 
         return next();
