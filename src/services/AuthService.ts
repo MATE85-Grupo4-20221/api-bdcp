@@ -5,6 +5,7 @@ import { Repository, getCustomRepository } from 'typeorm';
 import { User } from '../entities/User';
 import { UserRepository } from '../repositories/UserRepository';
 import { AppError } from './../errors/AppError';
+import MailerService from '../middlewares/Mailer';
 import Mailer from '../middlewares/Mailer';
 
 class AuthService {
@@ -15,6 +16,9 @@ class AuthService {
     }
 
     async login(email: string, password: string) {
+        if(email == undefined || password == undefined){
+            throw new AppError('Username or password missing. Please try again!', 400);
+        }
         const user = await this.userRepository.findOne({
             where: {
                 email,
@@ -42,11 +46,13 @@ class AuthService {
         try {
             const generatedHash = Math.random().toString(36).substring(2);
             const generatedPassword = crypto.createHmac('sha256', generatedHash).digest('hex');
-
+            await Mailer.construct();
+            
             await this.userRepository.createQueryBuilder().update(User).set({ password: generatedPassword }).where('email = :email', { email }).execute();
             await Mailer.execute(email, 'Your new BDCP password!', `Olá, use "${generatedHash}" como sua nova senha para acessar o BDCP.`);
         }
         catch (err) {
+            console.log(err);
             throw new AppError('An error has been occurred!', 400);
         }
     }
