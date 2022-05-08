@@ -257,9 +257,11 @@ export class ComponentService {
     }
 
     async export(id: string) {
-        const component = await this.componentRepository.findOne({
-            where: { id },
-        });
+        const component = await this.componentRepository
+            .createQueryBuilder('components')
+            .leftJoinAndSelect('components.workload', 'workload')
+            .where({ id })
+            .getOne();
 
         if (!component) {
             throw new AppError('Component not found.', 404);
