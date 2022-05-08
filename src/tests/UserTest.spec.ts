@@ -1,10 +1,9 @@
-import { createSecureServer } from 'http2';
-import { create } from 'lodash';
 import { UserController } from '../controllers/UserController';
-import { AppError } from '../errors/AppError';
 import connection from './connection';
-var MockExpressRequest = require('mock-express-request');
-var MockExpressResponse = require('mock-express-response');
+/* eslint-disable */
+const MockExpressRequest = require('mock-express-request');
+const MockExpressResponse = require('mock-express-response');
+/* eslint-enable */
 
 beforeAll(async ()=>{
     await connection.create();
@@ -19,16 +18,16 @@ beforeEach(async () => {
 });
 
 describe('Create new user', ()=>{
-    it("should be able to create new user", async ()=>{
+    it('should be able to create new user', async ()=>{
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{
-              "name": "Test",
-              "email": "test@gmail.com",
-              "password":"test123"
+                'name': 'Test',
+                'email': 'test@gmail.com',
+                'password':'test123'
             }
         });
         const res = new MockExpressResponse();
@@ -37,16 +36,16 @@ describe('Create new user', ()=>{
         expect(res.statusCode).toBe(201);
         
     });
-    it("should not be able to create duplicate user", async ()=>{
+    it('should not be able to create duplicate user', async ()=>{
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{
-              "name": "Test",
-              "email": "test@gmail.com",
-              "password":"test123"
+                'name': 'Test',
+                'email': 'test@gmail.com',
+                'password':'test123'
             }
         });
         const res = new MockExpressResponse();
@@ -55,61 +54,61 @@ describe('Create new user', ()=>{
         await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
       
     });
-    it("should not be able to create new user without email", async ()=>{
+    it('should not be able to create new user without email', async ()=>{
         const userController = new UserController();
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{
-              "name": "Test",
-              "password":"test123"
+                'name': 'Test',
+                'password':'test123'
             }
         });
         const res = new MockExpressResponse();
         await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
     });
-    it("should not be able to create new user without password", async ()=>{
+    it('should not be able to create new user without password', async ()=>{
         const userController = new UserController();
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{
-              "name": "Test",
-              "email": "test@gmail.com"
+                'name': 'Test',
+                'email': 'test@gmail.com'
             }
         });
         const res = new MockExpressResponse();
         await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
     });
-    it("should not be able to create new user without name", async ()=>{
+    it('should not be able to create new user without name', async ()=>{
         const userController = new UserController();
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{
-              "email": "test@gmail.com",
-              "password":"test123"
+                'email': 'test@gmail.com',
+                'password':'test123'
             }
         });
         const res = new MockExpressResponse();
         await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
     });
-    it("should not be able to create new user with empty body", async ()=>{
+    it('should not be able to create new user with empty body', async ()=>{
         const userController = new UserController();
         const req = new MockExpressRequest({
-            method:"POST",
+            method:'POST',
             headers: {
-              'Content-Type':'application/json',
+                'Content-Type':'application/json',
             },
             body:{}
         });
         const res = new MockExpressResponse();
         await expect(userController.create(req, res)).rejects.toHaveProperty('statusCode', 400);
     });
-})
+});

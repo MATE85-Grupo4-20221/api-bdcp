@@ -5,7 +5,6 @@ import { Repository, getCustomRepository } from 'typeorm';
 import { User } from '../entities/User';
 import { UserRepository } from '../repositories/UserRepository';
 import { AppError } from './../errors/AppError';
-import MailerService from '../middlewares/Mailer';
 import Mailer from '../middlewares/Mailer';
 
 class AuthService {
