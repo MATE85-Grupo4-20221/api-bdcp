@@ -9,6 +9,8 @@ export interface IComponentInfoCrawler {
     bibliography: string;
     prerequeriments?: string;
     methodology?: string;
+    modality?: string;
+    learningAssessment?: string;
     workload?: {
         theoretical: number;
         practice: number;

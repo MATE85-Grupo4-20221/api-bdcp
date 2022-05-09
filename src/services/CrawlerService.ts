@@ -64,6 +64,8 @@ export class CrawlerService {
                 status: ComponentStatus.PUBLISHED,
                 prerequeriments: 'Não há Pré-Requisitos cadastrados',
                 methodology: 'Não há Metodologia cadastrada',
+                modality: 'Não há Modalidade cadastrada',
+                learningAssessment: 'Não há Avaliação de Aprendizagem cadastrada'
             });
             await this.componentRepository.save(component);
 
@@ -140,7 +142,9 @@ export class CrawlerService {
                         bibliography: rawData[9],
                         status: ComponentStatus.PUBLISHED,
                         prerequeriments: 'Não há Pré-requisitos cadastrados',
-                        methodology: 'Não há Metodologia cadastrado',
+                        methodology: 'Não há Metodologia cadastrada',
+                        modality: 'Não há Modalidade cadastrada',
+                        learningAssessment: 'Não há Avaliação de Aprendizagem cadastrada',
                         workload: {
                             theoretical: Number(rawData[1]),
                             practice: Number(rawData[2]),
