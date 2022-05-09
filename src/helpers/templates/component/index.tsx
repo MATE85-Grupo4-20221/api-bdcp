@@ -68,12 +68,18 @@ export function generateHtml(data: GenerateHtmlData) {
                         figure, figcaption, footer, header, hgroup,
                         menu, nav, output, ruby, section, summary,
                         time, mark, audio, video {
-                        margin: 0;
+                            margin: 0;
                             padding: 0;
                             border: 0;
                             font-size: 100%;
                             font: inherit;
                             vertical-align: baseline;
+                        }
+
+                        @page {
+                            size: A4;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
                         }
 
                         :focus {

@@ -10,7 +10,7 @@ import { AppError } from './errors/AppError';
 import { SwaggerOptions } from './configs/swagger.config';
 import { logHandler } from './middlewares/logHandler';
 
-const app = express();
+export const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -33,6 +33,3 @@ app.get('*', (req, res) => {
         message: 'Route not found.'
     });
 });
-
-module.exports = app;
-export { app };
