@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CreateUserRequestDto, UpdateUserRequestDto } from '../dtos/user';
 
 import { UserService } from '../services/UserService';
+import { UserInviteService } from '../services/UserInviteService';
 
 class UserController {
     async getUsers(request: Request, response: Response) {
@@ -21,6 +22,15 @@ class UserController {
     }
 
     async create(request: Request, response: Response) {
+        const { inviteToken } = request.params;
+
+        if(!inviteToken) {
+            return response.status(400).send({ message: 'A registration invite is necessary.' });
+        }
+
+        //Valida o token de convite
+        new UserInviteService().validateUserInvite(inviteToken);
+
         const { name, email, password } = request.body as CreateUserRequestDto;
 
         const userService = new UserService();
@@ -41,6 +51,7 @@ class UserController {
 
     async delete(request: Request, response: Response) {
         const { id } = request.params;
+        console.log(id);
 
         const userService = new UserService();
         await userService.delete(id);

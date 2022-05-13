@@ -37,6 +37,12 @@ const userController = new UserController();
 *         password:
 *           type: string
 *           description: The user password
+*         role:
+*           type: string
+*           description: 'teacher' by default
+*         isUserActive:
+*           type: boolean
+*           description: 'true' by default
 *         createdAt:
 *           type: date
 *           description: The date that user has been created
@@ -47,6 +53,8 @@ const userController = new UserController();
 *         id: 50496915-d356-43a0-84a4-43f83bad2225
 *         name: Javus da Silva Pythonlino
 *         email: user@email.com
+*         isUserActive: true
+*         role: teacher
 *         password: user010203!!!
 *         createdAt: 2022-03-18 17:12:52
 *         updatedAt: 2022-03-18 17:12:52
@@ -55,10 +63,38 @@ const userController = new UserController();
 /**
 * @swagger
 * /api/users:
+*   get:
+*     summary: Returns the list of all the users
+*     tags: [User]
+*     responses:
+*       200:
+*         description: The list of all the users
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/User'
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+userRouter.get('/', userController.getUsers);
+
+/**
+* @swagger
+* /api/users/{inviteToken}:
 *   post:
 *     summary: Create a user
 *     tags: [User]
 *     parameters:
+*       - in: params
+*         name: inviteToken
+*         schema:
+*           type: string
+*         required: true
+*         description: The generated token invitation
 *       - in: body
 *         name: email
 *         schema:
@@ -89,7 +125,7 @@ const userController = new UserController();
 *       500:
 *         description: Internal Server Error
 */
-userRouter.post('/', makeValidateBody(CreateUserRequestDto), userController.create);
+userRouter.post('/:inviteToken', makeValidateBody(CreateUserRequestDto), userController.create);
 
 /**
 * @swagger
@@ -136,6 +172,29 @@ userRouter.post('/', makeValidateBody(CreateUserRequestDto), userController.crea
 *       500:
 *         description: Internal Server Error
 */
-userRouter.put('/', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.update);
+userRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.update);
+
+/**
+* @swagger
+* /api/users/{id}:
+*   delete:
+*     summary: Delete an user by ID
+*     tags: [User]
+*     parameters:
+*       - in: params
+*         name: id
+*         schema:
+*           type: string
+*         required: true
+*         description: The user id
+*     responses:
+*       200:
+*         description: User has been deleted!
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*/
+userRouter.delete('/:id', ensureAuthenticated, userController.delete);
 
 export { userRouter };

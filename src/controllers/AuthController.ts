@@ -18,8 +18,9 @@ class AuthController {
         const authService = new AuthService();
         await authService.resetPassword(email);
 
-        return response.status(201).json({ message: 'A new password has been sent to your email.' });
+        return response.status(201).json({ message: 'A new password has been sent to your email if it is valid. Do not forget to check the spam box!' });
     }
+
 }
 
 export { AuthController };
