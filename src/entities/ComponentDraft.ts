@@ -4,6 +4,7 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
@@ -83,12 +84,25 @@ class ComponentDraft {
     @JoinColumn({ name: 'component_id' })
         component: Component;
 
-    generateDraftLog(componentId?: string): ComponentLog {
+    @OneToMany(() => ComponentLog, (componentLog) => componentLog.draft)
+        logs: ComponentLog[];
+
+    generateDraftLog(
+        type: ComponentLogType,
+        authorId: string,
+        componentId?: string
+    ): ComponentLog {
         const log = new ComponentLog();
-        log.componentId = componentId ?? this.id;
-        log.updatedBy = this.userId;
-        log.type = ComponentLogType.DRAFT_CREATION;
-        log.description = `Rascunho criado em ${this.createdAt.toISOString()}`;
+        log.type = type;
+        log.updatedBy = authorId;
+
+        if (type === ComponentLogType.DRAFT_CREATION) {
+            log.componentId = componentId ?? this.id;
+            log.description = `Rascunho criado em ${this.createdAt.toISOString()}`;
+        } else if (type === ComponentLogType.DRAFT_UPDATE) {
+            log.draftId = this.id;
+            log.description = 'Rascunho alterado';
+        }
 
         return log;
     }
