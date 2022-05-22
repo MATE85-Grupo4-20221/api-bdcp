@@ -330,6 +330,8 @@ componentRouter.get('/', componentController.getComponents);
  */
 componentRouter.get('/:code', ensureAuthenticated, componentController.getComponentByCode);
 
+componentRouter.get('/:id/logs', ensureAuthenticated, componentController.getComponentLogs);
+
 /**
 * @swagger
 * /api/components:
@@ -759,6 +761,6 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 */
 componentRouter.post('/import', ensureAuthenticated, componentController.importComponentsFromSiac);
 
-componentRouter.get('/export/:id', ensureAuthenticated, componentController.export);
+componentRouter.get('/:id/export', ensureAuthenticated, componentController.export);
 
 export { componentRouter };

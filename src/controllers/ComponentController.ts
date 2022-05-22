@@ -3,6 +3,7 @@ import { getAuthToken } from '../helpers/getAuthToken';
 
 import { paginate } from '../helpers/paginate';
 import { verifyAuthToken } from '../helpers/verifyAuthToken';
+import { ComponentLogService } from '../services/ComponentLogService';
 import { ComponentService } from '../services/ComponentService';
 import { CrawlerService } from '../services/CrawlerService';
 
@@ -65,6 +66,20 @@ class ComponentController {
         );
 
         return response.status(200).json(component);
+    }
+
+    async getComponentLogs(request: Request, response: Response) {
+        const componentLogService = new ComponentLogService();
+
+        const componentId = request.params.id;
+
+        const page = parseInt(String(request.query.page)) || 0;
+        const limit = parseInt(String(request.query.limit)) || 10;
+        const type = request.query.type as string;
+
+        const componentLogs = await componentLogService.getComponentLogs(componentId, type);
+
+        return response.status(200).json(paginate(componentLogs, { page, limit }));
     }
 
     async create(request: Request, response: Response) {
