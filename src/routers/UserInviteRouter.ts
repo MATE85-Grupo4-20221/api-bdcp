@@ -29,10 +29,17 @@ userInviteRouter.get('/generate', userInviteController.generateUserInvite);
 
 /**
 * @swagger
-* /api/invite/{inviteToken}:
+* /api/invite/validate/{inviteToken}:
 *   get:
 *     tags: [User Invite]
 *     summary: Validate an invite token
+*     parameters:
+*       - in: params
+*         name: inviteToken
+*         schema:
+*           type: string
+*         required: true
+*         description: The generated invite token
 *     responses:
 *       200:
 *         description: Valid Token
@@ -43,6 +50,6 @@ userInviteRouter.get('/generate', userInviteController.generateUserInvite);
 *       500:
 *         description: Internal Server Error
 */
-userInviteRouter.get('/:inviteToken', userInviteController.validateUserInvite);
+userInviteRouter.get('/validate/:inviteToken', userInviteController.validateUserInvite);
 
 export { userInviteRouter };

@@ -6,14 +6,14 @@ class UserInviteController {
         const userInviteService = new UserInviteService();
         const token = userInviteService.generateUserInvite();
 
-        return response.status(201).json({ link: `http://localhost:3333/api/invite/${token}`, token });
+        return response.status(201).json({ link: `/api/invite/${token}`, token, expiresInSeconds: 86400 });
     }
 
     validateUserInvite(request: Request, response: Response) {
-        const { token } = request.params;
+        const { inviteToken } = request.params;
         const userInviteService = new UserInviteService();
 
-        userInviteService.validateUserInvite(token);
+        userInviteService.validateUserInvite(inviteToken);
 
         return response.status(200).json({ tokenIsValid: true });
     }

@@ -39,10 +39,10 @@ const userController = new UserController();
 *           description: The user password
 *         role:
 *           type: string
-*           description: 'teacher' by default
+*           description: teacher by default
 *         isUserActive:
 *           type: boolean
-*           description: 'true' by default
+*           description: true by default
 *         createdAt:
 *           type: date
 *           description: The date that user has been created
@@ -80,7 +80,7 @@ const userController = new UserController();
 *       500:
 *         description: Internal Server Error
 */
-userRouter.get('/', userController.getUsers);
+userRouter.get('/', ensureAuthenticated, userController.getUsers);
 
 /**
 * @swagger
