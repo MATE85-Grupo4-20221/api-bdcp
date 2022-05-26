@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 
 import { Component } from './Component';
 import { ComponentDraft } from './ComponentDraft';
+import { UserRole } from '../interfaces/UserRole';
 
 @Entity('users')
 class User {
@@ -17,6 +18,12 @@ class User {
 
     @Column()
         password: string;
+    
+    @Column({ name: 'is_user_active', default: true })
+        isUserActive: boolean;
+
+    @Column({ default: UserRole.TEACHER })
+        role: UserRole;
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
         createdAt: Date;

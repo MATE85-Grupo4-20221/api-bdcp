@@ -45,15 +45,21 @@ class AuthService {
         try {
             const generatedHash = Math.random().toString(36).substring(2);
             const generatedPassword = crypto.createHmac('sha256', generatedHash).digest('hex');
-            await Mailer.construct();
             
             await this.userRepository.createQueryBuilder().update(User).set({ password: generatedPassword }).where('email = :email', { email }).execute();
-            await Mailer.execute(email, 'Your new BDCP password!', `Olá, use "${generatedHash}" como sua nova senha para acessar o BDCP.`);
+            await Mailer.execute(email, 'Your new BDCP password!', `Prezado(a),\nUse "${generatedHash}" como sua nova senha para acessar o BDCP.\nRecomendamos também que, assim que entrar no sistema, realize a troca da senha para uma de sua preferência.`);
         }
         catch (err) {
             console.log(err);
             throw new AppError('An error has been occurred!', 400);
         }
+    }
+
+    generateUserInvite() {
+        const generatedHash = Math.random().toString(36).substring(2);
+        const token = sign({ generatedHash }, String(process.env.JWT_SECRET), { expiresIn: 86400 });
+
+        return token;
     }
 
 }
