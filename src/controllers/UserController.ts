@@ -3,13 +3,24 @@ import { CreateUserRequestDto, UpdateUserRequestDto } from '../dtos/user';
 
 import { UserService } from '../services/UserService';
 import { UserInviteService } from '../services/UserInviteService';
+import { paginate } from '../helpers/paginate';
 
 class UserController {
     async getUsers(request: Request, response: Response) {
+        const authenticatedUserId = request.headers
+            .authenticatedUserId as string;
+
         const userService = new UserService();
+
+        // const search = request.query.search as string;
+        const page = parseInt(String(request.query.page)) || 0;
+        const limit = parseInt(String(request.query.limit)) || 10;
+
         const users = await userService.getUsers();
 
-        return response.status(200).json(users);
+        const filteredUsers = users.filter(user => user.id !== authenticatedUserId);
+
+        return response.status(200).json(paginate(filteredUsers, { page, limit }));
     }
 
     async getUserById(request: Request, response: Response) {
