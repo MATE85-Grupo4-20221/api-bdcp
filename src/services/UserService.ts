@@ -54,7 +54,7 @@ class UserService {
         }
     }
 
-    async update(id: string, email: string, password: string){
+    async updatePassword(id: string, password: string){
         const userExists = await this.userRepository.findOne({
             where: { id }
         });
@@ -66,7 +66,28 @@ class UserService {
         try {
             const passwordHashed = crypto.createHmac('sha256', password).digest('hex');
 
-            await this.userRepository.createQueryBuilder().update(User).set({ email, password: passwordHashed }).where('id = :id', { id }).execute();
+            await this.userRepository.createQueryBuilder().update(User).set({ password: passwordHashed }).where('id = :id', { id }).execute();
+
+            return await this.userRepository.findOne({
+                where: { id }
+            });
+        }
+        catch (err) {
+            throw new AppError('An error has been occurred.', 400);
+        }
+    }
+
+    async updateEmail(id: string, email: string){
+        const userExists = await this.userRepository.findOne({
+            where: { id }
+        });
+
+        if(!userExists){
+            throw new AppError('User not found.', 404);
+        }
+
+        try {
+            await this.userRepository.createQueryBuilder().update(User).set({ email }).where('id = :id', { id }).execute();
 
             return await this.userRepository.findOne({
                 where: { id }
