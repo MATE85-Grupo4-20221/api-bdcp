@@ -129,9 +129,9 @@ userRouter.post('/:inviteToken', makeValidateBody(CreateUserRequestDto), userCon
 
 /**
 * @swagger
-* /api/users/{id}:
+* /api/users/update/email:
 *   put:
-*     summary: Update a user
+*     summary: Update user email
 *     tags: [User]
 *     parameters:
 *       - in: header
@@ -140,18 +140,41 @@ userRouter.post('/:inviteToken', makeValidateBody(CreateUserRequestDto), userCon
 *           type: string
 *         required: true
 *         description: The authenticated user id
-*       - in: params
-*         name: id
-*         schema:
-*           type: string
-*         required: true
-*         description: The user id
 *       - in: body
 *         name: email
 *         schema:
 *           type: string
 *         required: true
 *         description: The user email
+*     responses:
+*       200:
+*         description: The user has been updated.
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/User'
+*       400:
+*         description: Bad Request
+*       404:
+*         description: The user was not found
+*       500:
+*         description: Internal Server Error
+*/
+userRouter.put('/update/email', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.updateEmail);
+
+/**
+* @swagger
+* /api/users/update/password:
+*   put:
+*     summary: Update user password
+*     tags: [User]
+*     parameters:
+*       - in: header
+*         name: authenticatedUserId
+*         schema:
+*           type: string
+*         required: true
+*         description: The authenticated user id
 *       - in: body
 *         name: password
 *         schema:
@@ -172,7 +195,7 @@ userRouter.post('/:inviteToken', makeValidateBody(CreateUserRequestDto), userCon
 *       500:
 *         description: Internal Server Error
 */
-userRouter.put('/:id', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.update);
+userRouter.put('/update/password', ensureAuthenticated, makeValidateBody(UpdateUserRequestDto), userController.updatePassword);
 
 /**
 * @swagger

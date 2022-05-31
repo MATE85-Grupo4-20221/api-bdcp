@@ -50,19 +50,28 @@ class UserController {
         return response.status(201).send({ id: user.id });
     }
 
-    async update(request: Request, response: Response) {
-        const { id } = request.params;
-        const { email, password } = request.body as UpdateUserRequestDto;
+    async updateEmail(request: Request, response: Response) {
+        const authenticatedUserId = request.headers.authenticatedUserId as string;
+        const { email } = request.body as UpdateUserRequestDto;
 
         const userService = new UserService();
-        const user = await userService.update(id, email, password);
+        const user = await userService.updateEmail(authenticatedUserId, email);
+
+        return response.status(200).json(user);
+    }
+
+    async updatePassword(request: Request, response: Response) {
+        const authenticatedUserId = request.headers.authenticatedUserId as string;
+        const { password } = request.body as UpdateUserRequestDto;
+
+        const userService = new UserService();
+        const user = await userService.updatePassword(authenticatedUserId, password);
 
         return response.status(200).json(user);
     }
 
     async delete(request: Request, response: Response) {
         const { id } = request.params;
-        console.log(id);
 
         const userService = new UserService();
         await userService.delete(id);
