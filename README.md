@@ -11,8 +11,8 @@ npm install
 ## Enviroments
 Make sure to create a `.env` in the root level on your local machine beforehand. Check the existing variables at `./.env.example`
 
-## MySQL
-Run `npm run mysql:create` to create and run a docker image for a MySQL server.
+## Postgresql
+Run `npm run postgres:create` to create and run a docker image for a Postgres server.
 
 ## Migrations
 ### Running migrations
