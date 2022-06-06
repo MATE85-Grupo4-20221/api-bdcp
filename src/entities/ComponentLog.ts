@@ -3,15 +3,19 @@ import { Column, Entity, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn, Jo
 import { Component } from './Component';
 import { User } from './User';
 import { ComponentLogType } from '../interfaces/ComponentLogType';
+import { ComponentDraft } from './ComponentDraft';
 
 @Entity('component_logs')
 class ComponentLog {
 
     @PrimaryGeneratedColumn('uuid')
-    readonly id: string;
+        id: string;
 
-    @Column({ name: 'component_id' })
-        componentId: string;
+    @Column({ name: 'component_id', nullable: true })
+        componentId?: string | null;
+
+    @Column({ name: 'component_draft_id', nullable: true })
+        draftId?: string | null;
 
     @Column({ name: 'updated_by', nullable: true })
         updatedBy?: string;
@@ -33,7 +37,11 @@ class ComponentLog {
 
     @ManyToOne(() => Component, (component) => component.logs)
     @JoinColumn({ name: 'component_id' })
-        component: Component;
+        component?: Component;
+
+    @ManyToOne(() => ComponentDraft, (draft) => draft.logs)
+    @JoinColumn({ name: 'component_draft_id' })
+        draft?: ComponentDraft;
 
     @ManyToOne(() => User, { eager: true })
     @JoinColumn({ name: 'updated_by' })

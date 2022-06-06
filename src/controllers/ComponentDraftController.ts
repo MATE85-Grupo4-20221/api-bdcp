@@ -33,9 +33,14 @@ class ComponentDraftController {
 
     async update(request: Request, response: Response) {
         const { id } = request.params;
+        const authenticatedUserId = request.headers.authenticatedUserId as string;
 
         const draftService = new ComponentDraftService();
-        const content = await draftService.update(id, request.body);
+        const content = await draftService.update(
+            id,
+            authenticatedUserId,
+            request.body
+        );
 
         return response.status(200).json(content);
     }

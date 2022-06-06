@@ -46,7 +46,7 @@ export class ComponentDraftService {
             where: {
                 code: Raw((alias) => `LOWER(${alias}) LIKE :code`, { code: `%${ code.toLowerCase() }%` })
             },
-            relations: [ 'workload' ],
+            relations: [ 'workload', 'logs' ],
         });
 
         if (!draft) return null;
@@ -102,11 +102,14 @@ export class ComponentDraftService {
     }
 
     async update(
-        id: string,
+        draftId: string,
+        userId: string,
         requestDto: UpdateComponentRequestDto,
     ) {
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
         const draftExists = await this.componentDraftRepository.findOne({
-            where: { id }
+            where: { id: draftId }
         });
         if(!draftExists){
             throw new AppError('Draft not found.', 404);
@@ -130,10 +133,28 @@ export class ComponentDraftService {
                 delete requestDto.workload;
             }
 
-            return this.componentDraftRepository.save({
-                ...draftExists,
-                ...requestDto
-            });
+            await queryRunner.startTransaction();
+
+            const [ updatedDraft ] = await Promise.all([
+                queryRunner.manager.save(
+                    ComponentDraft,
+                    {
+                        ...draftExists,
+                        ...requestDto
+                    }
+                ),
+                queryRunner.manager.save(
+                    ComponentLog,
+                    draftExists.generateDraftLog(
+                        ComponentLogType.DRAFT_UPDATE,
+                        userId
+                    )
+                ),
+            ]); 
+
+            await queryRunner.commitTransaction();
+
+            return updatedDraft;
         }
         catch (err) {
             throw new AppError('An error has been occurred.', 400);
@@ -194,6 +215,11 @@ export class ComponentDraftService {
                 queryRunner.manager.save(Component, component),
                 queryRunner.manager.save(ComponentLog, approvalLog),
                 queryRunner.manager.save(ComponentWorkload, { ...draftWorkload, id: currentPublishedComponent.workloadId }),
+                queryRunner.manager.update(
+                    ComponentLog,
+                    { draftId } as Partial<ComponentLog>,
+                    { draftId: null, componentId: currentPublishedComponent.id }
+                )
             ]); 
 
             await queryRunner.commitTransaction();
