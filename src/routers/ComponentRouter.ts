@@ -761,6 +761,6 @@ componentRouter.delete('/:id', ensureAuthenticated, componentController.delete);
 */
 componentRouter.post('/import', ensureAuthenticated, componentController.importComponentsFromSiac);
 
-componentRouter.get('/:id/export', ensureAuthenticated, componentController.export);
+componentRouter.get('/:id/export', componentController.export);
 
 export { componentRouter };
