@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
 import { CreateUserRequestDto, UpdateUserRequestDto } from '../dtos/user';
-import { ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
+import { ensureAdminAuthenticated, ensureAuthenticated } from '../middlewares/EnsureAuthenticated';
 import { makeValidateBody } from '../middlewares/Validator';
 
 const userRouter = Router();
@@ -80,7 +80,7 @@ const userController = new UserController();
 *       500:
 *         description: Internal Server Error
 */
-userRouter.get('/', ensureAuthenticated, userController.getUsers);
+userRouter.get('/', ensureAuthenticated, ensureAdminAuthenticated, userController.getUsers);
 
 /**
 * @swagger
