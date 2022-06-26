@@ -51,9 +51,14 @@ class ComponentController {
         const page = parseInt(String(request.query.page)) || 0;
         const limit = parseInt(String(request.query.limit)) || 10;
 
-        const isAuthenticated = isUserAuthenticated(request.headers.authorization);
+        const isAuthenticated = isUserAuthenticated(
+            request.headers.authorization
+        );
 
-        const components = await componentService.getComponents(search, isAuthenticated);
+        const components = await componentService.getComponents(
+            search,
+            isAuthenticated
+        );
 
         return response.status(200).json(paginate(components, { page, limit }));
     }
@@ -77,9 +82,14 @@ class ComponentController {
         const limit = parseInt(String(request.query.limit)) || 10;
         const type = request.query.type as string;
 
-        const componentLogs = await componentLogService.getComponentLogs(componentId, type);
+        const componentLogs = await componentLogService.getComponentLogs(
+            componentId,
+            type
+        );
 
-        return response.status(200).json(paginate(componentLogs, { page, limit }));
+        return response
+            .status(200)
+            .json(paginate(componentLogs, { page, limit }));
     }
 
     async create(request: Request, response: Response) {

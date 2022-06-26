@@ -19,7 +19,7 @@ class MailerService{
             to,
             subject,
             text,
-            from: 'BDCP-IC-UFBA <bdcpicufba@gmail.com>'
+            from: 'BDCP-IC-UFBA <bdcpicufba@gmail.com>',
         });
 
         console.log('Password Reset was requested. Message ID: ', mailSent.messageId);
