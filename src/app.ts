@@ -24,7 +24,8 @@ app.use((err: Error, request: Request, response: Response, _next: NextFunction) 
     console.log(err);
     return response.status(500).json({
         type: 'Generic Error',
-        message: 'Internal Server Error'
+        message: 'Internal Server Error',
+        stack: err.stack,
     });
 });
 app.get('*', (req, res) => {
