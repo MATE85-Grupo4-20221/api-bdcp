@@ -34,6 +34,16 @@ class AuthService {
         return sign({ id, name, email }, String(process.env.JWT_SECRET), { expiresIn: Number(process.env.JWT_DEADLINE) });
     }
 
+    async getCurrentUser(userId: string) {
+        const user = await this.userRepository.findOne({ id: userId });
+
+        if (!user) {
+            throw new AppError('User does not exists!', 400);
+        }
+
+        return user;
+    }
+
 
     async resetPassword(email: string) {
         const user = await this.userRepository.findOne({ email });
@@ -45,7 +55,7 @@ class AuthService {
         try {
             const generatedHash = Math.random().toString(36).substring(2);
             const generatedPassword = crypto.createHmac('sha256', generatedHash).digest('hex');
-            
+
             await this.userRepository.createQueryBuilder().update(User).set({ password: generatedPassword }).where('email = :email', { email }).execute();
             await Mailer.execute(email, 'Your new BDCP password!', `Prezado(a),\nUse "${generatedHash}" como sua nova senha para acessar o BDCP.\nRecomendamos também que, assim que entrar no sistema, realize a troca da senha para uma de sua preferência.`);
         }

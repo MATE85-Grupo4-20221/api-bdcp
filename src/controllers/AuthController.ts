@@ -12,6 +12,20 @@ class AuthController {
         return response.status(201).json({ auth: true, token });
     }
 
+    async getCurrentUser(request: Request, response: Response) {
+        const userId = request.headers.authenticatedUserId as string;
+
+        if (!userId) {
+            return response.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const authService = new AuthService();
+        const user = await authService.getCurrentUser(userId);
+
+        return response.status(200).json(user);
+
+    }
+
     async resetPassword(request: Request, response: Response) {
         const { email } = request.body as ResetPasswordRequestDto;
 
