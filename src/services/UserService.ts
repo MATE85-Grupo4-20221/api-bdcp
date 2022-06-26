@@ -14,7 +14,7 @@ class UserService {
     }
 
     async getUsers() {
-        const users = await this.userRepository.find();
+        const users = await this.userRepository.find({ where: { isDeleted: false } });
 
         if (users.length === 0) return [];
 
@@ -107,7 +107,12 @@ class UserService {
             throw new AppError('User not found.', 404);
         }
 
-        await this.userRepository.createQueryBuilder().delete().from(User).where('id = :id', { id }).execute();
+        await this.userRepository
+            .createQueryBuilder()
+            .update(User)
+            .set({ isDeleted: true })
+            .where('id = :id', { id })
+            .execute();
     }
 
 }
