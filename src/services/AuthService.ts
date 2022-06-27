@@ -57,7 +57,7 @@ class AuthService {
             const generatedPassword = crypto.createHmac('sha256', generatedHash).digest('hex');
 
             await this.userRepository.createQueryBuilder().update(User).set({ password: generatedPassword }).where('email = :email', { email }).execute();
-            await Mailer.execute(email, 'Your new BDCP password!', `Prezado(a),\nUse "${generatedHash}" como sua nova senha para acessar o BDCP.\nRecomendamos também que, assim que entrar no sistema, realize a troca da senha para uma de sua preferência.`);
+            await Mailer.execute(email, 'Nova Senha - BDCP', `Prezado(a),\nUse "${generatedHash}" como sua nova senha para acessar o BDCP.`);
         }
         catch (err) {
             console.log(err);
